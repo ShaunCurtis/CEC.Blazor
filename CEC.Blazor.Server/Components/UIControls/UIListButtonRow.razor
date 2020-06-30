@@ -1,0 +1,31 @@
+﻿@namespace CEC.Blazor.Server.Components.UIControls
+
+@inherits ApplicationComponentBase
+
+@if (this.ShowButtons || this.IsPagination)
+{
+<div class="fluid-container">
+    <div class="form-group row no-gutters mt-2">
+        <div class="col-8 alert-sm">
+            @Paging
+        </div>
+        <div class="col-4 justify-content-end text-right">
+            @if (ShowButtons)
+            {
+                <span class="float-right mr-2">
+                    @Buttons
+                    @if (this.ShowAdd)
+                    {
+                        <button class="btn btn-primary btn-sm" @onclick="(e => this.Navigate(PageExitType.ExitToNew))">
+                            @String.Concat("Add New ", this.RecordConfiguration.RecordDescription)
+                        </button>
+                    }
+                    <button class="btn btn-secondary btn-sm" @onclick="(e => this.Navigate(PageExitType.ExitToRoot))">
+                        Exit
+                    </button>
+                </span>
+            }
+        </div>
+    </div>
+</div>
+}

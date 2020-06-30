@@ -1,0 +1,19 @@
+﻿@namespace CEC.Blazor.Server.Components.UIControls
+
+@inherits ApplicationComponentBase
+
+@if (this.Show)
+{
+    @if (this.DoNavigation)
+    {
+        <td class="@this.RowCss" scope="row" @onclick="(e => this.Navigate())">
+            @this.ChildContent
+        </td>
+    }
+    else
+    {
+        <td class="@this.RowCss" scope="row">
+            @this.ChildContent
+        </td>
+    }
+}

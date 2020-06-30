@@ -1,0 +1,23 @@
+﻿@namespace CEC.Blazor.Server.Components.UIControls
+
+@inherits ApplicationComponentBase
+
+@typeparam TRecord
+
+@if (this.Show)
+{
+    @if (this.Sorted)
+    {
+
+        <th class="@this.RowCss" scope="col" @onclick='(e => this.Paging.Sort(e, this.FieldName))'>
+            <span class="@(this.Paging.GetIcon(this.FieldName))"></span>
+            @this.FieldDisplayName
+        </th>
+    }
+    else
+    {
+        <th class="@this.RowCss" scope="col">
+            @this.FieldDisplayName
+        </th>
+    }
+}

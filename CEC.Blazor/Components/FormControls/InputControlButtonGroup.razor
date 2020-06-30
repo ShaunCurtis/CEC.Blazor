@@ -1,0 +1,10 @@
+﻿@namespace CEC.Blazor.Components.FormControls
+
+@inherits FormRecordControlBase<int>
+
+<div class="@this.BaseCss" role="group">
+    @foreach (var option in this.OptionList)
+    {
+        <button class="@this.GetButtonCss(option.Key)" @onclick="() => this.Switch(option.Key)">@option.Value</button>
+    }
+</div>

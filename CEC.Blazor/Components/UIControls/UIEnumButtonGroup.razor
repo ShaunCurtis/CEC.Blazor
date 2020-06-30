@@ -1,0 +1,14 @@
+﻿@inherits ApplicationComponentBase
+
+@typeparam TEnum
+
+@namespace CEC.Blazor.Components.UIControls
+
+    <div class="btn-group btn-group-sm" role="group">
+        @foreach (var e in this.Values)
+        {
+            <button class="@this.GetButtonCss(e.Key)" @onclick="() => this.SetState(e.Key)">@e.Value</button>
+        }
+    </div>
+
+

@@ -1,0 +1,19 @@
+﻿@namespace CEC.Blazor.Server.Components.UIControls
+@inherits ComponentBase
+
+<div class="@this.CardCss @this.MoreCardCss ">
+    <div class="@this.CardHeaderCss @this.MoreHeaderCss">
+        @this.Header
+        @if (this.IsCollapsible)
+        {
+            <button class="btn @CardButtonCSS float-right" style="padding: 3px;" @onclick="(e => this.Toggle())">
+                @this.CollapseText
+            </button>
+        }
+    </div>
+    <div class="card-body card-body-light no-side-margins  @this.CollapseCSS @this.MoreBodyCss">
+        @this.Navigation
+        @this.Body
+        @this.Buttons
+    </div>
+</div>

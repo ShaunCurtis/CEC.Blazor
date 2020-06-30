@@ -1,0 +1,56 @@
+﻿@namespace CEC.Blazor.Server.Pages.Components
+
+@inherits ListComponentBase<WeatherForecast>
+    <CascadingValue Value="@this.UIOptions">
+
+        <CascadingValue Value="@this.Paging">
+            <CascadingValue Value="@this.Service.RecordConfiguration">
+
+                <UICardList TItem="WeatherForecast" Items="this.Service.Records" IsCollapsible="true" ListTitle="@this.ListTitle">
+                    <TableHeader>
+
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="ID"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Description" MaxRow="true"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Code"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Price"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="LastPriceUpdate" DisplayName="Last Price Update"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Active"></UICardListHeaderRow>
+                        <UICardListEditButtonColumn Show="this.ShowEdit" IsHeader="true"></UICardListEditButtonColumn>
+
+                    </TableHeader>
+                    <RowTemplate>
+                        <CascadingValue Name="ID" Value="@context.WeatherForecastID">
+
+                            <UICardListDataRow>
+                                @context.WeatherForecastID
+                            </UICardListDataRow>
+                            <UICardListDataRow>
+                                @context.Date.ToShortDateString()
+                            </UICardListDataRow>
+                            <UICardListDataRow>
+                                @context.Summary
+                            </UICardListDataRow>
+                            <UICardListDataRow>
+                                @context.TemperatureC
+                            </UICardListDataRow>
+                            <UICardListDataRow>
+                                @context.Description
+                            </UICardListDataRow>
+                            <UICardListEditButtonColumn Show="this.ShowEdit"></UICardListEditButtonColumn>
+
+                        </CascadingValue>
+
+                    </RowTemplate>
+                    <Navigation>
+
+                        <UIListButtonRow>
+                            <Paging>
+                                <UIPagingControl TRecord="WeatherForecast"></UIPagingControl>
+                            </Paging>
+                        </UIListButtonRow>
+
+                    </Navigation>
+                </UICardList>
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
