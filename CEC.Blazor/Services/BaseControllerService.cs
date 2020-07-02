@@ -1,16 +1,14 @@
 ﻿using CEC.Blazor.Components;
 using CEC.Blazor.Data;
 using CEC.Blazor.Server.Data;
-using CEC.Blazor.Services;
 using CEC.Blazor.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Server.Services
+namespace CEC.Blazor.Services
 {
     public abstract class BaseControlService<T> : IControlService<T> where T : IDbRecord<T>, new()
     {
@@ -97,7 +95,7 @@ namespace CEC.Blazor.Server.Services
         /// <summary>
         /// Used by the list methods to filter the list contents.
         /// </summary>
-        public FilterList FilterList { get; set; } = new FilterList();
+        public virtual FilterList FilterList { get; set; }
 
         /// <summary>
         /// Abstract Property to expose the Record ID
@@ -108,8 +106,17 @@ namespace CEC.Blazor.Server.Services
         /// <summary>
         /// Boolean Property to check if a real record exists 
         /// </summary>
-        public virtual bool IsRecord => this.Record != null && this.RecordID != 0;
+        public virtual bool IsRecord => this.Record != null;
 
+        /// <summary>
+        /// Boolean Property to check if an Edit record exists 
+        /// </summary>
+        public virtual bool IsEditRecord => this.IsRecord && this.RecordID != 0;
+
+        /// <summary>
+        /// Boolean Property to check if a New record exists 
+        /// </summary>
+        public virtual bool IsNewRecord => this.IsRecord && this.RecordID == 0;
 
         /// <summary>
         /// Property exposing the number of records in the current list
@@ -131,7 +138,7 @@ namespace CEC.Blazor.Server.Services
         /// </summary>
         public bool IsClean { get; protected set; } = true;
 
-#endregion
+        #endregion
 
         #region Events
 
@@ -278,7 +285,7 @@ namespace CEC.Blazor.Server.Services
         {
             if (!this.IsRecords)
             {
-                this.TriggerListChangedEvent(this);
+                //this.TriggerListChangedEvent(this);
                 this.Records = await this.Service.GetRecordListAsync();
                 return true;
             }
@@ -296,11 +303,21 @@ namespace CEC.Blazor.Server.Services
             {
                 this.Record = await this.Service.GetRecordAsync(id ?? 0);
                 this.Record ??= new T();
-                this.ShadowRecord = ((IDbRecord<T>)this.Record).ShadowCopy();
+                this.ShadowRecord = this.Record.ShadowCopy();
                 this.SetClean();
                 this.TriggerRecordChangedEvent(this);
             }
             return this.IsRecord;
+        }
+
+        /// <summary>
+        /// Saves a record - adds if new, otherwise updates the existing record
+        /// </summary>
+        /// <returns></returns>
+        public async virtual Task<bool> SaveRecordAsync()
+        {
+            if (this.Record.ID > 0) return await UpdateRecordAsync();
+            else return await AddRecordAsync();
         }
 
         /// <summary>
@@ -312,7 +329,7 @@ namespace CEC.Blazor.Server.Services
             this.TaskResult = await this.Service.UpdateRecordAsync(this.Record);
             if (this.TaskResult.IsOK)
             {
-                this.ShadowRecord = ((IDbRecord<T>)this.Record).ShadowCopy();
+                this.ShadowRecord = this.Record.ShadowCopy();
                 this.SetClean();
                 this.TriggerRecordChangedEvent(this);
             }
@@ -329,7 +346,7 @@ namespace CEC.Blazor.Server.Services
             if (this.TaskResult.IsOK)
             {
                 this.Record = await this.Service.GetRecordAsync(this.TaskResult.NewID);
-                this.ShadowRecord = ((IDbRecord<T>)this.Record).ShadowCopy();
+                this.ShadowRecord = this.Record.ShadowCopy();
                 this.SetClean();
                 this.TriggerRecordChangedEvent(this);
             }

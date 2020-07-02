@@ -4,5 +4,16 @@
 @namespace CEC.Blazor.Server.Pages
 
 @inherits ApplicationComponentBase
+<WeatherList UIOptions="this.UIOptions" ></WeatherList>
 
-<WeatherList></WeatherList>
+@code {
+
+    public UIOptions UIOptions => new UIOptions()
+    {
+        ListNavigationToViewer = true,
+        ShowButtons = true,
+        ShowAdd = true,
+        ShowEdit = true
+    };
+
+}

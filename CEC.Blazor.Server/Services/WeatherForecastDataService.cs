@@ -23,7 +23,8 @@ namespace CEC.Blazor.Server.Services
 
         private void GetDummyRecords (int recordcount)
         {
-            for(var i = 0; i > recordcount; i++ )
+            this.Records = new List<WeatherForecast>();
+            for(var i = 1; i <= recordcount; i++ )
             {
                 var rng = new Random();
                 var temperatureC = rng.Next(-5, 35);

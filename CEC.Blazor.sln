@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor", "CEC.Blazor\CEC.Blazor.csproj", "{5A7D4B61-AA1A-4CD7-9EA1-CA435F9AF817}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.Server", "CEC.Blazor.Server\CEC.Blazor.Server.csproj", "{4BCFDC54-5E15-4D51-8E0F-1A837001263C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.Server", "CEC.Blazor.Server\CEC.Blazor.Server.csproj", "{4BCFDC54-5E15-4D51-8E0F-1A837001263C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

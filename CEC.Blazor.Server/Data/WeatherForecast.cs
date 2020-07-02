@@ -1,5 +1,7 @@
 using CEC.Blazor.Data;
+using CEC.Blazor.Extensions;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CEC.Blazor.Server.Data
 {
@@ -22,6 +24,16 @@ namespace CEC.Blazor.Server.Data
         public string Detail { get; set; } = string.Empty;
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+        public int OutlookValue
+        {
+            get => (int)this.Outlook;
+            set => this.Outlook = (WeatherOutlook)value;
+        }
+
+        public int ID => this.WeatherForecastID;
+
+        public string DisplayName => $"Forecast for {this.Date.AsShortDate()}";
 
         public WeatherForecast ShadowCopy()
         {

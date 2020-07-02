@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using CEC.Blazor.Server.Data;
 using CEC.Blazor.Data;
 using CEC.Blazor.Components.Base;
 using CEC.Blazor.Components;
 
-namespace CEC.Blazor.Server.Components.UIControls
+namespace CEC.Blazor.Components.UIControls
 {
     public partial class UICardListEditButtonColumn : ApplicationComponentBase
     {
@@ -16,12 +15,12 @@ namespace CEC.Blazor.Server.Components.UIControls
         public RecordConfigurationData RecordConfiguration { get; set; }
 
         [CascadingParameter(Name = "ID")]
-        public long CascadeID { get; set; } = 0;
+        public int CascadeID { get; set; } = 0;
 
         [Parameter]
-        public long ID { get; set; } = 0;
+        public int ID { get; set; } = 0;
 
-        private long _ID { get => this.CascadeID > 0 ? this.CascadeID : this.ID ; }
+        private int _ID { get => this.CascadeID > 0 ? this.CascadeID : this.ID ; }
 
         public bool Show => UIOptions?.ShowEdit ?? true;
 

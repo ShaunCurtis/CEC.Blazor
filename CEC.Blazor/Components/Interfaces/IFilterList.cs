@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CEC.Blazor.Components
 {
@@ -16,6 +17,8 @@ namespace CEC.Blazor.Components
         public bool Show { get => this.ShowState == 0; }
 
         public FilterViewState ShowState { get; set; }
+
+        public Dictionary<string, object> Filters { get; set; }
 
         public void Reset();
 

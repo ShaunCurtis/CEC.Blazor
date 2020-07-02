@@ -1,15 +1,8 @@
 ﻿using CEC.Blazor.Components.Base;
-using CEC.Blazor.Server.Data;
-using CEC.Blazor.Server.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Web;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace CEC.Blazor.Server.Components.UIControls
+namespace CEC.Blazor.Components.UIControls
 {
     public partial class UICardList<TItem> : ApplicationComponentBase
     {
@@ -43,11 +36,13 @@ namespace CEC.Blazor.Server.Components.UIControls
 
         public string CardCSS { get; set; } = "mt-2";
 
-        public string CardHeaderCSS { get => this.IsMainHeader ? "text-brand text-brand bg-dark" : "text-brand text-brand-sm bg-dark"; }
+        public string HeaderFontSize => this.IsMainHeader ? "display-5": "display-6";
+
+        public string CardHeaderCSS => "bg-secondary text-white";
 
         public string CardBodyCSS { get; set; } = "card-body-no-margin";
 
-        public string CardButtonCSS { get; set; } = "btn-sm btn-outline-primary";
+        public string CardButtonCSS { get; set; } = "btn-sm btn-outline-light";
 
         [Parameter]
         public bool IsCollapsible { get; set; } = true;

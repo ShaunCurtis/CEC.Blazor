@@ -33,7 +33,7 @@ namespace CEC.Blazor.Components.Base
         /// Property to control various UI Settings
         /// Used as a cascadingparameter
         /// </summary>
-        public UIOptions UIOptions { get; set; } = new UIOptions();
+        [Parameter] public UIOptions UIOptions { get; set; } = new UIOptions();
 
         /// <summary>
         /// An additional property that can be set in routing for cutom load actions
@@ -44,7 +44,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Property with generic error message for the Page Manager 
         /// </summary>
-        protected virtual string RecordErrorMessage { get; set; } = "The Application was unable to load record.";
+        protected virtual string RecordErrorMessage { get; set; } = "The Application is loading the record.";
 
         /// <summary>
         /// Boolean check if the Service exists
@@ -56,16 +56,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void UIStateChanged(object sender, EventArgs e) => this.StateHasChanged();
-
-        /// <summary>
-        /// Should be overriddebn in inherited components
-        /// and called after setting the Service
-        /// </summary>
-        protected async override Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-        }
+        public void UIStateChanged(object sender, EventArgs e) => InvokeAsync(this.StateHasChanged);
 
         /// <summary>
         /// Sets ther alert with a Danger Message

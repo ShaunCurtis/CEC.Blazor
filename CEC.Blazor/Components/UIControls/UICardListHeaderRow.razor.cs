@@ -2,7 +2,7 @@
 using CEC.Blazor.Data;
 using CEC.Blazor.Components;
 
-namespace CEC.Blazor.Server.Components.UIControls
+namespace CEC.Blazor.Components.UIControls
 {
     public partial class UICardListHeaderRow<TRecord> : Blazor.Components.Base.ApplicationComponentBase
     {

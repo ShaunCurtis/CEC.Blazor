@@ -1,0 +1,131 @@
+﻿@namespace CEC.Blazor.Server.Pages.Components
+@inherits RecordComponentBase<WeatherForecast>
+
+<UIRecordErrorHandler IsError="@this.IsError">
+
+    <CascadingValue Name="WeatherForecastID" Value="this.Service.RecordID">
+
+        <UICard MoreCardCss="@this.CardCSS">
+
+            <Header>
+                Weather Forecast Viewer - @this.Service.Record.Date.AsShortDate()
+            </Header>
+
+            <Body>
+                <UIContainerControl>
+
+                    <UIRowControl>
+
+                        <UICellControl Columns="2">
+                            Date
+                        </UICellControl>
+
+                        <UICellControl Columns="4">
+                            <FormControlPlainText Value="@this.Service.Record.Date.AsShortDate()"></FormControlPlainText>
+                        </UICellControl>
+
+                        <UICellControl Columns="2">
+                            Frost
+                        </UICellControl>
+
+                        <UICellControl Columns="4">
+                            <FormControlPlainText Value="@this.Service.Record.Frost.AsYesNo()"></FormControlPlainText>
+                        </UICellControl>
+
+                    </UIRowControl>
+
+                    <UIRowControl>
+
+                        <UICellControl Columns="2">
+                            Temperature &deg;C
+                        </UICellControl>
+
+                        <UICellControl Columns="4">
+                            <FormControlPlainText Value="@this.Service.Record.TemperatureC.ToString()"></FormControlPlainText>
+                        </UICellControl>
+
+                        <UICellControl Columns="2">
+                            Temperature &deg;F
+                        </UICellControl>
+
+                        <UICellControl Columns="4">
+                            <FormControlPlainText Value="@this.Service.Record.TemperatureF.ToString()"></FormControlPlainText>
+                        </UICellControl>
+
+                    </UIRowControl>
+
+                    <UIRowControl>
+
+                        <UICellControl Columns="2">
+                            Summary
+                        </UICellControl>
+
+                        <UICellControl Columns="4">
+                            <FormControlPlainText Value="@this.Service.Record.Summary.ToString()"></FormControlPlainText>
+                        </UICellControl>
+
+                        <UICellControl Columns="2">
+                            Outlook
+                        </UICellControl>
+
+                        <UICellControl Columns="4">
+                            <FormControlPlainText Value="@this.Service.Record.Outlook.ToString()"></FormControlPlainText>
+                        </UICellControl>
+
+                    </UIRowControl>
+
+                    <UIRowControl>
+
+                        <UICellControl Columns="2">
+                            Description
+                        </UICellControl>
+
+                        <UICellControl Columns="10">
+                            <FormControlPlainText Value="@this.Service.Record.Description"></FormControlPlainText>
+                        </UICellControl>
+
+                    </UIRowControl>
+
+                    <UIRowControl>
+
+                        <UICellControl Columns="2">
+                            Detail
+                        </UICellControl>
+
+                        <UICellControl Columns="10">
+                            <FormControlPlainText Value="@this.Service.Record.Detail"></FormControlPlainText>
+                        </UICellControl>
+
+                    </UIRowControl>
+
+                    <UIRowControl>
+                        <UICellButtonControl Columns="12">
+                            @if (!this.IsModal)
+                            {
+                                <button class="btn btn-secondary btn-sm" @onclick="(e => this.NavigateTo(PageExitType.ExitToList))">
+                                    Exit To List
+                                </button>
+                                <button class="btn btn-secondary btn-sm" @onclick="(e => this.NavigateTo(PageExitType.ExitToRoot))">
+                                    Exit
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary btn-sm" @onclick="(e => this.ModalExit())">
+                                    Exit
+                                </button>
+
+                            }
+                        </UICellButtonControl>
+                    </UIRowControl>
+
+
+                </UIContainerControl>
+
+            </Body>
+
+        </UICard>
+
+    </CascadingValue>
+
+</UIRecordErrorHandler>

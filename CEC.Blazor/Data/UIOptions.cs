@@ -20,5 +20,7 @@ namespace CEC.Blazor.Data
         /// Show the buttons on lists and views
         /// </summary>
         public bool ShowButtons { get; set; }
+
+        public bool ListNavigationToViewer { get; set; }
     }
 }

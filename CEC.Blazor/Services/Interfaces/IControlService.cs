@@ -16,6 +16,8 @@ namespace CEC.Blazor.Services
         /// </summary>
         public Guid ID { get; set; }
 
+        public IDbService<T> Service { get; set; }
+
         /// <summary>
         /// Record Configuration Object - provides name and routing information for the DB Model Class
         /// </summary>
@@ -44,12 +46,12 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Property to get current record count
         /// </summary>
-        public int RecordCount { get => this.IsRecord ? this.Records.Count : 0; }
+        public int RecordCount => this.IsRecord ? this.Records.Count : 0;
 
         /// <summary>
         /// Boolean Property to check if a record exists
         /// </summary>
-        public virtual bool IsRecord { get => this.Record != null && this.RecordID != 0; }
+        public virtual bool IsRecord => this.Record != null;
 
         /// <summary>
         /// Property to expose the Record ID.
@@ -103,6 +105,14 @@ namespace CEC.Blazor.Services
         /// </summary>
         public void SetDirty();
 
+        /// <summary>
+        /// Method to Update or Add the Database Record
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> SaveRecordAsync() {
+            if (this.Record.ID > 0) return await UpdateRecordAsync();
+            else return await AddRecordAsync();
+        }
 
         /// <summary>
         /// Method to Update the Database Record
@@ -121,7 +131,7 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<T> GetRecordAsync(int? id) => Task.FromResult(new T());
+        public Task<bool> GetRecordAsync(int? id) => Task.FromResult(false);
 
         /// <summary>
         /// Method to get a new Record

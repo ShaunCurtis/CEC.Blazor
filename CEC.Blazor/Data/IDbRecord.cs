@@ -7,6 +7,9 @@ namespace CEC.Blazor.Data
     /// </summary>
     public interface IDbRecord<T>
     {
+        public int ID { get; }
+
+        public string DisplayName { get; }
 
         /// <summary>
         /// Creates a deep copy of the object

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\CEC.Blazor\CEC.Blazor.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
 </Project>

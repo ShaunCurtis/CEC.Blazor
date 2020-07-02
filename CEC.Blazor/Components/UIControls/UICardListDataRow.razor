@@ -1,4 +1,4 @@
-﻿@namespace CEC.Blazor.Server.Components.UIControls
+﻿@namespace CEC.Blazor.Components.UIControls
 
 @inherits ApplicationComponentBase
 
@@ -6,7 +6,7 @@
 {
     @if (this.DoNavigation)
     {
-        <td class="@this.RowCss" scope="row" @onclick="(e => this.Navigate())">
+        <td class="@this. cursor-hand" scope="row" @onclick="(e => this.Navigate())">
             @this.ChildContent
         </td>
     }

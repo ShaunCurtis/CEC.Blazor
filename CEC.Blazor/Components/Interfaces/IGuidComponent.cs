@@ -2,8 +2,9 @@
 
 namespace CEC.Blazor.Components
 {
-    interface IGuidComponent
+    public interface IGuidComponent
     {
         public Guid GUID { get;}
+
     }
 }

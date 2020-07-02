@@ -10,7 +10,7 @@ namespace CEC.Blazor.Components.UIControls
         public bool IsError { get; set; } = false;
 
         [Parameter]
-        public string ErrorMessage { get; set; } = "There was a problem Loading the record/records.";
+        public string ErrorMessage { get; set; } = "loading....";
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }

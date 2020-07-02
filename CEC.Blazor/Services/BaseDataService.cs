@@ -8,7 +8,7 @@ using CEC.Blazor.Utilities;
 using CEC.Blazor.Data;
 using CEC.Blazor.Services;
 
-namespace CEC.Blazor.Server.Services
+namespace CEC.Blazor.Services
 {
     public class BaseDataService<T>: IDbService<T> where T : new()
     {

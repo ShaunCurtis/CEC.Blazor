@@ -8,10 +8,12 @@ using CEC.Blazor.Data;
 using CEC.Routing.Services;
 using System.Security.Principal;
 using System.Linq;
+using CEC.Blazor.Components.UIControls;
+using CEC.Blazor.Components.Modal;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class ApplicationComponentBase : ComponentBase, IGuidComponent
+    public class ApplicationComponentBase : ComponentBase, IGuidComponent, IDisposable
     {
         /// <summary>
         /// Injected Property for the Browser Service
@@ -52,6 +54,12 @@ namespace CEC.Blazor.Components.Base
         [Parameter] public Alert AlertMessage { get; set; } = new Alert();
 
         /// <summary>
+        /// Cascaded Parameter if the Component is used in Modal mode
+        /// </summary>
+        [CascadingParameter]
+        public BootstrapModal Parent { get; set; }
+
+        /// <summary>
         /// A unique Guid for this  instance of the Component
         /// set by the dubugger
         /// </summary>
@@ -61,7 +69,12 @@ namespace CEC.Blazor.Components.Base
         /// The Page Type - used in logging
         /// set by the dubugger
         /// </summary>
-        public string ClassName { get => this.GetType().ToString(); }
+        public string ClassName => this.GetType().ToString();
+
+        /// <summary>
+        /// The last page visited. Exiting this page returns to this page
+        /// </summary>
+        public string ReturnPageUrl { get; set; }
 
         /// <summary>
         /// Property to check the state of the page during re-rendering
@@ -72,7 +85,13 @@ namespace CEC.Blazor.Components.Base
         /// Property that tells us if we are navigating within the component 
         /// such as where the component has multiple routes and we are navigating between them
         /// </summary>
-        protected bool IsIntraComponentNavigation { get => (!this.FirstLoad) && NavManager.Uri != RouterSessionService.LastPageUrl; }
+        protected bool IsIntraComponentNavigation => (!this.FirstLoad) && NavManager.Uri != RouterSessionService.LastPageUrl;
+
+
+        /// <summary>
+        /// Boolean Property to check if this component is in Modal Mode
+        /// </summary>
+        public bool IsModal => this.Parent != null;
 
         /// <summary>
         /// Property holding the current user name
@@ -90,14 +109,17 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         public string CurrentUserName => (!string.IsNullOrEmpty(this.CurrentUser)) && this.CurrentUser.Contains("@") ? this.CurrentUser.Substring(0, this.CurrentUser.IndexOf("@")) : string.Empty;
 
-        protected override Task OnInitializedAsync()
+        protected async override Task OnInitializedAsync()
         {
-            this.LoadAsync();
-            return base.OnInitializedAsync();
+            await this.LoadAsync();
+            await base.OnInitializedAsync();
+            // kick off a manual UI update
+            this.UpdateState();
         }
 
         protected override void OnAfterRender(bool firstRender)
         {
+            if (firstRender) this.BrowserService.SetExitCheck(false);
             this.FirstLoad = false;
             base.OnAfterRender(firstRender);
         }
@@ -106,9 +128,10 @@ namespace CEC.Blazor.Components.Base
         /// Load routine to call at startup and during program execution
         /// Put stuff in here that you may want to run on a reload of the object as well at intialisition
         /// </summary>
-        protected async virtual void LoadAsync()
+        protected async virtual Task LoadAsync()
         {
             if (this.AuthenticationState != null) await this.GetUserAsync();
+            this.ReturnPageUrl = this.RouterSessionService.LastPageUrl;
         }
 
         /// <summary>
@@ -121,6 +144,7 @@ namespace CEC.Blazor.Components.Base
             await base.OnAfterRenderAsync(firstRender);
         }
 
+
         /// <summary>
         /// Method to get the current user from the Authentication State
         /// </summary>
@@ -129,7 +153,8 @@ namespace CEC.Blazor.Components.Base
             // Get the current user
             var auth = await this.AuthenticationState.GetAuthenticationStateAsync();
             this.CurrentUser = auth.User.Identity.Name;
-            foreach (var c in auth.User.Claims.ToList()) {
+            foreach (var c in auth.User.Claims.ToList())
+            {
                 if (c.Type.Contains("nameidentifier"))
                 {
                     this.CurrentUserID = c.Value;
@@ -141,7 +166,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Event Method avaiable to force a UI state update
         /// </summary>
-        public virtual void UpdateState() => this.StateHasChanged();
+        public virtual void UpdateState() => InvokeAsync(this.StateHasChanged);
 
         /// <summary>
         /// Event method to force a UI Update
@@ -190,10 +215,53 @@ namespace CEC.Blazor.Components.Base
         }
 
         /// <summary>
+        /// Modal Exit
+        /// </summary>
+        public void ModalExit()
+        {
+            if (IsModal) this.Parent.Close(BootstrapModalResult.Exit());
+        }
+
+        /// <summary>
+        /// Modal Cancel
+        /// </summary>
+        public void ModalCancel()
+        {
+            if (IsModal) this.Parent.Close(BootstrapModalResult.Cancel());
+        }
+
+        /// <summary>
+        /// Modal OK
+        /// </summary>
+        public void ModalOK()
+        {
+            if (IsModal) this.Parent.Close(BootstrapModalResult.OK());
+        }
+
+
+        /// <summary>
+        /// Async Dispose event to clean up event handlers
+        /// </summary>
+        public virtual Task DisposeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Dispose event to clean up event handlers
         /// </summary>
         public virtual void Dispose()
         {
+        }
+
+        /// <summary>
+        /// IDisposable Method to dispose of resources
+        /// </summary>
+        void IDisposable.Dispose()
+        {
+            this.Dispose();
+            var task = this.DisposeAsync();
+            task.Wait();
         }
     }
 }

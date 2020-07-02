@@ -1,93 +1,108 @@
-﻿@page "/"
-@page "/Weather/New"
+﻿@page "/WeatherForecast/New"
+@page "/WeatherForecast/Edit"
 
-@inherits EditorComponentBase
+@inherits EditRecordComponentBase<WeatherForecast>
+
 @namespace CEC.Blazor.Server.Pages
 
 <div class="card @this.CardBorderColour">
-    <div class="card-header @this.CardHeaderColour"><h4>Forecast Editor</h4></div>
+    <div class="card-header @this.CardHeaderColour"><h4>@this.PageTitle</h4></div>
     <div class="card-body pb-0">
-        <div class="container-fluid">
-            <EditForm EditContext="this.EditContext">
-                <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
 
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">
-                            Record Date
-                        </label>
-                        <div class="col-4">
-                            <FormControlDate class="form-control" @bind-Value="this.Record.Date" RecordValue="this.ShadowRecord.Date"></FormControlDate>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">
-                            Temperature &deg; C
-                        </label>
-                        <div class="col-2">
-                            <FormControlNumber class="form-control" @bind-Value="this.Record.TemperatureC" RecordValue="this.ShadowRecord.TemperatureC"></FormControlNumber>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">
-                            Description
-                        </label>
-                        <div class="col-8">
-                            <FormControlText class="form-control" @bind-Value="this.Record.Description" RecordValue="@this.ShadowRecord.Description"></FormControlText>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">
-                            Frost?
-                        </label>
-                        <div class="col-2">
-                            <div class="form-check">
-                                <FormControlCheckBox class="form-check-input position-static" @bind-Value="this.Record.Frost" RecordValue="@this.ShadowRecord.Frost"></FormControlCheckBox>
+        <UIRecordErrorHandler IsError="@this.IsError" ErrorMessage="@this.RecordErrorMessage">
+
+            <div class="container-fluid">
+                <EditForm EditContext="this.EditContext">
+                    <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
+
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Record Date
+                            </label>
+                            <div class="col-4">
+                                <FormControlDate class="form-control" @bind-Value="this.Service.Record.Date" RecordValue="this.Service.ShadowRecord.Date"></FormControlDate>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">
-                            Outlook
-                        </label>
-                        <div class="col-8">
-                            <FormControlSelect class="form-control" @bind-Value="this.Record.Outlook" RecordValue="@this.ShadowRecord.Outlook">
-                                @foreach (var outlook in Enum.GetValues(typeof(CEC.Blazor.Server.Data.WeatherOutlook)))
-                            {
-                                <option value="@outlook">@outlook</option>
-                            }
-                            </FormControlSelect>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Temperature &deg; C
+                            </label>
+                            <div class="col-2">
+                                <FormControlNumber class="form-control" @bind-Value="this.Service.Record.TemperatureC" RecordValue="this.Service.ShadowRecord.TemperatureC"></FormControlNumber>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">
-                            Summary
-                        </label>
-                        <div class="col-8">
-                            <FormControlTextArea class="form-control" rows="6" @bind-Value="this.Record.Detail" RecordValue="@this.ShadowRecord.Detail"></FormControlTextArea>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Description
+                            </label>
+                            <div class="col-8">
+                                <FormControlText class="form-control" @bind-Value="this.Service.Record.Description" RecordValue="@this.Service.ShadowRecord.Description"></FormControlText>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-8">
-                            <UIAlert Alert="this.Alert"></UIAlert>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Frost?
+                            </label>
+                            <div class="col-2">
+                                <div class="form-check">
+                                    <FormControlCheckBox class="form-check-input position-static" @bind-Value="this.Service.Record.Frost" RecordValue="@this.Service.ShadowRecord.Frost"></FormControlCheckBox>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-4 text-right pb-3">
-                            @if (this.ExitAttempt)
-                        {
-                            <button type="button" class="btn btn-warning" @onclick="this.Cancel">Cancel</button>
-                            <button type="button" class="btn btn-danger" @onclick="this.ConfirmExit">Exit Without Save</button>
-                        }
-                            @if (!this.IsClean)
-                        {
-                            <button type="button" class="btn btn-success" @onclick="this.Save">Save</button>
-                        }
-                            @if (this.IsClean)
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="this.ConfirmExit">Exit</button>
-                        }
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Summary
+                            </label>
+                            <div class="col-8">
+                                <FormControlSelect class="form-control" @bind-Value="this.Service.Record.Summary" RecordValue="@this.Service.ShadowRecord.Summary">
+                                    @foreach (var value in Enum.GetValues(typeof(CEC.Blazor.Server.Data.WeatherSummary)))
+                                    {
+                                        <option value="@value">@value</option>
+                                    }
+                                </FormControlSelect>
+                            </div>
                         </div>
-                    </div>
-                </CascadingValue>
-            </EditForm>
-        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Outlook
+                            </label>
+                            <div class="col-8">
+                                <InputControlButtonGroup OptionList="this.OutlookOptionList" class="form-control" @bind-Value="this.Service.Record.OutlookValue" RecordValue="@this.Service.ShadowRecord.OutlookValue"></InputControlButtonGroup>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">
+                                Detail
+                            </label>
+                            <div class="col-8">
+                                <FormControlTextArea class="form-control" rows="6" @bind-Value="this.Service.Record.Detail" RecordValue="@this.Service.ShadowRecord.Detail"></FormControlTextArea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <UIAlert Alert="this.AlertMessage"></UIAlert>
+                            </div>
+                            <div class="col-4 text-right pb-3">
+                                @if (this.NavigationCancelled)
+                                {
+                                    <button type="button" class="btn btn-warning" @onclick="this.Cancel">Cancel</button>
+                                    <button type="button" class="btn btn-danger" @onclick="this.ConfirmExit">Exit Without Save</button>
+                                }
+                                @if (!this.IsClean)
+                                {
+                                    <button type="button" class="btn btn-success" @onclick="this.Save">Save</button>
+                                }
+                                @if (this.IsClean)
+                                {
+                                    <button type="button" class="btn btn-primary" @onclick="this.ConfirmExit">Exit</button>
+                                }
+                            </div>
+                        </div>
+                    </CascadingValue>
+                </EditForm>
+            </div>
+
+        </UIRecordErrorHandler>
+
     </div>
 </div>

@@ -7,26 +7,60 @@ namespace CEC.Blazor.Services
     {
         private readonly IJSRuntime _js;
 
+        private bool ExitCheckState { get; set; }
+
+        //private bool RegisterPageShowEventState { get; set; }
+
         public BrowserService(IJSRuntime js)
         {
             _js = js;
         }
 
-        public async Task<BrowserDimension> GetDimensions()
+        /// <summary>
+        /// Method to Get the dimmensions of the browser window
+        /// </summary>
+        /// <returns></returns>
+        public async Task<BrowserDimension> GetDimensions() => await _js.InvokeAsync<BrowserDimension>("getDimensions");
+
+        /// <summary>
+        /// Method to clear the browser history
+        /// </summary>
+        /// <returns></returns>
+        public void ClearBrowserHistory() => _js.InvokeAsync<bool>("clearHistory");
+
+        /// <summary>
+        /// Method to set the focus on a specific HTML control/element
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="firstRender"></param>
+        /// <returns></returns>
+        public void SetFocus(string control, bool firstRender)
         {
-            return await _js.InvokeAsync<BrowserDimension>("getDimensions");
+            if (firstRender) _js.InvokeAsync<bool>("setFocus", control);
         }
 
-        public async Task<bool> ClearBrowserHistory()
+        /// <summary>
+        /// Method to set or unset the browser onbeforeexit challenge
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public void SetExitCheck(bool action)
         {
-            return await _js.InvokeAsync<bool>("clearHistory");
+            if (action != ExitCheckState) _js.InvokeAsync<bool>("setExitCheck", action);
+            ExitCheckState = action;
         }
 
-        public async Task<bool> SetFocus(string control, bool firstRender)
-        {
-            if (firstRender) return await _js.InvokeAsync<bool>("setFocus", control);
-            return false;
-        }
+        ///// <summary>
+        ///// Method to set or unset the browser onbeforeexit challenge
+        ///// </summary>
+        ///// <param name="action"></param>
+        ///// <returns></returns>
+        //public void RegisterPageShowEvent(bool action)
+        //{
+        //    if (action != RegisterPageShowEventState) _js.InvokeAsync<bool>("RegisterPageShowEvent", action);
+        //    RegisterPageShowEventState = action;
+        //}
+
     }
 
     public class BrowserDimension

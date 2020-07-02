@@ -39,6 +39,7 @@ namespace CEC.Blazor.Components.Base
                 this.Service.Reset();
                 await this.LoadPagingAsync();
             }
+            this.Service.ListHasChanged += this.OnRecordsUpdate;
             await base.OnInitializedAsync();
         }
 
@@ -67,16 +68,22 @@ namespace CEC.Blazor.Components.Base
         {
             if (this.IsService)
             {
+                // set the record to null to force a reload of the records
                 Service.Records = null;
+                // Cresates a new paging data object
                 this.Paging = new PagingData<T>(Service.DefaultPageSize, Service.RecordCount);
+                // if requested adds a default service function to the delegate
                 if (withDelegate)
                 {
                     this.Paging.PageLoaderAsync = new PagingData<T>.PageLoaderDelegateAsync(Service.GetDataPageAsync);
+                    // loads the paging object
                     await this.Paging.LoadAsync();
+                    // forces a UI update
+                    this.UpdateState();
                 }
+                // links the page p=changed event to update the UI
                 this.Paging.PageHasChanged += UpdateUI;
             }
-            this.StateHasChanged();
         }
 
         /// <summary>

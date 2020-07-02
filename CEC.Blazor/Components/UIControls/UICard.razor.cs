@@ -54,12 +54,12 @@ namespace CEC.Blazor.Server.Components.UIControls
         /// <summary>
         /// UI Property for Card CSS
         /// </summary>
-        protected string CardCss { get => Dirty ? "card border-danger" : "card border-dark"; }
+        protected string CardCss { get => Dirty ? "card border-danger" : "card border-secondary"; }
 
         /// <summary>
         /// UI Property for Card Header CSS
         /// </summary>
-        protected string CardHeaderCss { get => Dirty ? "card-header text-white bg-danger" : "card-header text-brand bg-dark"; }
+        protected string CardHeaderCss { get => Dirty ? "card-header text-white bg-danger" : "card-header text-white bg-secondary"; }
 
         /// <summary>
         ///  Property for the main body in the control

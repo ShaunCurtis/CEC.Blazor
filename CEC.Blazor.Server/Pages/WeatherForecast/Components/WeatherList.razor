@@ -1,21 +1,22 @@
 ﻿@namespace CEC.Blazor.Server.Pages.Components
 
 @inherits ListComponentBase<WeatherForecast>
-    <CascadingValue Value="@this.UIOptions">
+<CascadingValue Value="@this.UIOptions">
 
-        <CascadingValue Value="@this.Paging">
-            <CascadingValue Value="@this.Service.RecordConfiguration">
+    <CascadingValue Value="@this.Paging">
+        <CascadingValue Value="@this.Service.RecordConfiguration">
+            <CascadingValue Name="OnView" Value="@OnView" TValue="Action<int>">
 
-                <UICardList TItem="WeatherForecast" Items="this.Service.Records" IsCollapsible="true" ListTitle="@this.ListTitle">
+                <UICardList TItem="WeatherForecast" Items="this.Paging.Records" IsCollapsible="true" ListTitle="@this.ListTitle">
                     <TableHeader>
 
-                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="ID"></UICardListHeaderRow>
-                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Description" MaxRow="true"></UICardListHeaderRow>
-                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Code"></UICardListHeaderRow>
-                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Price"></UICardListHeaderRow>
-                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="LastPriceUpdate" DisplayName="Last Price Update"></UICardListHeaderRow>
-                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Active"></UICardListHeaderRow>
-                        <UICardListEditButtonColumn Show="this.ShowEdit" IsHeader="true"></UICardListEditButtonColumn>
+                        <UICardListHeaderRow TRecord="WeatherForecast" DisplayName="ID" FieldName="WeatherForecastID"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Date" MaxRow="true"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Summary"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="TemperatureC" DisplayName="Temp C"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Summary"></UICardListHeaderRow>
+                        <UICardListHeaderRow TRecord="WeatherForecast" FieldName="Outlook"></UICardListHeaderRow>
+                        <UICardListEditButtonColumn IsHeader="true"></UICardListEditButtonColumn>
 
                     </TableHeader>
                     <RowTemplate>
@@ -34,9 +35,12 @@
                                 @context.TemperatureC
                             </UICardListDataRow>
                             <UICardListDataRow>
-                                @context.Description
+                                @context.Summary
                             </UICardListDataRow>
-                            <UICardListEditButtonColumn Show="this.ShowEdit"></UICardListEditButtonColumn>
+                            <UICardListDataRow>
+                                @context.Outlook
+                            </UICardListDataRow>
+                            <UICardListEditButtonColumn></UICardListEditButtonColumn>
 
                         </CascadingValue>
 
@@ -54,3 +58,6 @@
             </CascadingValue>
         </CascadingValue>
     </CascadingValue>
+</CascadingValue>
+<BootstrapModal @ref="this._BootstrapModal"></BootstrapModal>
+

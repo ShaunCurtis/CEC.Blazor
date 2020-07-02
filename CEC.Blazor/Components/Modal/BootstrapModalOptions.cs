@@ -19,5 +19,9 @@ namespace CEC.Blazor.Components.Modal
 
         public bool ShowCloseButton { get; set; }
 
+        public bool HideHeader { get; set; }
+
+        public Dictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
+
     }
 }

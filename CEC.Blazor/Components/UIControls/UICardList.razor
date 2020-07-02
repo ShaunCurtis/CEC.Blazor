@@ -1,11 +1,13 @@
-﻿@namespace CEC.Blazor.Server.Components.UIControls
+﻿@namespace CEC.Blazor.Components.UIControls
 @inherits ApplicationComponentBase
 
 @typeparam TItem
 
 <div class="card @this.CardCSS">
     <div class="card-header @this.CardHeaderCSS">
-        @this.ListTitle
+        <div class="float-left">
+                <span class="@HeaderFontSize">@this.ListTitle</span>
+        </div>
         @if (this.IsCollapsible)
         {
             <button class="btn @CardButtonCSS float-right" style="padding: 3px;" @onclick="(e => this.Toggle())">
