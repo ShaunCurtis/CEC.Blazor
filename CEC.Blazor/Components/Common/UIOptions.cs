@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CEC.Blazor.Data
+namespace CEC.Blazor.Components
 {
     public class UIOptions
     {

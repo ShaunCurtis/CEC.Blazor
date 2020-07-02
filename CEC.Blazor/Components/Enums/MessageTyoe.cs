@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Data
+namespace CEC.Blazor.Components
 {
 
     public enum MessageType

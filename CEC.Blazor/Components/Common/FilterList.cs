@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Server.Data
+namespace CEC.Blazor.Components
 {
     public class FilterList : IFilterList
     {

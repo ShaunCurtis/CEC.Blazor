@@ -1,6 +1,5 @@
 ﻿using CEC.Blazor.Components;
 using CEC.Blazor.Data;
-using CEC.Blazor.Server.Data;
 using CEC.Blazor.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;

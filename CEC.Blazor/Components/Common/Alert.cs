@@ -1,7 +1,8 @@
 ﻿
+using CEC.Blazor.Data;
 using CEC.Blazor.Utilities;
 
-namespace CEC.Blazor.Data
+namespace CEC.Blazor.Components
 {
     public class Alert
     {

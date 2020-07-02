@@ -1,6 +1,7 @@
-﻿using CEC.Blazor.Data;
+﻿using CEC.Blazor.Components;
+using CEC.Blazor.Data;
 
-namespace CEC.Blazor.Utilities
+namespace CEC.Blazor.Data
 {
     public class DbTaskResult
     {

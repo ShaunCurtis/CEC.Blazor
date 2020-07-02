@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace CEC.Blazor.Server.Components.UIControls
+namespace CEC.Blazor.Components.UIControls
 {
     public partial class UICard : ComponentBase
     {
