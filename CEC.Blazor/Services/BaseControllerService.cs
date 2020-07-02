@@ -332,6 +332,7 @@ namespace CEC.Blazor.Services
                 this.ShadowRecord = this.Record.ShadowCopy();
                 this.SetClean();
                 this.TriggerRecordChangedEvent(this);
+                this.TriggerListChangedEvent(this);
             }
             return TaskResult.IsOK;
         }
@@ -349,6 +350,7 @@ namespace CEC.Blazor.Services
                 this.ShadowRecord = this.Record.ShadowCopy();
                 this.SetClean();
                 this.TriggerRecordChangedEvent(this);
+                this.TriggerListChangedEvent(this);
             }
             return TaskResult.IsOK && this.IsRecord;
         }

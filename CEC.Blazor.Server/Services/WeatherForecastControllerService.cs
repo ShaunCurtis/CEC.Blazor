@@ -1,6 +1,7 @@
 ﻿using CEC.Blazor.Components;
 using CEC.Blazor.Server.Data;
 using CEC.Blazor.Services;
+using CEC.Blazor.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
@@ -13,9 +14,14 @@ namespace CEC.Blazor.Server.Services
     {
 
         /// <summary>
-        /// Property exposing Error Trapped Record ID
+        /// Property exposing Null Trapped Record ID
         /// </summary>
         public override int RecordID => this.Record is null ? 0 : this.Record.WeatherForecastID;
+
+        /// <summary>
+        /// List of Outlooks for Select Controls
+        /// </summary>
+        public SortedDictionary<int, string> OutlookOptionList => Utils.GetEnumList<WeatherOutlook>();
 
         public WeatherForecastDataService WeatherForecastDataService { get; set; }
 

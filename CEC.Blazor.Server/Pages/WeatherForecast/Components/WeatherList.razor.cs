@@ -7,6 +7,7 @@ using CEC.Blazor.Components;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
 using System;
+using CEC.Blazor.Data;
 
 namespace CEC.Blazor.Server.Pages.Components
 {
@@ -44,12 +45,11 @@ namespace CEC.Blazor.Server.Pages.Components
 
         /// <summary>
         /// Method called when the user clicks on a row in the viewer.
-        /// Brings up the modal dialog version of the viewer
         /// </summary>
         /// <param name="id"></param>
         protected async void OnView(int id)
         {
-            if (this._BootstrapModal != null)
+            if (this.UIOptions.UseModalViewer && this._BootstrapModal != null)
             {
                 var modalOptions = new BootstrapModalOptions()
                 {
@@ -60,6 +60,27 @@ namespace CEC.Blazor.Server.Pages.Components
                 modalOptions.Parameters.Add("ID", id);
                 await this._BootstrapModal.Show<WeatherViewer>(modalOptions);
             }
+            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToView, id, "WeatherForecast"));
+        }
+
+        /// <summary>
+        /// Method called when the user clicks on a row Edit button.
+        /// </summary>
+        /// <param name="id"></param>
+        protected async void OnEdit(int id)
+        {
+            if (this.UIOptions.UseModalEditor && this._BootstrapModal != null)
+            {
+                var modalOptions = new BootstrapModalOptions()
+                {
+                    ModalBodyCSS = "p-0",
+                    ModalCSS = "modal-xl",
+                    HideHeader = true
+                };
+                modalOptions.Parameters.Add("ID", id);
+                await this._BootstrapModal.Show<WeatherEditor>(modalOptions);
+            }
+            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, id, "WeatherForecast"));
         }
 
     }

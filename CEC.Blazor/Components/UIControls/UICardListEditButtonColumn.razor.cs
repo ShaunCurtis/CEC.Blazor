@@ -2,6 +2,7 @@
 using CEC.Blazor.Data;
 using CEC.Blazor.Components.Base;
 using CEC.Blazor.Components;
+using System;
 
 namespace CEC.Blazor.Components.UIControls
 {
@@ -17,6 +18,9 @@ namespace CEC.Blazor.Components.UIControls
         [CascadingParameter(Name = "ID")]
         public int CascadeID { get; set; } = 0;
 
+        [CascadingParameter(Name = "OnEdit")]
+        protected Action<int> OnEdit { get; set; }
+
         [Parameter]
         public int ID { get; set; } = 0;
 
@@ -27,17 +31,9 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public bool IsHeader { get; set; }
 
-
-        [Parameter]
-        public bool IsCustomAction { get; set; }
-
-        [Parameter]
-        public EventCallback<long> CustomAction { get; set; }
-
         private void Navigate() {
-
-            if (this.IsCustomAction) this.CustomAction.InvokeAsync(this._ID);
-            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, this._ID, this.RecordConfiguration.RecordName));
+            if (this.OnEdit is null) this.NavigateTo(new EditorEventArgs(PageExitType.ExitToView, this._ID, this.RecordConfiguration.RecordName));
+            else this.OnEdit.Invoke(this._ID);
         }
 
     }

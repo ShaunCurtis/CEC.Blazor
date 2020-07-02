@@ -22,5 +22,15 @@ namespace CEC.Blazor.Data
         public bool ShowButtons { get; set; }
 
         public bool ListNavigationToViewer { get; set; }
+
+        /// <summary>
+        /// Disaplay the viewer in a Modal
+        /// </summary>
+        public bool UseModalViewer { get; set; }
+
+        /// <summary>
+        /// Display the editor in a Modal
+        /// </summary>
+        public bool UseModalEditor { get; set; }
     }
 }

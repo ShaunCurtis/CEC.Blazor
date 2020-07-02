@@ -2,6 +2,7 @@
 using CEC.Blazor.Components.Base;
 using CEC.Blazor.Data;
 using CEC.Blazor.Components;
+using System;
 
 namespace CEC.Blazor.Components.UIControls
 {
@@ -9,7 +10,10 @@ namespace CEC.Blazor.Components.UIControls
     {
 
         [CascadingParameter]
-        public UIOptions UIOptions { get; set; } 
+        public UIOptions UIOptions { get; set; } = new UIOptions();
+
+        [CascadingParameter(Name = "OnEdit")]
+        protected Action<int> OnEdit { get; set; }
 
         public bool ShowButtons => this.UIOptions?.ShowButtons ?? true;
 
@@ -36,7 +40,18 @@ namespace CEC.Blazor.Components.UIControls
             base.OnInitialized();
         }
 
-        private void Navigate(PageExitType exitType) => this.NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
-
+        private void Navigate(PageExitType exitType) {
+            switch (exitType)
+            {
+                case PageExitType.ExitToEditor:
+                case PageExitType.ExitToNew:
+                    if (this.OnEdit != null) this.OnEdit.Invoke(0);
+                    else this.NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
+                    break;
+                default:
+                    this.NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
+                    break;
+            }
+        }
     }
 }

@@ -2,10 +2,6 @@
 
 @namespace CEC.Blazor.Server.Pages
 
-@inherits RecordComponentBase<WeatherForecast>
+@inherits ApplicationComponentBase
 
-<CascadingValue Name="WeatherForecastID" Value="this._ID">
-
-    <WeatherViewer></WeatherViewer>
-
-</CascadingValue>
+<WeatherViewer></WeatherViewer>

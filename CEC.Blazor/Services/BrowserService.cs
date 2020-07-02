@@ -9,8 +9,6 @@ namespace CEC.Blazor.Services
 
         private bool ExitCheckState { get; set; }
 
-        //private bool RegisterPageShowEventState { get; set; }
-
         public BrowserService(IJSRuntime js)
         {
             _js = js;
@@ -44,22 +42,11 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public void SetExitCheck(bool action)
+        public void SetPageExitCheck(bool action)
         {
             if (action != ExitCheckState) _js.InvokeAsync<bool>("setExitCheck", action);
             ExitCheckState = action;
         }
-
-        ///// <summary>
-        ///// Method to set or unset the browser onbeforeexit challenge
-        ///// </summary>
-        ///// <param name="action"></param>
-        ///// <returns></returns>
-        //public void RegisterPageShowEvent(bool action)
-        //{
-        //    if (action != RegisterPageShowEventState) _js.InvokeAsync<bool>("RegisterPageShowEvent", action);
-        //    RegisterPageShowEventState = action;
-        //}
 
     }
 

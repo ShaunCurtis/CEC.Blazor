@@ -7,7 +7,7 @@ namespace CEC.Blazor.Components
     {
         public PageExitType ExitType { get; set; } = PageExitType.None;
 
-        public long ID { get; set; }
+        public int ID { get; set; }
 
         public string RecordName { get; set; } = string.Empty;
 
@@ -23,13 +23,13 @@ namespace CEC.Blazor.Components
             this.ID = 0;
         }
 
-        public EditorEventArgs(PageExitType exitType, long id)
+        public EditorEventArgs(PageExitType exitType, int id)
         {
             this.ExitType = exitType;
             this.ID = id;
         }
 
-        public EditorEventArgs(PageExitType exitType, long id, string recordname)
+        public EditorEventArgs(PageExitType exitType, int id, string recordname)
         {
             this.ExitType = exitType;
             this.ID = id;

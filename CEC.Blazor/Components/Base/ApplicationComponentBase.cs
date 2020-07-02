@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using CEC.Blazor.Services;
 using CEC.Blazor.Data;
 using CEC.Routing.Services;
-using System.Security.Principal;
 using System.Linq;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
@@ -119,7 +118,6 @@ namespace CEC.Blazor.Components.Base
 
         protected override void OnAfterRender(bool firstRender)
         {
-            if (firstRender) this.BrowserService.SetExitCheck(false);
             this.FirstLoad = false;
             base.OnAfterRender(firstRender);
         }
@@ -133,17 +131,6 @@ namespace CEC.Blazor.Components.Base
             if (this.AuthenticationState != null) await this.GetUserAsync();
             this.ReturnPageUrl = this.RouterSessionService.LastPageUrl;
         }
-
-        /// <summary>
-        /// overridden to run the Browser clear method
-        /// </summary>
-        /// <param name="firstRender"></param>
-        /// <returns></returns>
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-        }
-
 
         /// <summary>
         /// Method to get the current user from the Authentication State
@@ -176,15 +163,6 @@ namespace CEC.Blazor.Components.Base
         protected void UpdateState(object sender, EventArgs e) => this.UpdateState();
 
         /// <summary>
-        /// Event Method avaiable to force a UI state update on the UI Thread
-        /// </summary>
-        protected void InvokePageHasChanged()
-        {
-            try { InvokeAsync(() => { this.StateHasChanged(); }); }
-            catch { }
-        }
-
-        /// <summary>
         /// Generic Navigator.  Uses the Record Configuation information for specific routing
         /// </summary>
         protected virtual void NavigateTo(EditorEventArgs e)
@@ -205,6 +183,10 @@ namespace CEC.Blazor.Components.Base
                     break;
                 case PageExitType.ExitToNew:
                     this.NavManager.NavigateTo(string.Format("/{0}/New?qid={1}", e.RecordName, e.ID));
+                    break;
+                case PageExitType.ExitToLast:
+                    if (!string.IsNullOrEmpty(this.RouterSessionService.LastPageUrl)) this.NavManager.NavigateTo(this.RouterSessionService.LastPageUrl);
+                    this.NavManager.NavigateTo("/");
                     break;
                 case PageExitType.ExitToRoot:
                     this.NavManager.NavigateTo("/");
@@ -238,14 +220,10 @@ namespace CEC.Blazor.Components.Base
             if (IsModal) this.Parent.Close(BootstrapModalResult.OK());
         }
 
-
         /// <summary>
         /// Async Dispose event to clean up event handlers
         /// </summary>
-        public virtual Task DisposeAsync()
-        {
-            return Task.CompletedTask;
-        }
+        public virtual Task DisposeAsync() => Task.CompletedTask;
 
         /// <summary>
         /// Dispose event to clean up event handlers

@@ -14,6 +14,7 @@ namespace CEC.Blazor.Data
         ExitToView,
         ExitToEditor,
         SwitchToEditor,
-        ExitToNew
+        ExitToNew,
+        ExitToLast
     }
 }

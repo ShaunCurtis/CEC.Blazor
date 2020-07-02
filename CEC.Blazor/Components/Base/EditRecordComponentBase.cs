@@ -26,6 +26,11 @@ namespace CEC.Blazor.Components.Base
         public bool NavigationCancelled { get; set; }
 
         /// <summary>
+        /// Boolean Property used to control display of confirm exit button
+        /// </summary>
+        public bool ShowExitConfirmation { get; set; }
+
+        /// <summary>
         /// EditContext for the component
         /// </summary>
         protected EditContext EditContext { get; set; }
@@ -92,6 +97,7 @@ namespace CEC.Blazor.Components.Base
         protected virtual void OnNavigationCancelled(object sender, EventArgs e)
         {
             this.NavigationCancelled = true;
+            this.ShowExitConfirmation = true;
             this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Alert.AlertDanger);
             this.StateHasChanged();
         }
@@ -105,15 +111,17 @@ namespace CEC.Blazor.Components.Base
             if (this.EditContext != null)
             {
                 this.Service.SetClean(!this.EditContext.IsModified());
+                this.ShowExitConfirmation = false;
+                this.NavigationCancelled = false;
                 if (this.IsClean)
                 {
                     this.AlertMessage.ClearAlert();
-                    this.BrowserService.SetExitCheck(false);
+                    this.BrowserService.SetPageExitCheck(false);
                 }
                 else
                 {
                     this.AlertMessage.SetAlert("The Record isn't Saved", Alert.AlertWarning);
-                    this.BrowserService.SetExitCheck(true);
+                    this.BrowserService.SetPageExitCheck(true);
                 }
                 this.UpdateUI();
                 this.StateHasChanged();
@@ -130,7 +138,9 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected void Cancel()
         {
+            this.ShowExitConfirmation = false;
             this.NavigationCancelled = false;
+            this.RouterSessionService.NavigationCancelledUrl = string.Empty;
             if (this.IsClean) this.AlertMessage.ClearAlert();
             else this.AlertMessage.SetAlert($"{this.Service.RecordConfiguration.RecordDescription} Changed", Alert.AlertWarning);
             this.UpdateState();
@@ -139,14 +149,37 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Save Method called from the Button
         /// </summary>
-        protected virtual async void Save()
+        protected virtual async Task<bool> Save()
         {
-            // Set the Shadow Copy to a copy of the current record
-            // Normally run a Save/Create CRUD operation here
-            await this.Service.SaveRecordAsync();
-            // Set the EditContext State
-            this.EditContext.MarkAsUnmodified();
+            var ok = await this.Service.SaveRecordAsync();
+            if (ok)
+            {
+                // Set the EditContext State
+                this.EditContext.MarkAsUnmodified();
+                this.ShowExitConfirmation = false;
+                this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+            }
+            // Set the alert message to the return result
+            this.AlertMessage.SetAlert(this.Service.TaskResult);
             this.UpdateState();
+            return ok;
+        }
+
+        /// <summary>
+        /// Save and Exit Method called from the Button
+        /// </summary>
+        protected virtual async void SaveAndExit()
+        {
+            if (await this.Save()) this.ConfirmExit();
+        }
+
+        /// <summary>
+        /// Confirm Exit Method called from the Button
+        /// </summary>
+        protected virtual void Exit()
+        {
+            if (this.IsClean) ConfirmExit();
+            else this.ShowExitConfirmation = true;
         }
 
         /// <summary>
@@ -156,11 +189,17 @@ namespace CEC.Blazor.Components.Base
         {
             // To escape a dirty component set IsClean manually and navigate.
             this.Service.SetClean();
-            this.BrowserService.SetExitCheck(false);
-            // Check if we have a Url the user tried to navigate to - default exit to the root
-            if (!string.IsNullOrEmpty(this.RouterSessionService.NavigationCancelledUrl)) this.NavManager.NavigateTo(this.RouterSessionService.NavigationCancelledUrl);
-            else if (!string.IsNullOrEmpty(this.ReturnPageUrl)) this.NavManager.NavigateTo(this.ReturnPageUrl);
-            else this.NavManager.NavigateTo("/");
+            this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+            //turn off page exit checking
+            this.BrowserService.SetPageExitCheck(false);
+            if (this.IsModal) ModalExit();
+            else
+            {
+                // Check if we have a Url the user tried to navigate to - default exit to the root
+                if (!string.IsNullOrEmpty(this.RouterSessionService.NavigationCancelledUrl)) this.NavManager.NavigateTo(this.RouterSessionService.NavigationCancelledUrl);
+                else if (!string.IsNullOrEmpty(this.ReturnPageUrl)) this.NavManager.NavigateTo(this.ReturnPageUrl);
+                else this.NavManager.NavigateTo("/");
+            }
         }
 
         public override void Dispose()

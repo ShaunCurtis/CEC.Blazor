@@ -28,20 +28,7 @@ window.setExitCheck = function (action) {
     }
 }
 
-//window.RegisterPageShowEvent = function (action) {
-//    if (action) {
-//        window.addEventListener("pageshow", pageShowEvent);
-//    }
-//    else {
-//        window.removeEventListener("pageshow", pageShowEvent);
-//    }
-//}
-
 window.askExit = function (event) {
     event.preventDefault();
     event.returnValue = "There are unsaved changes on this page.  Do you want to leave?";
 }
-
-//window.pageShowEvent = (dotnetHelper) => {
-//    dotnetHelper.invokeMethodAsync("OnPageShow");
-//}

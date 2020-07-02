@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Pages
 {
-    public partial class WeatherForecastViewer : RecordComponentBase<WeatherForecast>
+    public partial class WeatherForecastViewer : ApplicationComponentBase
     {
     }
 }
