@@ -9,7 +9,7 @@ namespace CEC.Blazor.Components.UIControls
     /// The properties are pretty self explanatory and therefore not decorated with summaries
     /// </summary>
 
-    public class UICellControl : ComponentBase
+    public class UIColumn : ComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }

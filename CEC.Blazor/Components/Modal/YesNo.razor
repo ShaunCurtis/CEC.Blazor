@@ -6,9 +6,9 @@
 
     <UIRowControl>
 
-        <UICellControl Columns="12">
+        <UIColumn Columns="12">
             @((MarkupString)this.Message)
-        </UICellControl>
+        </UIColumn>
 
         <UICellButtonControl Columns="12">
             <button type="button" class="btn btn-danger" @onclick="(e => this.Close(true))">Exit</button>

@@ -99,18 +99,18 @@ namespace CEC.Blazor.Components.Base
             this.NavigationCancelled = true;
             this.ShowExitConfirmation = true;
             this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Alert.AlertDanger);
-            this.StateHasChanged();
+            InvokeAsync(this.StateHasChanged);
         }
 
         /// <summary>
         /// Event handler for the RecordFromControls FieldChanged Event
         /// </summary>
-        /// <param name="changestate"></param>
-        protected virtual void RecordFieldChanged(bool changestate)
+        /// <param name="isdirty"></param>
+        protected virtual void RecordFieldChanged(bool isdirty)
         {
             if (this.EditContext != null)
             {
-                this.Service.SetClean(!this.EditContext.IsModified());
+                this.Service.SetClean(!isdirty);
                 this.ShowExitConfirmation = false;
                 this.NavigationCancelled = false;
                 if (this.IsClean)
@@ -124,7 +124,7 @@ namespace CEC.Blazor.Components.Base
                     this.BrowserService.SetPageExitCheck(true);
                 }
                 this.UpdateUI();
-                this.StateHasChanged();
+                InvokeAsync(this.StateHasChanged);
             }
         }
 
@@ -151,17 +151,22 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected virtual async Task<bool> Save()
         {
-            var ok = await this.Service.SaveRecordAsync();
-            if (ok)
+            var ok = false;
+            if (this.EditContext.Validate())
             {
-                // Set the EditContext State
-                this.EditContext.MarkAsUnmodified();
-                this.ShowExitConfirmation = false;
-                this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+                ok = await this.Service.SaveRecordAsync();
+                if (ok)
+                {
+                    // Set the EditContext State
+                    this.EditContext.MarkAsUnmodified();
+                    this.ShowExitConfirmation = false;
+                    this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+                }
+                // Set the alert message to the return result
+                this.AlertMessage.SetAlert(this.Service.TaskResult);
+                this.UpdateState();
             }
-            // Set the alert message to the return result
-            this.AlertMessage.SetAlert(this.Service.TaskResult);
-            this.UpdateState();
+            else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Alert.AlertDanger);
             return ok;
         }
 

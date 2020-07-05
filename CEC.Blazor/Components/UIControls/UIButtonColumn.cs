@@ -4,15 +4,18 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
-    /// UI Rendering Wrapper to build a row
+    /// UI Rendering Wrapper to build a Column
     ///  Provides a structured  mechanism for managing Bootstrap class elements used in Editors and Viewers in one place. 
     /// The properties are pretty self explanatory and therefore not decorated with summaries
     /// </summary>
 
-    public class UIRowControl : ComponentBase
+    public class UIButtonColumn : ComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public int Columns { get; set; } = 1;
 
         [Parameter]
         public bool IsFormGroup { get; set; }
@@ -20,9 +23,9 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public string AddOnCss { get; set; } = string.Empty;
 
-        private string FormGroup => this.IsFormGroup ? "form-group " : string.Empty;
+        private string FormGroup => this.IsFormGroup ? "form-group" : string.Empty;
 
-        private string Css => $"row {this.FormGroup}{AddOnCss.Trim()}".Trim();
+        private string Css => $"col-{Columns} text-right pb-3 {this.FormGroup} {AddOnCss.Trim()}".Trim();
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {

@@ -37,6 +37,7 @@ namespace CEC.Blazor.Server.Services
                     Summary = (WeatherSummary)rng.Next(11),
                     Outlook = (WeatherOutlook)rng.Next(3),
                     Frost = temperatureC < 0,
+                    PostCode = "GL2 5TP"
                 };
                 Records.Add(rec);
             }

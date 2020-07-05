@@ -12,94 +12,94 @@
             </Header>
 
             <Body>
-                <UIContainerControl>
+                <UIContainer>
 
-                    <UIRowControl>
+                    <UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Date
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="4">
+                        <UIRow Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Date.AsShortDate()"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Frost
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="4">
+                        <UIRow Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Frost.AsYesNo()"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                    </UIRowControl>
+                    </UIRow>
 
-                    <UIRowControl>
+                    <UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Temperature &deg;C
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="4">
+                        <UIRow Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.TemperatureC.ToString()"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Temperature &deg;F
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="4">
+                        <UIRow Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.TemperatureF.ToString()"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                    </UIRowControl>
+                    </UIRow>
 
-                    <UIRowControl>
+                    <UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Summary
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="4">
+                        <UIRow Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Summary.ToString()"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Outlook
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="4">
+                        <UIRow Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Outlook.ToString()"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                    </UIRowControl>
+                    </UIRow>
 
-                    <UIRowControl>
+                    <UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Description
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="10">
+                        <UIRow Columns="10">
                             <FormControlPlainText Value="@this.Service.Record.Description"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                    </UIRowControl>
+                    </UIRow>
 
-                    <UIRowControl>
+                    <UIRow>
 
-                        <UICellControl Columns="2">
+                        <UIRow Columns="2">
                             Detail
-                        </UICellControl>
+                        </UIRow>
 
-                        <UICellControl Columns="10">
+                        <UIRow Columns="10">
                             <FormControlPlainText Value="@this.Service.Record.Detail"></FormControlPlainText>
-                        </UICellControl>
+                        </UIRow>
 
-                    </UIRowControl>
+                    </UIRow>
 
-                    <UIRowControl>
-                        <UICellButtonControl Columns="12">
+                    <UIRow>
+                        <UIButtonColumn Columns="12">
                             @if (!this.IsModal)
                             {
                                 <button class="btn btn-secondary btn-sm" @onclick="(e => this.NavigateTo(PageExitType.ExitToList))">
@@ -116,11 +116,11 @@
                                 </button>
 
                             }
-                        </UICellButtonControl>
-                    </UIRowControl>
+                        </UIButtonColumn>
+                    </UIRow>
 
 
-                </UIContainerControl>
+                </UIContainer>
 
             </Body>
 
