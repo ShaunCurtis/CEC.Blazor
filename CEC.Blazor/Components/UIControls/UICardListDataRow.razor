@@ -1,12 +1,12 @@
 ﻿@namespace CEC.Blazor.Components.UIControls
 
-@inherits ApplicationComponentBase
+@inherits UICardListBase
 
 @if (this.Show)
 {
     @if (this.DoNavigation)
     {
-        <td class="@this. cursor-hand" scope="row" @onclick="(e => this.Navigate())">
+        <td class="@this.RowCss cursor-hand" scope="row" @onclick="(e => this.NavigateToView())">
             @this.ChildContent
         </td>
     }

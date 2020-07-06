@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using CEC.Blazor.Server.Data;
 using CEC.Routing;
 using CEC.Blazor.Server.Services;
+using CEC.Blazor.Server.Data.Validators;
+using FluentValidation;
 
 namespace CEC.Blazor.Server
 {
@@ -35,6 +37,7 @@ namespace CEC.Blazor.Server
             // CEC - Services added here
             services.AddCECBlazor();
             services.AddCECRouting();
+            services.AddTransient<IValidator<WeatherForecast>, WeatherForecastValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

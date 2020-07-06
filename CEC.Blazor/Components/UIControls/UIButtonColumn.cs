@@ -9,30 +9,14 @@ namespace CEC.Blazor.Components.UIControls
     /// The properties are pretty self explanatory and therefore not decorated with summaries
     /// </summary>
 
-    public class UIButtonColumn : ComponentBase
+    public class UIButtonColumn : UIColumnBase
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public int Columns { get; set; } = 1;
-
         [Parameter]
         public bool IsFormGroup { get; set; }
 
-        [Parameter]
-        public string AddOnCss { get; set; } = string.Empty;
-
         private string FormGroup => this.IsFormGroup ? "form-group" : string.Empty;
 
-        private string Css => $"col-{Columns} text-right pb-3 {this.FormGroup} {AddOnCss.Trim()}".Trim();
+        protected override string Css => $"col-{Columns} text-right pb-3 {this.FormGroup} {AddOnCss.Trim()}".Trim();
 
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", this.Css);
-            builder.AddContent(2, ChildContent);
-            builder.CloseElement();
-        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@namespace CEC.Blazor.Server.Pages.Components
 @inherits RecordComponentBase<WeatherForecast>
 
-<UIRecordErrorHandler IsError="@this.IsError">
+<UIErrorHandler IsError="@this.IsError">
 
     <CascadingValue Name="WeatherForecastID" Value="this.Service.RecordID">
 
@@ -128,4 +128,4 @@
 
     </CascadingValue>
 
-</UIRecordErrorHandler>
+</UIErrorHandler>

@@ -116,12 +116,12 @@ namespace CEC.Blazor.Components.Base
                 if (this.IsClean)
                 {
                     this.AlertMessage.ClearAlert();
-                    this.BrowserService.SetPageExitCheck(false);
+                    this.RouterSessionService.SetPageExitCheck(false);
                 }
                 else
                 {
                     this.AlertMessage.SetAlert("The Record isn't Saved", Alert.AlertWarning);
-                    this.BrowserService.SetPageExitCheck(true);
+                    this.RouterSessionService.SetPageExitCheck(true);
                 }
                 this.UpdateUI();
                 InvokeAsync(this.StateHasChanged);
@@ -196,7 +196,7 @@ namespace CEC.Blazor.Components.Base
             this.Service.SetClean();
             this.RouterSessionService.NavigationCancelledUrl = string.Empty;
             //turn off page exit checking
-            this.BrowserService.SetPageExitCheck(false);
+            this.RouterSessionService.SetPageExitCheck(false);
             if (this.IsModal) ModalExit();
             else
             {

@@ -6,65 +6,93 @@
     <div class="card-header @this.CardHeaderColour"><h4>@this.PageTitle</h4></div>
     <div class="card-body pb-0">
 
-        <UIRecordErrorHandler IsError="@this.IsError" ErrorMessage="@this.RecordErrorMessage">
+        <UIErrorHandler IsError="@this.IsError" ErrorMessage="@this.RecordErrorMessage">
 
             <UIContainer>
+
                 <EditForm EditContext="this.EditContext">
-                    <DataAnnotationsValidator />
+
+                    <FluentValidationValidator DisableAssemblyScanning="@true" />
+
                     <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
 
-                        <UIRow IsFormGroup="true">
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Record Date:
                             </UILabelColumn>
+
                             <UIColumn Columns="4">
                                 <FormControlDate class="form-control" @bind-Value="this.Service.Record.Date" RecordValue="this.Service.ShadowRecord.Date"></FormControlDate>
                             </UIColumn>
-                        </UIRow>
-                        <UIRow IsFormGroup="true">
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Temperature &deg; C:
                             </UILabelColumn>
+
                             <UIColumn Columns="2">
                                 <FormControlNumber class="form-control" @bind-Value="this.Service.Record.TemperatureC" RecordValue="this.Service.ShadowRecord.TemperatureC"></FormControlNumber>
                             </UIColumn>
+
                             <UIColumn Columns="6">
                                 <ValidationMessage For=@(() => this.Service.Record.TemperatureC) />
                             </UIColumn>
-                        </UIRow>
-                        <UIRow IsFormGroup="true">
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
-                                PostCode:
+                                Post Code:
                             </UILabelColumn>
+
                             <UIColumn Columns="4">
                                 <FormControlText class="form-control" @bind-Value="this.Service.Record.PostCode" RecordValue="@this.Service.ShadowRecord.PostCode"></FormControlText>
                             </UIColumn>
+
                             <UIColumn Columns="4">
                                 <ValidationMessage For=@(() => this.Service.Record.PostCode) />
                             </UIColumn>
-                        </UIRow>
-                        <UIRow IsFormGroup="true">
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Description:
                             </UILabelColumn>
+
                             <UIColumn Columns="8">
                                 <FormControlText class="form-control" @bind-Value="this.Service.Record.Description" RecordValue="@this.Service.ShadowRecord.Description"></FormControlText>
+                                <ValidationMessage For=@(() => this.Service.Record.Description) />
                             </UIColumn>
-                        </UIRow>
-                        <UIRow IsFormGroup="true">
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Frost?:
                             </UILabelColumn>
+
                             <UIColumn Columns="2">
                                 <div class="form-check">
                                     <FormControlCheckBox class="form-check-input position-static" @bind-Value="this.Service.Record.Frost" RecordValue="@this.Service.ShadowRecord.Frost"></FormControlCheckBox>
                                 </div>
                             </UIColumn>
-                        </UIRow>
-                        <UIRow IsFormGroup="true">
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Summary:
                             </UILabelColumn>
+
                             <UIColumn Columns="4">
                                 <FormControlSelect class="form-control" @bind-Value="this.Service.Record.Summary" RecordValue="@this.Service.ShadowRecord.Summary">
                                     @foreach (var value in Enum.GetValues(typeof(CEC.Blazor.Server.Data.WeatherSummary)))
@@ -73,53 +101,61 @@
                                     }
                                 </FormControlSelect>
                             </UIColumn>
-                        </UIRow>
-                        <UIRow>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Outlook:
                             </UILabelColumn>
+
                             <UIColumn Columns="8">
                                 <InputControlButtonGroup OptionList="this.ControllerService.OutlookOptionList" class="form-control" @bind-Value="this.Service.Record.OutlookValue" RecordValue="@this.Service.ShadowRecord.OutlookValue"></InputControlButtonGroup>
                             </UIColumn>
-                        </UIRow>
-                        <UIRow>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
                             <UILabelColumn Columns="4">
                                 Detail:
                             </UILabelColumn>
+
                             <UIColumn Columns="8">
                                 <FormControlTextArea class="form-control" rows="6" @bind-Value="this.Service.Record.Detail" RecordValue="@this.Service.ShadowRecord.Detail"></FormControlTextArea>
                             </UIColumn>
-                        </UIRow>
+
+                        </UIFormRow>
+
                         <UIRow>
-                            <UIColumn Columns="8">
+
+                            <UIColumn Columns="7">
                                 <UIAlert Alert="this.AlertMessage"></UIAlert>
                             </UIColumn>
-                            <UIColumn Columns="4" AddOnCss="text-right pb-3">
-                                @if (this.ShowExitConfirmation)
-                                {
-                                    <button type="button" class="btn btn-danger" @onclick="this.ConfirmExit">Exit Without Saving</button>
-                                }
-                                @if (this.NavigationCancelled)
-                                {
-                                    <button type="button" class="btn btn-success" @onclick="this.SaveAndExit">Save and Exit</button>
-                                    <button type="button" class="btn btn-warning" @onclick="this.Cancel">Cancel</button>
-                                }
-                                @if ((!this.IsClean) && (!this.NavigationCancelled))
-                                {
-                                    <button type="button" class="btn btn-success" @onclick="this.Save">Save</button>
-                                }
-                                @if (!this.NavigationCancelled)
-                                {
-                                    <button type="button" class="btn btn-primary" @onclick="this.Exit">Exit</button>
-                                }
-                            </UIColumn>
+                            <UIButtonColumn Columns="5" AddOnCss="pb-3">
+
+                                <UIButton Show="this.NavigationCancelled" ClickEvent="this.Cancel" ButtonColour="@UIButton.Colour.BtnWarning">Cancel</UIButton>
+
+                                <UIButton Show="this.NavigationCancelled" ClickEvent="this.SaveAndExit" ButtonColour="@UIButton.Colour.BtnSuccess">Save &amp; Exit</UIButton>
+
+                                <UIButton Show="(!this.IsClean)" ClickEvent="this.Save" ButtonColour="@UIButton.Colour.BtnSuccess">Save</UIButton>
+
+                                <UIButton Show="this.ShowExitConfirmation" ClickEvent="this.ConfirmExit" ButtonColour="@UIButton.Colour.BtnDanger">Exit Without Saving</UIButton>
+
+                                <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="this.Exit" ButtonColour="@UIButton.Colour.BtnSecondary">Exit</UIButton>
+
+                            </UIButtonColumn>
+
                         </UIRow>
+
                     </CascadingValue>
+
                 </EditForm>
 
             </UIContainer>
 
-        </UIRecordErrorHandler>
+        </UIErrorHandler>
 
     </div>
 </div>

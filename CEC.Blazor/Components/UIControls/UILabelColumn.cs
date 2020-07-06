@@ -4,33 +4,11 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
-    /// UI Rendering Wrapper to build a Column
-    ///  Provides a structured  mechanism for managing Bootstrap class elements used in Editors and Viewers in one place. 
-    /// The properties are pretty self explanatory and therefore not decorated with summaries
+    /// UI Rendering Wrapper to build a Bootstrap Label Column
     /// </summary>
 
-    public class UILabelColumn : ComponentBase
+    public class UILabelColumn : UIColumn
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public int Columns { get; set; } = 1;
-
-        [Parameter]
-        public bool IsFormGroup { get; set; }
-
-        [Parameter]
-        public string AddOnCss { get; set; } = string.Empty;
-
-        private string Css => $"col-{Columns} col-form-label {AddOnCss.Trim()}".Trim();
-
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", this.Css);
-            builder.AddContent(2, ChildContent);
-            builder.CloseElement();
-        }
+        protected override string Css => $"col-{Columns} col-form-label {AddOnCss.Trim()}".Trim();
     }
 }

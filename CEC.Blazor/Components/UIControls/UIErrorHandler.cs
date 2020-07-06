@@ -2,18 +2,14 @@
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace CEC.Blazor.Components.UIControls
-
 {
-    public class UIRecordErrorHandler : ComponentBase
+    public class UIErrorHandler : UIBase
     {
         [Parameter]
         public bool IsError { get; set; } = false;
 
         [Parameter]
         public string ErrorMessage { get; set; } = "loading....";
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {

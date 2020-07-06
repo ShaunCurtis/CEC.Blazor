@@ -6,35 +6,8 @@ using System;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardListDataRow : ApplicationComponentBase
+    public partial class UICardListDataRow : UICardListBase
     {
-
-        [CascadingParameter]
-        public RecordConfigurationData RecordConfiguration { get; set; }
-
-        [CascadingParameter(Name = "ID")]
-        public int ID { get; set; } = 0;
-
-        [CascadingParameter]
-        public UIOptions UIOptions { get; set; } = new UIOptions();
-
-        [CascadingParameter(Name = "OnView")]
-        protected Action<int> OnView { get; set; }
-
-        [Parameter]
-        public bool MaxRow { get; set; }
-
-        [Parameter]
-        public bool Show { get; set; } = true;
-
-        [Parameter]
-        public bool IsNavigation { get; set; } = true;
-
-        [Parameter]
-        public string MoreCss { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         private bool DoNavigation => this.ID > 0 && IsNavigation;
 
@@ -44,14 +17,6 @@ namespace CEC.Blazor.Components.UIControls
             base.OnInitialized();
         }
 
-        private string _RowCss => this.MaxRow ? "column-max" : "column-normal";
-
-        private string RowCss => string.IsNullOrEmpty(this.MoreCss) ? _RowCss : string.Concat(_RowCss, " ", this.MoreCss);
-
-        private void Navigate()
-        {
-            if (this.OnView is null) this.NavigateTo(new EditorEventArgs(PageExitType.ExitToView, this.ID, this.RecordConfiguration.RecordName));
-            else this.OnView.Invoke(this.ID);
-        }
+        protected override string _RowCss => this.MaxRow ? "column-max" : "column-normal";
     }
 }

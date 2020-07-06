@@ -18,17 +18,3 @@ window.setFocus = function (id) {
     }
     else return false;
 }
-
-window.setExitCheck = function (action) {
-    if (action) {
-        window.addEventListener("beforeunload", askExit);
-    }
-    else {
-        window.removeEventListener("beforeunload", askExit);
-    }
-}
-
-window.askExit = function (event) {
-    event.preventDefault();
-    event.returnValue = "There are unsaved changes on this page.  Do you want to leave?";
-}

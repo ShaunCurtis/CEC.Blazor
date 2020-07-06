@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-
+﻿
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
@@ -9,24 +7,8 @@ namespace CEC.Blazor.Components.UIControls
     /// The properties are pretty self explanatory and therefore not decorated with summaries
     /// </summary>
 
-    public class UIContainer : ComponentBase
+    public class UIContainer : UIBase
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public string Css { get; set; } = "container-fluid";
-
-        [Parameter]
-        public string Id { get; set; } = "";
-
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", this.Css);
-            if (!string.IsNullOrEmpty(this.Id)) builder.AddAttribute(1, "id", this.Id);
-            builder.AddContent(2, ChildContent);
-            builder.CloseElement();
-        }
+        protected override string Css => "container-fluid";
     }
 }

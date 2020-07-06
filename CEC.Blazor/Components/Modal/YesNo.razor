@@ -2,19 +2,19 @@
 
 @namespace CEC.Blazor.Components.UIControls
 
-<UIContainerControl>
+<UIContainer>
 
-    <UIRowControl>
+    <UIRow>
 
         <UIColumn Columns="12">
             @((MarkupString)this.Message)
         </UIColumn>
 
-        <UICellButtonControl Columns="12">
+        <UIButtonColumn Columns="12">
             <button type="button" class="btn btn-danger" @onclick="(e => this.Close(true))">Exit</button>
             <button type="button" class="btn btn-success" @onclick="(e => this.Close(false))">Cancel</button>
-        </UICellButtonControl>
+        </UIButtonColumn>
 
-    </UIRowControl>
+    </UIRow>
 
-</UIContainerControl>
+</UIContainer>
