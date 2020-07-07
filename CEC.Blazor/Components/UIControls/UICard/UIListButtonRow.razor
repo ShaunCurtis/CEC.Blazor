@@ -1,0 +1,33 @@
+﻿@namespace CEC.Blazor.Components.UIControls
+
+@inherits UICardListBase
+
+@if (this.ShowButtons || this.IsPagination)
+{
+    <UIContainer>
+
+        <UIRow IsFormGroup="true" AddOnCss="no-gutters mt-2">
+
+            <UIColumn Columns="8">
+                @Paging
+            </UIColumn>
+
+            <UIButtonColumn Columns="4">
+
+                @if (ShowButtons)
+                {
+                        @Buttons
+                        <UIButton Show="this.ShowAdd" ButtonColour="@UIButton.Colour.BtnPrimary" ButtonType="@UIButton.Size.BtnSmall" ClickEvent="(e => this.Navigate(PageExitType.ExitToNew))">
+                            @String.Concat("Add New ", this.RecordConfiguration.RecordDescription)
+                        </UIButton>
+                        <UIButton Show="this.ShowAdd" ButtonColour="@UIButton.Colour.BtnPrimary" ButtonType="@UIButton.Size.BtnSmall" ClickEvent="(e => this.Navigate(PageExitType.ExitToRoot))">
+                            Exit
+                        </UIButton>
+                }
+
+            </UIButtonColumn>
+
+        </UIRow>
+
+    </UIContainer>
+}

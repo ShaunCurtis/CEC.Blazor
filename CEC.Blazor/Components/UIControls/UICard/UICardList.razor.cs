@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardList<TItem> : ApplicationComponentBase
+    public partial class UICardList<TItem> : UICardListBase
     {
 
         [Parameter]
@@ -27,9 +27,6 @@ namespace CEC.Blazor.Components.UIControls
 
         [Parameter]
         public IReadOnlyList<TItem> Items { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public string ListTitle { get; set; } = "Collaspible Card";
@@ -58,19 +55,10 @@ namespace CEC.Blazor.Components.UIControls
         protected string CollapseCSS { get => this.Collapsed ? "collapse" : "collapse show"; }
         
         protected string CollapseText { get => this.Collapsed ? "Show" : "Hide"; }
-
-        protected override void OnInitialized()
-        {
-        }
  
         protected void Toggle()
         {
             this.Collapsed = !this.Collapsed;
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
     }
 }

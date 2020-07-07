@@ -10,11 +10,6 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UIColumn : UIColumnBase
     {
-            [Parameter]
-        public bool IsFormGroup { get; set; }
-
-        private string FormGroup => this.IsFormGroup ? "form-group " : string.Empty;
-
         protected override string Css => $"col-{Columns} {this.FormGroup}{AddOnCss.Trim()}".Trim();
     }
 }

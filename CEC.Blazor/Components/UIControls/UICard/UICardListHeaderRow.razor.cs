@@ -15,11 +15,11 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public string DisplayName { get; set; }
 
-        private string FieldDisplayName { get => string.IsNullOrEmpty(this.DisplayName) ? FieldName : DisplayName; }
+        protected string FieldDisplayName { get => string.IsNullOrEmpty(this.DisplayName) ? FieldName : DisplayName; }
 
         protected override string _RowCss { get => this.MaxRow ? "column-max column-sort" : "column-normal column-sort"; }
 
-        private bool Sorted { get => !string.IsNullOrEmpty(this.FieldName); }
+        protected bool Sorted { get => !string.IsNullOrEmpty(this.FieldName); }
 
     }
 }

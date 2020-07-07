@@ -16,109 +16,101 @@
 
                     <UIRow>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Date
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="4">
+                        <UIColumn Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Date.AsShortDate()"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Frost
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="4">
+                        <UIColumn Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Frost.AsYesNo()"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
                     </UIRow>
 
                     <UIRow>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Temperature &deg;C
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="4">
+                        <UIColumn Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.TemperatureC.ToString()"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Temperature &deg;F
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="4">
+                        <UIColumn Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.TemperatureF.ToString()"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
                     </UIRow>
 
                     <UIRow>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Summary
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="4">
+                        <UIColumn Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Summary.ToString()"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Outlook
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="4">
+                        <UIColumn Columns="4">
                             <FormControlPlainText Value="@this.Service.Record.Outlook.ToString()"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
                     </UIRow>
 
                     <UIRow>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Description
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="10">
+                        <UIColumn Columns="10">
                             <FormControlPlainText Value="@this.Service.Record.Description"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
                     </UIRow>
 
                     <UIRow>
 
-                        <UIRow Columns="2">
+                        <UIColumn Columns="2">
                             Detail
-                        </UIRow>
+                        </UIColumn>
 
-                        <UIRow Columns="10">
+                        <UIColumn Columns="10">
                             <FormControlPlainText Value="@this.Service.Record.Detail"></FormControlPlainText>
-                        </UIRow>
+                        </UIColumn>
 
                     </UIRow>
 
                     <UIRow>
                         <UIButtonColumn Columns="12">
-                            @if (!this.IsModal)
-                            {
-                                <button class="btn btn-secondary btn-sm" @onclick="(e => this.NavigateTo(PageExitType.ExitToList))">
-                                    Exit To List
-                                </button>
-                                <button class="btn btn-secondary btn-sm" @onclick="(e => this.NavigateTo(PageExitType.ExitToRoot))">
-                                    Exit
-                                </button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-secondary btn-sm" @onclick="(e => this.ModalExit())">
-                                    Exit
-                                </button>
-
-                            }
+                            <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))">
+                                Exit To List
+                            </UIButton>
+                            <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToLast))">
+                                Exit
+                            </UIButton>
+                            <UIButton Show="this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.ModalExit())">
+                                Exit
+                            </UIButton>
                         </UIButtonColumn>
                     </UIRow>
-
 
                 </UIContainer>
 

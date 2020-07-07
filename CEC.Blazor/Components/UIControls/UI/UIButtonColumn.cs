@@ -11,11 +11,6 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UIButtonColumn : UIColumnBase
     {
-        [Parameter]
-        public bool IsFormGroup { get; set; }
-
-        private string FormGroup => this.IsFormGroup ? "form-group" : string.Empty;
-
         protected override string Css => $"col-{Columns} text-right pb-3 {this.FormGroup} {AddOnCss.Trim()}".Trim();
 
     }

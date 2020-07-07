@@ -6,15 +6,8 @@ using System;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UIListButtonRow : ApplicationComponentBase
+    public partial class UIListButtonRow : UICardListBase, IRecordNavigation
     {
-
-        [CascadingParameter]
-        public UIOptions UIOptions { get; set; } = new UIOptions();
-
-        [CascadingParameter(Name = "OnEdit")]
-        protected Action<int> OnEdit { get; set; }
-
         public bool ShowButtons => this.UIOptions?.ShowButtons ?? true;
 
         public bool ShowAdd => this.UIOptions?.ShowAdd ?? true;
@@ -31,9 +24,6 @@ namespace CEC.Blazor.Components.UIControls
         [CascadingParameter]
         public RecordConfigurationData Record_Configuration { get; set; } = new RecordConfigurationData();
 
-        [Parameter]
-        public RecordConfigurationData RecordConfiguration { get; set; } = new RecordConfigurationData();
-
         protected override void OnInitialized()
         {
             if (this.Record_Configuration != null) this.RecordConfiguration = this.Record_Configuration;
@@ -46,10 +36,10 @@ namespace CEC.Blazor.Components.UIControls
                 case PageExitType.ExitToEditor:
                 case PageExitType.ExitToNew:
                     if (this.OnEdit != null) this.OnEdit.Invoke(0);
-                    else this.NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
+                    else ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
                     break;
                 default:
-                    this.NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
+                    ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
                     break;
             }
         }

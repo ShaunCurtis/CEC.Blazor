@@ -7,7 +7,7 @@ using CEC.Routing.Services;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardListBase : UIBase, IRecordNavigation
+    public class UICardListBase : UIBase, IRecordNavigation
     {
         /// <summary>
         /// Injected Router Session Object
@@ -25,8 +25,8 @@ namespace CEC.Blazor.Components.UIControls
         [CascadingParameter]
         public RecordConfigurationData RecordConfiguration { get; set; }
 
-        [CascadingParameter(Name = "ID")]
-        public int CascadeID { get; set; } = 0;
+        [CascadingParameter(Name = "RecordID")]
+        public int RecordID { get; set; } = 0;
 
         [CascadingParameter(Name = "OnView")]
         protected Action<int> OnView { get; set; }
@@ -46,13 +46,13 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public int ID { get; set; } = 0;
 
-        private int _ID { get => this.CascadeID > 0 ? this.CascadeID : this.ID; }
+        protected int _ID { get => this.RecordID > 0 ? this.RecordID : this.ID; }
 
-        private bool DoNavigation => this._ID > 0 && IsNavigation;
+        protected bool DoNavigation => this._ID > 0 && IsNavigation;
 
         protected virtual string _RowCss => "";
 
-        private string RowCss => string.IsNullOrEmpty(this.AddOnCss) ? _RowCss : string.Concat(_RowCss, " ", this.AddOnCss);
+        protected string RowCss => string.IsNullOrEmpty(this.AddOnCss) ? _RowCss : string.Concat(_RowCss, " ", this.AddOnCss);
 
         protected void NavigateToView()
         {

@@ -9,8 +9,6 @@ namespace CEC.Blazor.Components.UIControls
     public partial class UICardListDataRow : UICardListBase
     {
 
-        private bool DoNavigation => this.ID > 0 && IsNavigation;
-
         protected override void OnInitialized()
         {
             this.IsNavigation = UIOptions?.ListNavigationToViewer ?? this.IsNavigation;
