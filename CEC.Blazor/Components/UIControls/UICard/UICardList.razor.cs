@@ -50,6 +50,8 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public int Columns { get; set; } = 3;
 
+        public bool IsPaging => this.Paging != null;
+
         protected bool Collapsed { get; set; } = false;
         
         protected string CollapseCSS { get => this.Collapsed ? "collapse" : "collapse show"; }

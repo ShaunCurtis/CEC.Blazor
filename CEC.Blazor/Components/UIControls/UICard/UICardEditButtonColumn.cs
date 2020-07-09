@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public class UICardEditButtonColumn : UITColumn<bool>
+    public class UICardEditButtonColumn : UITDColumn
     {
         [Parameter]
         public bool IsHeader { get; set; }

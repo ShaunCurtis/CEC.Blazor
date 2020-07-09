@@ -17,7 +17,7 @@ namespace CEC.Blazor.Components
         public IPagingService PagingService { get; set; }
 
         /// <summary>
-        /// Lost of the records to display
+        /// List of the records to display
         /// </summary>
         public List<T> Records { get; private set; }
 

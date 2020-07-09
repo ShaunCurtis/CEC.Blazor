@@ -9,8 +9,6 @@ namespace CEC.Blazor.Components.UIControls
 {
     public partial class UICardHeaderColumn<TRecord> : UITColumn<TRecord>
     {
-        [CascadingParameter]
-        public PagingData<TRecord> Paging { get; set; }
 
         [Parameter]
         public string FieldName { get; set; }
@@ -32,7 +30,7 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override string Css => this.Sorted ? $"{base.Css}{this.OverflowCss}{this.MaxColumnCss} column-sort cursor-hand" : $"{base.Css}{this.OverflowCss}{this.MaxColumnCss}";
 
-        protected bool Sorted { get => this.Paging != null && !string.IsNullOrEmpty(this.FieldName); }
+        protected bool Sorted { get => (this.Card?.IsPaging ?? false) && !string.IsNullOrEmpty(this.FieldName); }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -45,15 +43,14 @@ namespace CEC.Blazor.Components.UIControls
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 if (this.Sorted)
                 {
-                    builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Paging.Sort(e, this.FieldName))));
+                    builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.Paging.Sort(e, this.FieldName))));
                     builder.OpenElement(i, "span");
-                    builder.AddAttribute(i++, "class", this.Paging?.GetIcon(this.FieldName) ?? "");
+                    builder.AddAttribute(i++, "class", this.Card.Paging?.GetIcon(this.FieldName) ?? "");
                     builder.CloseElement();
                 }
                 builder.AddContent(i++, this.FieldDisplayName);
                 builder.CloseElement();
             }
         }
-
     }
 }

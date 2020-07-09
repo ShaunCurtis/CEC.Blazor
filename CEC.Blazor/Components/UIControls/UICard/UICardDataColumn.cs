@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
-using CEC.Blazor.Components.Base;
-using CEC.Blazor.Data;
-using CEC.Blazor.Components;
-using System;
-using CEC.Routing.Services;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardDataColumn : UITColumn<int>
+    public partial class UICardDataColumn : UITDColumn
     {
         public bool Show { get; set; } = true;
 
@@ -29,7 +24,20 @@ namespace CEC.Blazor.Components.UIControls
                 builder.AddAttribute(i++, "class", this.Css);
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToView(this.RecordID))));
-                if (this.ChildContent != null) builder.AddContent(i++, this.ChildContent);
+                if (this.IsMaxColumn)
+                {
+                    builder.OpenElement(i, "div");
+                    builder.AddAttribute(i++, "class", "overflow");
+                    builder.OpenElement(i, "div");
+                    builder.AddAttribute(i++, "class", "overflow-inner");
+                    if (this.ChildContent != null) builder.AddContent(i++, this.ChildContent);
+                    builder.CloseElement();
+                    builder.CloseElement();
+                }
+                else
+                {
+                    if (this.ChildContent != null) builder.AddContent(i++, this.ChildContent);
+                }
                 builder.CloseElement();
             }
         }

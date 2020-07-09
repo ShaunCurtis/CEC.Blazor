@@ -3,52 +3,54 @@
 
 @typeparam TItem
 
-<CascadingValue Value="((UICardListBase)this)">
-    <div class="card @this.CardCSS">
-        <div class="card-header @this.CardHeaderCSS">
-            <div class="float-left">
-                <span class="@HeaderFontSize">@this.ListTitle</span>
-            </div>
-            @if (this.IsCollapsible)
-            {
-                <button class="btn @CardButtonCSS float-right" style="padding: 3px;" @onclick="(e => this.Toggle())">
-                    @this.CollapseText
-                </button>
-            }
-        </div>
-        <div class="card-body @this.CardBodyCSS @this.CollapseCSS">
-            @Navigation
-            @Top
-            <div class="table-responsive">
-                <table class="table table-sm table-striped table-hover border-bottom no-margin">
-                    <thead class="thead-light">
-                        <tr>@TableHeader</tr>
-                    </thead>
-                    @if (this.Paging.Records == null || this.Paging.Records.Count < 1)
+    <CascadingValue Value="(this)">
+        <CascadingValue Value="((UICardListBase)this)">
+            <div class="card @this.CardCSS">
+                <div class="card-header @this.CardHeaderCSS">
+                    <div class="float-left">
+                        <span class="@HeaderFontSize">@this.ListTitle</span>
+                    </div>
+                    @if (this.IsCollapsible)
                     {
-                        <caption style="caption-side:bottom;">
-                            <span class="no-records">No Records Retrieved</span>
-                        </caption>
+                        <button class="btn @CardButtonCSS float-right" style="padding: 3px;" @onclick="(e => this.Toggle())">
+                            @this.CollapseText
+                        </button>
                     }
-                    <tbody>
-                        @if (this.Paging.Records == null)
-                        {
-                            <tr><td colspan="@this.Columns">No Records Retrieved</td></tr>
-                        }
-                        else
-                        {
-                            foreach (var item in this.Paging.Records)
+                </div>
+                <div class="card-body @this.CardBodyCSS @this.CollapseCSS">
+                    @Navigation
+                    @Top
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover border-bottom no-margin">
+                            <thead class="thead-light">
+                                <tr>@TableHeader</tr>
+                            </thead>
+                            @if (this.Paging.Records == null || this.Paging.Records.Count < 1)
                             {
-                                <tr>@RowTemplate(item)</tr>
+                                <caption style="caption-side:bottom;">
+                                    <span class="no-records">No Records Retrieved</span>
+                                </caption>
                             }
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>@TableFooter</tr>
-                    </tfoot>
-                </table>
+                            <tbody>
+                                @if (this.Paging.Records == null)
+                                {
+                                    <tr><td colspan="@this.Columns">No Records Retrieved</td></tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in this.Paging.Records)
+                                    {
+                                        <tr>@RowTemplate(item)</tr>
+                                    }
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>@TableFooter</tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    @Footer
+                </div>
             </div>
-            @Footer
-        </div>
-    </div>
-</CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
