@@ -4,7 +4,7 @@ using CEC.Blazor.Components;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardListHeaderRow<TRecord> : UICardListBase
+    public partial class UICardListHeaderColumn<TRecord> : UICardListBase
     {
         [CascadingParameter]
         public PagingData<TRecord> Paging { get; set; }
@@ -17,7 +17,7 @@ namespace CEC.Blazor.Components.UIControls
 
         protected string FieldDisplayName { get => string.IsNullOrEmpty(this.DisplayName) ? FieldName : DisplayName; }
 
-        protected override string _RowCss { get => this.MaxRow ? "column-max column-sort" : "column-normal column-sort"; }
+        protected override string _RowCss { get => "column-normal column-sort"; }
 
         protected bool Sorted { get => !string.IsNullOrEmpty(this.FieldName); }
 

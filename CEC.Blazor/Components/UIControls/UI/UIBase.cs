@@ -26,16 +26,19 @@ namespace CEC.Blazor.Components.UIControls
         [CascadingParameter]
         public UIOptions UIOptions { get; set; } = new UIOptions();
 
+        protected virtual string Tag { get; set; } = "div";
+
         protected string FormGroup => this.IsFormGroup ? "form-group " : string.Empty;
 
         protected virtual string Css => $"{AddOnCss.Trim()}".Trim();
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", this.Css);
-            if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(1, "id", this.ComponentId);
-            builder.AddContent(2, ChildContent);
+            int i = 0;
+            builder.OpenElement(i, this.Tag);
+            builder.AddAttribute(i++, "class", this.Css);
+            if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
+            if (this.ChildContent != null) builder.AddContent(i++, ChildContent);
             builder.CloseElement();
         }
     }

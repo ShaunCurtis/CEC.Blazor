@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardList<TItem> : UICardListBase
+    public partial class UICardGrid<TItem> : UICardGridBase
     {
 
         [Parameter]
-        public RenderFragment TableHeader { get; set; }
+        public RenderFragment GridHeader { get; set; }
 
         [Parameter]
-        public RenderFragment<TItem> RowTemplate { get; set; }
+        public RenderFragment<TItem> GridTemplate { get; set; }
 
         [Parameter]
         public RenderFragment TableFooter { get; set; }
@@ -26,10 +26,10 @@ namespace CEC.Blazor.Components.UIControls
         public RenderFragment Footer { get; set; }
 
         [Parameter]
-        public string ListTitle { get; set; } = "Collaspible Card";
+        public IReadOnlyList<TItem> Items { get; set; }
 
         [Parameter]
-        public PagingData<TItem> Paging { get; set; }
+        public string ListTitle { get; set; } = "Collaspible Card";
 
         public string CardCSS { get; set; } = "mt-2";
 
@@ -47,15 +47,12 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public bool IsMainHeader { get; set; } = false;
 
-        [Parameter]
-        public int Columns { get; set; } = 3;
-
         protected bool Collapsed { get; set; } = false;
         
         protected string CollapseCSS { get => this.Collapsed ? "collapse" : "collapse show"; }
         
         protected string CollapseText { get => this.Collapsed ? "Show" : "Hide"; }
- 
+
         protected void Toggle()
         {
             this.Collapsed = !this.Collapsed;

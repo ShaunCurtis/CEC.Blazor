@@ -6,7 +6,7 @@ using System;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardListDataRow : UICardListBase
+    public partial class UICardListDataColumn : UICardListBase
     {
 
         protected override void OnInitialized()
@@ -15,6 +15,6 @@ namespace CEC.Blazor.Components.UIControls
             base.OnInitialized();
         }
 
-        protected override string _RowCss => this.MaxRow ? "column-max" : "column-normal";
+        //protected override string _RowCss => this.MaxColumn ? "column-max" : "column-normal";
     }
 }

@@ -1,0 +1,90 @@
+﻿@namespace CEC.Blazor.Server.Pages.Components
+
+@inherits ListComponentBase<WeatherForecast>
+<UIBase>UI Base Test</UIBase>
+<CascadingValue Value="@this.UIOptions">
+
+    <CascadingValue Value="@this.Paging">
+
+        <CascadingValue Value="@this.Service.RecordConfiguration">
+
+            <CascadingValue Name="OnView" Value="@OnView" TValue="Action<int>">
+
+                <CascadingValue Name="OnEdit" Value="@OnEdit" TValue="Action<int>">
+
+                    <UICardGrid TItem="WeatherForecast" Items="this.Paging.Records" IsCollapsible="true" MaxColumn="3" ListTitle="@this.ListTitle">
+
+                        <GridHeader>
+
+                            <UICardGridHeaderColumn Column="1" TRecord="WeatherForecast" DisplayName="ID" FieldName="WeatherForecastID"></UICardGridHeaderColumn>
+                            <UICardGridHeaderColumn Column="2" TRecord="WeatherForecast" FieldName="Date"></UICardGridHeaderColumn>
+                            <UICardGridHeaderColumn Column="3" TRecord="WeatherForecast" FieldName="Description"></UICardGridHeaderColumn>
+                            <UICardGridHeaderColumn Column="4" TRecord="WeatherForecast" FieldName="Summary"></UICardGridHeaderColumn>
+                            <UICardGridHeaderColumn Column="5" TRecord="WeatherForecast" FieldName="TemperatureC" DisplayName="Temp C"></UICardGridHeaderColumn>
+                            <UICardGridHeaderColumn Column="6" TRecord="WeatherForecast" FieldName="Summary"></UICardGridHeaderColumn>
+                            <UICardGridHeaderColumn Column="7" TRecord="WeatherForecast" FieldName="Outlook"></UICardGridHeaderColumn>
+                            <UICardGridEditButtonColumn Column="8" IsHeader="true"></UICardGridEditButtonColumn>
+
+                        </GridHeader>
+
+                        <GridTemplate>
+
+                            <CascadingValue Name="RecordID" Value="@context.WeatherForecastID">
+
+                                <UICardGridDataColumn Column="1">
+                                    @context.WeatherForecastID
+                                </UICardGridDataColumn>
+
+                                <UICardGridDataColumn Column="2">
+                                    @context.Date.ToShortDateString()
+                                </UICardGridDataColumn>
+
+                                <UICardGridDataColumn Column="3">
+                                    @context.Description
+                                </UICardGridDataColumn>
+
+                                <UICardGridDataColumn Column="4">
+                                    @context.Summary
+                                </UICardGridDataColumn>
+
+                                <UICardGridDataColumn Column="5">
+                                    @context.TemperatureC
+                                </UICardGridDataColumn>
+
+                                <UICardGridDataColumn Column="6">
+                                    @context.Summary
+                                </UICardGridDataColumn>
+
+                                <UICardGridDataColumn Column="7">
+                                    @context.Outlook
+                                </UICardGridDataColumn>
+
+                                <UICardGridEditButtonColumn Column="8"></UICardGridEditButtonColumn>
+
+                            </CascadingValue>
+
+                        </GridTemplate>
+
+                        <Navigation>
+
+                            <UIListButtonRow>
+                                <Paging>
+                                    <UIPagingControl TRecord="WeatherForecast"></UIPagingControl>
+                                </Paging>
+                            </UIListButtonRow>
+
+                        </Navigation>
+
+                    </UICardGrid>
+
+                </CascadingValue>
+
+            </CascadingValue>
+
+        </CascadingValue>
+
+    </CascadingValue>
+
+</CascadingValue>
+
+<BootstrapModal @ref="this._BootstrapModal"></BootstrapModal>
