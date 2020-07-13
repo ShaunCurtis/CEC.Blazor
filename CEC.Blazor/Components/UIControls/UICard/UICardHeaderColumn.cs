@@ -22,7 +22,9 @@ namespace CEC.Blazor.Components.UIControls
 
         protected string FieldDisplayName { get => string.IsNullOrEmpty(this.DisplayName) ? FieldName : DisplayName; }
 
-        protected bool IsMaxColumn => (this.Card != null && this.Card.MaxColumn == this.Column);
+        protected string Style => this.IsMaxColumn ? $"width: {this.UIOptions.MaxColumnPercent}%" : string.Empty;
+
+        protected bool IsMaxColumn => this.UIOptions != null && this.UIOptions.MaxColumn == this.Column;
 
         protected string OverflowCss => this.IsMaxColumn ? " td-overflow" : string.Empty;
 
@@ -39,6 +41,7 @@ namespace CEC.Blazor.Components.UIControls
                 int i = 0;
                 builder.OpenElement(i, this.Tag);
                 builder.AddAttribute(i++, "class", this.Css);
+                if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
                 builder.AddAttribute(i++, "scope", "col");
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 if (this.Sorted)

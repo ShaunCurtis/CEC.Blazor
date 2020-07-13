@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Components.UIControls
 {
     public class UIOptions
     {
@@ -32,5 +32,15 @@ namespace CEC.Blazor.Components
         /// Display the editor in a Modal
         /// </summary>
         public bool UseModalEditor { get; set; }
+
+        /// <summary>
+        /// Column Number for the maximum width column
+        /// </summary>
+        public int MaxColumn { get; set; } = 2;
+
+        /// <summary>
+        /// Max Width Column max size in percent
+        /// </summary>
+        public int MaxColumnPercent { get; set; } = 50;
     }
 }

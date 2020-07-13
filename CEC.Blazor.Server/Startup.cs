@@ -38,6 +38,7 @@ namespace CEC.Blazor.Server
             services.AddCECBlazor();
             services.AddCECRouting();
             services.AddTransient<IValidator<WeatherForecast>, WeatherForecastValidator>();
+            services.AddSingleton<WorldService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

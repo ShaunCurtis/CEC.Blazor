@@ -10,7 +10,9 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override string Css => this.Card.IsNavigation ? $"{base.Css}{this.OverflowCss} cursor-hand" : $"{base.Css}{this.OverflowCss}";
 
-        protected bool IsMaxColumn => (this.Card != null && this.Card.MaxColumn == this.Column );
+        protected string Style => this.IsMaxColumn ? $"width: {this.UIOptions.MaxColumnPercent}%" : string.Empty;
+
+        protected bool IsMaxColumn => this.UIOptions != null && this.UIOptions.MaxColumn == this.Column ;
 
         protected string OverflowCss => this.IsMaxColumn ? " td-max td-overflow" : " td-normal";
 
@@ -22,6 +24,8 @@ namespace CEC.Blazor.Components.UIControls
                 int i = 0;
                 builder.OpenElement(i, this.Tag);
                 builder.AddAttribute(i++, "class", this.Css);
+                builder.AddAttribute(i++, "scope", "col");
+                if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToView(this.RecordID))));
                 if (this.IsMaxColumn)

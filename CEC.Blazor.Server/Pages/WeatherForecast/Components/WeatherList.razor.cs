@@ -26,6 +26,7 @@ namespace CEC.Blazor.Server.Pages.Components
 
         protected override void OnInitialized()
         {
+            this.UIOptions.MaxColumn = 3;
             this.Service = this.ControllerService;
             base.OnInitialized();
         }
@@ -55,7 +56,7 @@ namespace CEC.Blazor.Server.Pages.Components
                 {
                     ModalBodyCSS = "p-0",
                     ModalCSS = "modal-xl",
-                    HideHeader = true
+                    HideHeader = true,
                 };
                 modalOptions.Parameters.Add("ID", id);
                 await this._BootstrapModal.Show<WeatherViewer>(modalOptions);

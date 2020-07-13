@@ -46,12 +46,6 @@ namespace CEC.Blazor.Components.UIControls
         protected Action<int> OnEdit { get; set; }
 
         /// <summary>
-        /// the Max Width Column
-        /// </summary>
-        [Parameter]
-        public int MaxColumn { get; set; } = 2;
-
-        /// <summary>
         /// Boolena to show or hide the control
         /// </summary>
         [Parameter]

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using CEC.Blazor.Services;
 using CEC.Blazor.Data;
+using CEC.Blazor.Components.UIControls;
 
 namespace CEC.Blazor.Components.Base
 {
@@ -96,7 +97,7 @@ namespace CEC.Blazor.Components.Base
                 else if (string.IsNullOrEmpty(e.RecordName)) e.RecordName = this.Service.RecordConfiguration.RecordName;
 
                 // check if the id is set for view or edit.  If not, set it.
-                if (e.ExitType == PageExitType.ExitToEditor || e.ExitType == PageExitType.ExitToView && e.ID == 0) e.ID = this._ID;
+                if ((e.ExitType == PageExitType.ExitToEditor || e.ExitType == PageExitType.ExitToView) && e.ID == 0) e.ID = this._ID;
                 base.NavigateTo(e);
             }
         }
