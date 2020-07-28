@@ -30,7 +30,7 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public EventCallback<MouseEventArgs> ClickEvent { get; set; }
 
-        protected override string Css => $"btn {ButtonFlavor.Trim()} {ButtonColour.Trim()} {AddOnCss.Trim()}".Trim();
+        protected override string _Css => $"btn {ButtonFlavor.Trim()} {ButtonColour.Trim()} {AddOnCss.Trim()}".Trim();
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -38,7 +38,7 @@ namespace CEC.Blazor.Components.UIControls
             {
                 builder.OpenElement(0, "button");
                 builder.AddAttribute(1, "type", this.ButtonType);
-                builder.AddAttribute(2, "class", this.Css);
+                builder.AddAttribute(2, "class", this._Css);
                 builder.AddAttribute(3, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, this.ButtonClick));
                 builder.AddContent(4, ChildContent);
                 builder.CloseElement();
@@ -59,6 +59,19 @@ namespace CEC.Blazor.Components.UIControls
             public static string BtnDark = "btn-dark";
             public static string BtnLight = "btn-light";
             public static string BtnInfo = "btn-info";
+            public static string BtnAdd = "btn-add";
+            public static string BtnEdit = "btn-edit";
+            public static string BtnDelete = "btn-delete";
+            public static string BtnCancel = "btn-cancel";
+            public static string BtnNav = "btn-nav";
+            public static string BtnOutlinePrimary = "btn-outline-primary";
+            public static string BtnOutlineSecondary = "btn-outline-secondary";
+            public static string BtnOutlineDanger = "btn-outline-danger";
+            public static string BtnOutlineWarning = "btn-outline-warning";
+            public static string BtnOutlineSuccess = "btn-outline-success";
+            public static string BtnOutlineDark = "btn-outline-dark";
+            public static string BtnOutlineLight = "btn-outline-light";
+            public static string BtnOutlineInfo = "btn-outline-info";
 
         }
         public static class Size

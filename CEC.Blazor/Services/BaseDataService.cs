@@ -12,7 +12,6 @@ namespace CEC.Blazor.Services
 {
     public class BaseDataService<T>: IDbService<T> where T : new()
     {
-
         /// <summary>
         /// Access to the Application Configuration data
         /// </summary>

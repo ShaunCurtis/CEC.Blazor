@@ -54,6 +54,16 @@ namespace CEC.Blazor.Services
         public virtual bool IsRecord => this.Record != null;
 
         /// <summary>
+        /// Boolean Property to check if an Edit record exists 
+        /// </summary>
+        public virtual bool IsEditRecord => this.IsRecord && this.RecordID > -1;
+
+        /// <summary>
+        /// Boolean Property to check if a New record exists 
+        /// </summary>
+        public virtual bool IsNewRecord => this.IsRecord && this.RecordID == 0;
+
+        /// <summary>
         /// Property to expose the Record ID.
         /// should be implemented to return 0 if the record is null
         /// </summary>
@@ -138,6 +148,16 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <returns></returns>
         public Task<bool> GetNewRecordAsync() => Task.FromResult(false);
+
+        /// <summary>
+        /// Method to reset the record to new
+        /// </summary>
+        /// <returns></returns>
+        public Task ResetRecordAsync()
+        {
+            this.Record = new T();
+            return Task.CompletedTask;
+        }
 
         /// <summary>
         /// Method to get a page of data from the database - used during paging operations

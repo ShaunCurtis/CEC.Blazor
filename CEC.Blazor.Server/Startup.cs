@@ -37,6 +37,7 @@ namespace CEC.Blazor.Server
             // CEC - Services added here
             services.AddCECBlazor();
             services.AddCECRouting();
+            services.AddProtectedBrowserStorage();
             services.AddTransient<IValidator<WeatherForecast>, WeatherForecastValidator>();
             services.AddSingleton<WorldService>();
         }

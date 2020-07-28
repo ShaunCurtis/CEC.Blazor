@@ -30,7 +30,7 @@ namespace CEC.Blazor.Components.UIControls
 
         protected string MaxColumnCss => this.IsMaxColumn ? " td-max" : string.Empty;
 
-        protected override string Css => this.Sorted ? $"{base.Css}{this.OverflowCss}{this.MaxColumnCss} column-sort cursor-hand" : $"{base.Css}{this.OverflowCss}{this.MaxColumnCss}";
+        protected override string _Css => this.Sorted ? $"{base._Css}{this.OverflowCss}{this.MaxColumnCss} column-sort cursor-hand" : $"{base._Css}{this.OverflowCss}{this.MaxColumnCss}";
 
         protected bool Sorted { get => (this.Card?.IsPaging ?? false) && !string.IsNullOrEmpty(this.FieldName); }
 
@@ -40,7 +40,7 @@ namespace CEC.Blazor.Components.UIControls
             {
                 int i = 0;
                 builder.OpenElement(i, this.Tag);
-                builder.AddAttribute(i++, "class", this.Css);
+                builder.AddAttribute(i++, "class", this._Css);
                 if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
                 builder.AddAttribute(i++, "scope", "col");
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);

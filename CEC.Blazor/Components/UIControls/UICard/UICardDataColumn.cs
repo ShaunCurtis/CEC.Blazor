@@ -8,7 +8,7 @@ namespace CEC.Blazor.Components.UIControls
     {
         public bool Show { get; set; } = true;
 
-        protected override string Css => this.Card.IsNavigation ? $"{base.Css}{this.OverflowCss} cursor-hand" : $"{base.Css}{this.OverflowCss}";
+        protected override string _Css => this.Card.IsNavigation ? $"{base._Css}{this.OverflowCss} cursor-hand" : $"{base._Css}{this.OverflowCss}";
 
         protected string Style => this.IsMaxColumn ? $"width: {this.UIOptions.MaxColumnPercent}%" : string.Empty;
 
@@ -18,12 +18,12 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            this.Tag = "td";
+            this._Tag = "td";
             if (this.Show)
             {
                 int i = 0;
                 builder.OpenElement(i, this.Tag);
-                builder.AddAttribute(i++, "class", this.Css);
+                builder.AddAttribute(i++, "class", this._Css);
                 builder.AddAttribute(i++, "scope", "col");
                 if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);

@@ -9,20 +9,19 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public bool IsHeader { get; set; }
 
-        protected override string Css => $"column-normal text-right";
+        protected override string _Css => $"column-normal text-right";
 
         protected bool Show => this.UIOptions?.ShowEdit ?? true;
 
-        protected string _Tag => this.IsHeader ? "th" : "td";
+        protected override string _Tag => this.IsHeader ? "th" : "td";
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if (this.IsHeader) this.Tag = "th";
             if (this.Show)
             {
                 int i = 0;
                 builder.OpenElement(i, this._Tag);
-                builder.AddAttribute(i++, "class", this.Css);
+                builder.AddAttribute(i++, "class", this._Css);
                 if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 if (!this.IsHeader)
                 {

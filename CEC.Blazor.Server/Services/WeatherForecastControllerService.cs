@@ -16,7 +16,7 @@ namespace CEC.Blazor.Server.Services
         /// <summary>
         /// Property exposing Null Trapped Record ID
         /// </summary>
-        public override int RecordID => this.Record is null ? 0 : this.Record.WeatherForecastID;
+        public override int RecordID => this.Record is null ? -1 : this.Record.WeatherForecastID;
 
         /// <summary>
         /// List of Outlooks for Select Controls

@@ -1,123 +1,124 @@
 ﻿@namespace CEC.Blazor.Server.Pages.Components
 @inherits RecordComponentBase<WeatherForecast>
 
-<UIErrorHandler IsError="@this.IsError">
-
     <CascadingValue Name="WeatherForecastID" Value="this.Service.RecordID">
 
         <UICard MoreCardCss="@this.CardCSS">
 
             <Header>
-                Weather Forecast Viewer - @this.Service.Record.Date.AsShortDate()
+                Weather Forecast Viewer - @this.PageTitle
             </Header>
 
             <Body>
-                <UIContainer>
 
-                    <UIRow>
+                <UIErrorHandler IsError="this.IsError" IsLoading="this.IsLoading" >
 
-                        <UIColumn Columns="2">
-                            Date
-                        </UIColumn>
+                    <UIContainer>
 
-                        <UIColumn Columns="4">
-                            <FormControlPlainText Value="@this.Service.Record.Date.AsShortDate()"></FormControlPlainText>
-                        </UIColumn>
+                        <UIRow>
 
-                        <UIColumn Columns="2">
-                            Frost
-                        </UIColumn>
+                            <UIColumn Columns="2">
+                                Date
+                            </UIColumn>
 
-                        <UIColumn Columns="4">
-                            <FormControlPlainText Value="@this.Service.Record.Frost.AsYesNo()"></FormControlPlainText>
-                        </UIColumn>
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.Date.AsShortDate()"></FormControlPlainText>
+                            </UIColumn>
 
-                    </UIRow>
+                            <UIColumn Columns="2">
+                                Frost
+                            </UIColumn>
 
-                    <UIRow>
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.Frost.AsYesNo()"></FormControlPlainText>
+                            </UIColumn>
 
-                        <UIColumn Columns="2">
-                            Temperature &deg;C
-                        </UIColumn>
+                        </UIRow>
 
-                        <UIColumn Columns="4">
-                            <FormControlPlainText Value="@this.Service.Record.TemperatureC.ToString()"></FormControlPlainText>
-                        </UIColumn>
+                        <UIRow>
 
-                        <UIColumn Columns="2">
-                            Temperature &deg;F
-                        </UIColumn>
+                            <UIColumn Columns="2">
+                                Temperature &deg;C
+                            </UIColumn>
 
-                        <UIColumn Columns="4">
-                            <FormControlPlainText Value="@this.Service.Record.TemperatureF.ToString()"></FormControlPlainText>
-                        </UIColumn>
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.TemperatureC.ToString()"></FormControlPlainText>
+                            </UIColumn>
 
-                    </UIRow>
+                            <UIColumn Columns="2">
+                                Temperature &deg;F
+                            </UIColumn>
 
-                    <UIRow>
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.TemperatureF.ToString()"></FormControlPlainText>
+                            </UIColumn>
 
-                        <UIColumn Columns="2">
-                            Summary
-                        </UIColumn>
+                        </UIRow>
 
-                        <UIColumn Columns="4">
-                            <FormControlPlainText Value="@this.Service.Record.Summary.ToString()"></FormControlPlainText>
-                        </UIColumn>
+                        <UIRow>
 
-                        <UIColumn Columns="2">
-                            Outlook
-                        </UIColumn>
+                            <UIColumn Columns="2">
+                                Summary
+                            </UIColumn>
 
-                        <UIColumn Columns="4">
-                            <FormControlPlainText Value="@this.Service.Record.Outlook.ToString()"></FormControlPlainText>
-                        </UIColumn>
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.Summary.ToString()"></FormControlPlainText>
+                            </UIColumn>
 
-                    </UIRow>
+                            <UIColumn Columns="2">
+                                Outlook
+                            </UIColumn>
 
-                    <UIRow>
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.Outlook.ToString()"></FormControlPlainText>
+                            </UIColumn>
 
-                        <UIColumn Columns="2">
-                            Description
-                        </UIColumn>
+                        </UIRow>
 
-                        <UIColumn Columns="10">
-                            <FormControlPlainText Value="@this.Service.Record.Description"></FormControlPlainText>
-                        </UIColumn>
+                        <UIRow>
 
-                    </UIRow>
+                            <UIColumn Columns="2">
+                                Description
+                            </UIColumn>
 
-                    <UIRow>
+                            <UIColumn Columns="10">
+                                <FormControlPlainText Value="@this.Service.Record.Description"></FormControlPlainText>
+                            </UIColumn>
 
-                        <UIColumn Columns="2">
-                            Detail
-                        </UIColumn>
+                        </UIRow>
 
-                        <UIColumn Columns="10">
-                            <FormControlPlainText Value="@this.Service.Record.Detail"></FormControlPlainText>
-                        </UIColumn>
+                        <UIRow>
 
-                    </UIRow>
+                            <UIColumn Columns="2">
+                                Detail
+                            </UIColumn>
 
-                    <UIRow>
-                        <UIButtonColumn Columns="12">
-                            <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))">
-                                Exit To List
-                            </UIButton>
-                            <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToLast))">
-                                Exit
-                            </UIButton>
-                            <UIButton Show="this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.ModalExit())">
-                                Exit
-                            </UIButton>
-                        </UIButtonColumn>
-                    </UIRow>
+                            <UIColumn Columns="10">
+                                <FormControlPlainText Value="@this.Service.Record.Detail"></FormControlPlainText>
+                            </UIColumn>
 
-                </UIContainer>
+                        </UIRow>
+
+                        <UIRow>
+                            <UIButtonColumn Columns="12">
+                                <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))">
+                                    Exit To List
+                                </UIButton>
+                                <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToLast))">
+                                    Exit
+                                </UIButton>
+                                <UIButton Show="this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.ModalExit())">
+                                    Exit
+                                </UIButton>
+                            </UIButtonColumn>
+                        </UIRow>
+
+                    </UIContainer>
+
+                </UIErrorHandler>
 
             </Body>
 
         </UICard>
 
     </CascadingValue>
-
-</UIErrorHandler>

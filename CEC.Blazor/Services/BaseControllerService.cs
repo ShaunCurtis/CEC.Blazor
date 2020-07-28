@@ -110,7 +110,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Boolean Property to check if an Edit record exists 
         /// </summary>
-        public virtual bool IsEditRecord => this.IsRecord && this.RecordID != 0;
+        public virtual bool IsEditRecord => this.IsRecord && this.RecordID > -1;
 
         /// <summary>
         /// Boolean Property to check if a New record exists 

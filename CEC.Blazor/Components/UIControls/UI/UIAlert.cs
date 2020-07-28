@@ -14,14 +14,14 @@ namespace CEC.Blazor.Components.UIControls
 
         protected bool IsAlert => this.Alert != null && this.Alert.IsAlert;
 
-        protected override string Css => this.IsSmall ? $"alert alert-sm {this.Alert.CSS}" : $"alert {this.Alert.CSS}";
+        protected override string _Css => this.IsSmall ? $"alert alert-sm {this.Alert.CSS}" : $"alert {this.Alert.CSS}";
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             if (this.IsAlert)
             {
                 builder.OpenElement(0, "div");
-                builder.AddAttribute(1, "class", this.Css);
+                builder.AddAttribute(1, "class", this._Css);
                 builder.AddContent(2, (MarkupString)this.Alert.Message);
                 builder.CloseElement();
             }

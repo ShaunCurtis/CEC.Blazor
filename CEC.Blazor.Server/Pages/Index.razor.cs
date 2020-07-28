@@ -1,5 +1,7 @@
 ﻿using CEC.Blazor.Server.Services;
+using CEC.Routing.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.ProtectedBrowserStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,30 @@ namespace CEC.Blazor.Server.Pages
         [Inject]
         protected WorldService WorldService { get; set; }
 
+        [Inject]
+        protected RouterSessionService RouterSessionService { get; set; }
+
+        [Inject]
+        protected ProtectedSessionStorage ProtectedSessionStorage { get; set; }
+
+
         public Guid GUID = Guid.NewGuid();
 
         protected string Message { get; set; }
 
         private string Alert = "Go!"; 
 
-        protected async override Task OnInitializedAsync()
+        protected override Task OnInitializedAsync()
         {
             this.WorldService.MessageChanged += this.MessageUpdated;
             this.Message = this.WorldService.Message;
-            await this.WorldService.GetWorld();
+            this.Message = "Waiting for an intercosmic connection";
+            return Task.CompletedTask;
+        }
+
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender) await this.WorldService.GetWorld();
         }
 
         protected void MessageUpdated(object sender, EventArgs e)

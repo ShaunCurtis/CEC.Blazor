@@ -1,4 +1,5 @@
 ﻿using CEC.Blazor.Components.Base;
+using CEC.Blazor.Extensions;
 using CEC.Blazor.Server.Data;
 using CEC.Blazor.Server.Services;
 using Microsoft.AspNetCore.Components;
@@ -13,6 +14,8 @@ namespace CEC.Blazor.Server.Pages.Components
 
         [CascadingParameter(Name ="WeatherForecastID")]
         public int WeatherForecastID { get; set; }
+
+        public override string PageTitle =>  this.Service?.Record?.Date.AsShortDate() ?? string.Empty;
 
         private string CardCSS => this.IsModal ? "m-0" : "";
 

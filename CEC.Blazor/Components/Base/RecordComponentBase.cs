@@ -15,12 +15,12 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Version of the ID that sets null to 0
         /// </summary>
-        public int CurrentID { get; protected set; }
+        public int CurrentID { get; protected set; } = -1;
 
         /// <summary>
         /// Boolean Property that checks if a record exists
         /// </summary>
-        protected virtual bool IsRecord => this.IsService && this.Service.IsRecord;
+        protected virtual bool IsRecord => this.IsService && this.Service.IsEditRecord;
 
         /// <summary>
         /// Used to determine if the page can display data
@@ -28,11 +28,17 @@ namespace CEC.Blazor.Components.Base
         protected virtual bool IsError { get => !this.IsRecord; }
 
         /// <summary>
+        /// Used to determine if the page can display data
+        /// </summary>
+        protected virtual bool IsLoading { get; set; }
+
+        /// <summary>
         /// Should be overriddebn in inherited components
         /// and called after setting the Service
         /// </summary>
         protected async override Task OnInitializedAsync()
         {
+            this.IsLoading = true;
             await base.OnInitializedAsync();
         }
 
@@ -41,6 +47,7 @@ namespace CEC.Blazor.Components.Base
             await base.LoadAsync();
             if (this.IsService)
             {
+                await this.Service.ResetRecordAsync();
                 // Check if we have a query string value and use it if we do
                 this.NavManager.TryGetQueryString<int>("id", out int id);
                 this.ID = id > 0 ? id : this._ID;
@@ -49,6 +56,7 @@ namespace CEC.Blazor.Components.Base
                 await this.Service.GetRecordAsync(this._ID);
                 this.Service.RecordHasChanged += this.UpdateState;
                 this.RouterSessionService.IntraPageNavigation += this.OnIntraPageNavigation;
+                this.IsLoading = false;
             }
         }
 

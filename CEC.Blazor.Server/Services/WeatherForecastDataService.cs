@@ -44,7 +44,10 @@ namespace CEC.Blazor.Server.Services
             }
         }
 
-        public Task<WeatherForecast> GetRecordAsync(int id) => Task.FromResult(this.Records.FirstOrDefault(item => item.WeatherForecastID == id));
+        public Task<WeatherForecast> GetRecordAsync(int id)
+        {
+            return Task.FromResult(this.Records.FirstOrDefault(item => item.WeatherForecastID == id));
+        }
 
         public Task<List<WeatherForecast>> GetRecordListAsync() => Task.FromResult(this.Records);
 

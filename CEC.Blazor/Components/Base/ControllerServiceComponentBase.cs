@@ -22,7 +22,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         [Parameter] public int? ID { 
             get => this._ID;
-            set => this._ID = (value is null) ? 0 : (int)value; 
+            set => this._ID = (value is null) ? -1 : (int)value; 
         }
 
         /// <summary>
