@@ -99,7 +99,7 @@ namespace CEC.Blazor.Components.UIControls
                 builder.OpenElement(i++, this._Tag);
                 builder.AddMultipleAttributes(i++, AdditionalAttributes);
                 builder.AddAttribute(i++, "class", this._Css);
-                if (string.IsNullOrEmpty(this._Content)) builder.AddContent(i++, (MarkupString)this._Content);
+                if (!string.IsNullOrEmpty(this._Content)) builder.AddContent(i++, (MarkupString)this._Content);
                 else if (this.ChildContent != null) builder.AddContent(i++, ChildContent);
                 builder.CloseElement();
             }

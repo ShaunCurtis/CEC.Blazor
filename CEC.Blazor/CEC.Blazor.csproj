@@ -14,11 +14,13 @@
 
   <ItemGroup>
     <Compile Remove="Components\FormControls\InputControlButtonCheckBox.razor.cs" />
+    <Compile Remove="Components\UIControls\UICard\UICardList.razor.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
     <Content Remove="Components\FormControls\InputControlButtonCheckBox.razor" />
+    <Content Remove="Components\UIControls\UICard\UICardList.razor" />
   </ItemGroup>
 
   <ItemGroup>

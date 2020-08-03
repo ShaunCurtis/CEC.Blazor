@@ -1,73 +1,58 @@
 ﻿@namespace CEC.Blazor.Components.UIControls
 @inherits UICardListBase
 
-@typeparam TItem
+@typeparam TRecord
 
-    <CascadingValue Value="(this)">
-        <CascadingValue Value="((UICardListBase)this)">
+<CascadingValue Value="(this)">
+    <UITag Css="@this.CardCSS">
 
-            <UITag Css="@this.CardCSS">
+        <UITag Css="@this.CardHeaderCSS">
 
-                <UITag Css="@this.CardHeaderCSS">
+            <UITag>
 
-                    <UITag Css="float-left">
-
-                        <UITag Css="@HeaderFontSize" Tag="span">
-                            @this.ListTitle
-                        </UITag>
-
-                        <UIButton ButtonFlavor="@UIButton.Size.BtnSmall" ButtonColour="@UIButton.Colour.BtnOutlineLight" AddOnCss="@CardCollapseButtonCSS" ClickEvent="(e => this.Toggle())"></UIButton>
-
-                    </UITag>
-
+                <UITag Css="@HeaderFontSize" Tag="span">
+                    @Title
                 </UITag>
 
-                <UITag Css="@this.CardBodyCSS">
-
-                    @Navigation
-
-                    @Top
-
-                    <UIErrorHandler>
-
-                    </UIErrorHandler>
-                    <UIGridTableContainer>
-
-                        <UIGridTableRow>
-
-                            @TableHeader
-
-                        </UIGridTableRow>
-
-                    </UIGridTableContainer>
-
-                    <UIGridTableContainer>
-
-                        <UIErrorHandler IsError="this.IsError" IsLoading="this.IsLoading">
-
-                            <UIGridTableRow>
-
-                                @foreach (var item in this.Paging.Records)
-                                {
-
-                                <UIGridTableRow>
-
-                                    @RowTemplate(item)
-
-                                </UIGridTableRow>
-
-                                }
-
-                            </UIGridTableRow>
-
-                        </UIErrorHandler>
-
-                    </UIGridTableContainer>
-
-                </UITag>
+                <UIButton ButtonFlavor="@UIButton.Size.BtnSmall" ButtonColour="@UIButton.Colour.BtnOutlineLight" AddOnCss="@this.CollapseButtonCSS" ClickEvent="(e => this.Toggle())">@this.CollapseText</UIButton>
 
             </UITag>
 
-        </CascadingValue>
+        </UITag>
 
-    </CascadingValue>
+        <UITag Css="@this.CardBodyCSS">
+
+            @Navigation
+
+            @Top
+
+            <UIGridTableContainer MaxColumn="this.MaxColumn">
+
+                <UIGridTableRow>
+
+                    @TableHeader
+
+                </UIGridTableRow>
+
+                <UIErrorHandler IsError="this.IsError" IsLoading="this.IsLoading">
+
+                    @foreach (var item in this.Paging.Records)
+                    {
+
+                        <UIGridTableRow>
+
+                            @RowTemplate(item)
+
+                        </UIGridTableRow>
+
+                    }
+
+                </UIErrorHandler>
+
+            </UIGridTableContainer>
+
+        </UITag>
+
+    </UITag>
+
+</CascadingValue>

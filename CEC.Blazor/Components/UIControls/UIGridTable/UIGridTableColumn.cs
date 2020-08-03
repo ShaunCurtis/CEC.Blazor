@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace CEC.Blazor.Components.UIControls
 {
@@ -8,9 +9,23 @@ namespace CEC.Blazor.Components.UIControls
     /// UI Rendering Wrapper to build a Grid Column
     /// </summary>
 
-    public class UIGridTableColumn : UIBase
+    public class UIGridTableColumn<TRecord> : UIComponent
     {
+        /// <summary>
+        /// Cascaded UIGridTable
+        /// </summary>
+        [CascadingParameter]
+        public UICardGrid<TRecord> Card { get; set; }
 
+        /// <summary>
+        /// Record ID passed via a cascade
+        /// </summary>
+        [CascadingParameter(Name = "RecordID")]
+        public int RecordID { get; set; } = 0;
+
+        /// <summary>
+        /// Max Column No via a cascade
+        /// </summary>
         [CascadingParameter(Name = "MaxColumn")]
         public int MaxColumn { get; set; } = 1;
 
@@ -23,10 +38,12 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public ColumnAlignment Alignment { get; set; } = ColumnAlignment.Left;
 
-        protected override string _Css => $"grid-col {this.CssAlignment}{this.CssHeader}{this.MaxRowCss} {this.AddOnCss}".Trim();
-
         [Parameter]
         public bool IsHeader { get; set; }
+
+        protected string Style => this.IsMaxColumn ? $"width: {this.UIWrapper?.UIOptions?.MaxColumnPercent ?? 50}%" : string.Empty;
+
+        protected override string _Css => this.CleanUpCss($"grid-col {this.CssAlignment} {this.CssHeader} {this.MaxRowCss} {this.AddOnCss}");
 
         protected bool IsMaxColumn => this.Column == this.MaxColumn;
 
@@ -43,10 +60,12 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            int i = 0;
-            builder.OpenElement(i, "td");
+            int i = -1;
+            builder.OpenElement(i++, this._Tag);
             builder.AddAttribute(i++, "class", this._Css);
+            if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
             if (this.ColumnSpan > 1) builder.AddAttribute(i++, "colspan", this.ColumnSpan);
+            if (this.RecordID > 0 && this.Card != null) builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToView(this.RecordID))));
             if (this.IsMaxColumn)
             {
                 builder.OpenElement(i++, "div");

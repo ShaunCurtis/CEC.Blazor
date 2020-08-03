@@ -20,28 +20,10 @@ namespace CEC.Blazor.Components.UIControls
         public NavigationManager NavManager { get; set; }
 
         /// <summary>
-        /// Record Configuration
-        /// </summary>
-        [CascadingParameter]
-        public RecordConfigurationData RecordConfiguration { get; set; }
-
-        /// <summary>
         /// Record ID passed via a cascade
         /// </summary>
         [CascadingParameter(Name = "RecordID")]
         public int RecordID { get; set; } = 0;
-
-        /// <summary>
-        /// On View Event
-        /// </summary>
-        [CascadingParameter(Name = "OnView")]
-        protected Action<int> OnView { get; set; }
-
-        /// <summary>
-        /// OnEdit Event
-        /// </summary>
-        [CascadingParameter(Name = "OnEdit")]
-        protected Action<int> OnEdit { get; set; }
 
         /// <summary>
         /// Boolena to define if each line should navigate to the record Viewer
@@ -54,6 +36,11 @@ namespace CEC.Blazor.Components.UIControls
         /// </summary>
         [Parameter]
         public int ID { get; set; } = 0;
+
+        /// <summary>
+        /// Record Configuration
+        /// </summary>
+        public RecordConfigurationData RecordConfiguration => this.UIWrapper.RecordConfiguration;
 
         /// <summary>
         /// Record ID used by the control
@@ -81,8 +68,8 @@ namespace CEC.Blazor.Components.UIControls
         public void NavigateToView(int id = -1)
         {
             id = id == -1 ? this._ID : id;
-            if (this.OnView is null) ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(PageExitType.ExitToView, id, this.RecordConfiguration.RecordName));
-            else this.OnView.Invoke(id);
+            if (this.UIWrapper.OnView is null) ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(PageExitType.ExitToView, id, this.RecordConfiguration.RecordName));
+            else this.UIWrapper.OnView.Invoke(id);
         }
 
         /// <summary>
@@ -91,8 +78,8 @@ namespace CEC.Blazor.Components.UIControls
         public void NavigateToEditor(int id = -1)
         {
             id = id == -1 ? this._ID : id;
-            if (this.OnView is null) ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, id, this.RecordConfiguration.RecordName));
-            else this.OnEdit.Invoke(id);
+            if (this.UIWrapper.OnEdit is null) ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, id, this.RecordConfiguration.RecordName));
+            else this.UIWrapper.OnEdit.Invoke(id);
         }
     }
 }

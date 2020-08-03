@@ -10,10 +10,10 @@ namespace CEC.Blazor.Components.UIControls
     {
 
         /// <summary>
-        /// Cascaded UIOptions object to act as a container for finer ui control attributes/properties
+        /// Cascaded UIWrapper
         /// </summary>
         [CascadingParameter]
-        public UIOptions UIOptions { get; set; } = new UIOptions();
+        public UIWrapper UIWrapper { get; set; } = new UIWrapper();
 
     }
 }

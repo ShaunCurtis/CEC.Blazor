@@ -4,14 +4,17 @@ using System.Collections.Generic;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardGrid<TItem> : UICardListBase
+    public partial class UICardGrid<TRecord> : UICardListBase
     {
+
+        [Parameter]
+        public RenderFragment Title { get; set; }
 
         [Parameter]
         public RenderFragment TableHeader { get; set; }
 
         [Parameter]
-        public RenderFragment<TItem> RowTemplate { get; set; }
+        public RenderFragment<TRecord> RowTemplate { get; set; }
 
         [Parameter]
         public RenderFragment TableFooter { get; set; }
@@ -26,20 +29,17 @@ namespace CEC.Blazor.Components.UIControls
         public RenderFragment Footer { get; set; }
 
         [Parameter]
-        public string ListTitle { get; set; } = "Collaspible Card";
+        public PagingData<TRecord> Paging { get; set; }
 
-        [Parameter]
-        public PagingData<TItem> Paging { get; set; }
+        protected string CardCSS { get; set; } = "card mt-2";
 
-        public string CardCSS { get; set; } = "card mt-2";
+        protected string HeaderFontSize => this.IsMainHeader ? "display-5": "display-6";
 
-        public string HeaderFontSize => this.IsMainHeader ? "display-5": "display-6";
+        protected string CardHeaderCSS => "card-header bg-secondary text-white";
 
-        public string CardHeaderCSS => "card-header bg-secondary text-white";
+        protected string CardBodyCSS => this.Collapsed ? $"{this._CardBodyCSS} collapse" : $"{this._CardBodyCSS} collapse show";
 
-        public string CardBodyCSS => this.Collapsed ? $"{this._CardBodyCSS} collapse" : $"{this._CardBodyCSS} collapse show";
-
-        public string CardCollapseButtonCSS { get; set; } = "float-right";
+        protected string CollapseButtonCSS { get; set; } = "btn btn-sm btn-outline-primary float-right p-2";
 
         [Parameter]
         public bool IsCollapsible { get; set; } = true;
@@ -52,13 +52,15 @@ namespace CEC.Blazor.Components.UIControls
 
         public bool IsPaging => this.Paging != null;
 
+        public int MaxColumn => this.UIWrapper?.UIOptions?.MaxColumn ?? 2;
+
         private string _CardBodyCSS => "card body card-body-no-margin";
 
         protected bool Collapsed { get; set; } = false;
         
         protected string CollapseText { get => this.Collapsed ? "Show" : "Hide"; }
 
-        private bool IsLoading => this.Paging.Records == null || this.Paging.Records.Count < 1;
+        private bool IsLoading => this.Paging == null || this.Paging.Records == null || this.Paging.Records.Count < 1;
 
         private bool IsError { get; set; }
 
