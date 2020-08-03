@@ -11,7 +11,7 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override string _Css => $"column-normal text-right";
 
-        protected bool Show => this.UIOptions?.ShowEdit ?? true;
+        protected override bool _Show => this.UIOptions?.ShowEdit ?? true;
 
         protected override string _Tag => this.IsHeader ? "th" : "td";
 
@@ -22,7 +22,6 @@ namespace CEC.Blazor.Components.UIControls
                 int i = 0;
                 builder.OpenElement(i, this._Tag);
                 builder.AddAttribute(i++, "class", this._Css);
-                if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 if (!this.IsHeader)
                 {
                     builder.OpenElement(i, "a");

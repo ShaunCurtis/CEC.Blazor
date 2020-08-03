@@ -6,7 +6,6 @@ namespace CEC.Blazor.Components.UIControls
 {
     public partial class UICardDataColumn : UITDColumn
     {
-        public bool Show { get; set; } = true;
 
         protected override string _Css => this.Card.IsNavigation ? $"{base._Css}{this.OverflowCss} cursor-hand" : $"{base._Css}{this.OverflowCss}";
 
@@ -22,11 +21,10 @@ namespace CEC.Blazor.Components.UIControls
             if (this.Show)
             {
                 int i = 0;
-                builder.OpenElement(i, this.Tag);
+                builder.OpenElement(i, this._Tag);
                 builder.AddAttribute(i++, "class", this._Css);
                 builder.AddAttribute(i++, "scope", "col");
                 if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
-                if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToView(this.RecordID))));
                 if (this.IsMaxColumn)
                 {

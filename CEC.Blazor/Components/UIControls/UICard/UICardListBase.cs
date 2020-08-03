@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using CEC.Blazor.Components.Base;
 using CEC.Blazor.Data;
-using CEC.Blazor.Components;
 using System;
 using CEC.Routing.Services;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public class UICardListBase : UIBase, IRecordNavigation
+    public class UICardListBase : UIComponent, IRecordNavigation
     {
         /// <summary>
         /// Injected Router Session Object
@@ -44,12 +42,6 @@ namespace CEC.Blazor.Components.UIControls
         /// </summary>
         [CascadingParameter(Name = "OnEdit")]
         protected Action<int> OnEdit { get; set; }
-
-        /// <summary>
-        /// Boolena to show or hide the control
-        /// </summary>
-        [Parameter]
-        public bool Show { get; set; } = true;
 
         /// <summary>
         /// Boolena to define if each line should navigate to the record Viewer

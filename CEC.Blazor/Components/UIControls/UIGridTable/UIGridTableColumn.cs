@@ -47,7 +47,6 @@ namespace CEC.Blazor.Components.UIControls
             builder.OpenElement(i, "td");
             builder.AddAttribute(i++, "class", this._Css);
             if (this.ColumnSpan > 1) builder.AddAttribute(i++, "colspan", this.ColumnSpan);
-            if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
             if (this.IsMaxColumn)
             {
                 builder.OpenElement(i++, "div");

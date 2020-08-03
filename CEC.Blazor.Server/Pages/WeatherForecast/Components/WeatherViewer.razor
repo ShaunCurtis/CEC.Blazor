@@ -1,12 +1,10 @@
 ﻿@namespace CEC.Blazor.Server.Pages.Components
 @inherits RecordComponentBase<WeatherForecast>
 
-    <CascadingValue Name="WeatherForecastID" Value="this.Service.RecordID">
-
-        <UICard MoreCardCss="@this.CardCSS">
+        <UICard>
 
             <Header>
-                Weather Forecast Viewer - @this.PageTitle
+                @this.PageTitle
             </Header>
 
             <Body>
@@ -120,5 +118,3 @@
             </Body>
 
         </UICard>
-
-    </CascadingValue>

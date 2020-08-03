@@ -37,9 +37,9 @@ namespace CEC.Blazor.Components.UIControls
 
         public string CardHeaderCSS => "card-header bg-secondary text-white";
 
-        public string CardBodyCSS { get; set; } = "card-body-no-margin";
+        public string CardBodyCSS => this.Collapsed ? $"{this._CardBodyCSS} collapse" : $"{this._CardBodyCSS} collapse show";
 
-        public string CardButtonCSS { get; set; } = "float-right";
+        public string CardCollapseButtonCSS { get; set; } = "float-right";
 
         [Parameter]
         public bool IsCollapsible { get; set; } = true;
@@ -52,15 +52,25 @@ namespace CEC.Blazor.Components.UIControls
 
         public bool IsPaging => this.Paging != null;
 
+        private string _CardBodyCSS => "card body card-body-no-margin";
+
         protected bool Collapsed { get; set; } = false;
         
-        protected string CollapseCSS { get => this.Collapsed ? "collapse" : "collapse show"; }
-        
         protected string CollapseText { get => this.Collapsed ? "Show" : "Hide"; }
- 
+
+        private bool IsLoading => this.Paging.Records == null || this.Paging.Records.Count < 1;
+
+        private bool IsError { get; set; }
+
         protected void Toggle()
         {
             this.Collapsed = !this.Collapsed;
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            if (this.IsLoading && firstRender) this.IsError = true;
         }
     }
 }

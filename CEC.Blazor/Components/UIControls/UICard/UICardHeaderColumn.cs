@@ -16,9 +16,7 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public string DisplayName { get; set; }
 
-        public bool Show { get; set; } = true;
-
-        protected override string Tag => "th";
+        protected override string _Tag => "th";
 
         protected string FieldDisplayName { get => string.IsNullOrEmpty(this.DisplayName) ? FieldName : DisplayName; }
 
@@ -39,11 +37,10 @@ namespace CEC.Blazor.Components.UIControls
             if (this.Show)
             {
                 int i = 0;
-                builder.OpenElement(i, this.Tag);
+                builder.OpenElement(i, this._Tag);
                 builder.AddAttribute(i++, "class", this._Css);
                 if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
                 builder.AddAttribute(i++, "scope", "col");
-                if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 if (this.Sorted)
                 {
                     builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.Paging.Sort(e, this.FieldName))));

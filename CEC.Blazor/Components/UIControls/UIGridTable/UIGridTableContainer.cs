@@ -10,19 +10,22 @@ namespace CEC.Blazor.Components.UIControls
     /// The properties are pretty self explanatory and therefore not decorated with summaries
     /// </summary>
 
-    public class UIGridTableContainer : UIBase
+    public class UIGridTableContainer : UIComponent
     {
         [Parameter]
         public int MaxColumn { get; set; } = 1;
 
-        protected override string _Css => $"grid-table {this.AddOnCss}".Trim();
+        protected override string _Tag => "div";
+
+        protected override string _BaseCss => "grid-table";
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            int i = 0;
-            builder.OpenElement(i, "div");
+            this.ClearDuplicateAttributes();
+            int i = -1;
+            builder.OpenElement(i++, this._Tag);
+            builder.AddMultipleAttributes(i++, AdditionalAttributes);
             builder.AddAttribute(i++, "class", this._Css);
-            if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
             builder.OpenComponent<CascadingValue<int>>(i++);
             builder.AddAttribute(i++, "Name", "MaxColumn");
             builder.AddAttribute(i++, "Value", this.MaxColumn);

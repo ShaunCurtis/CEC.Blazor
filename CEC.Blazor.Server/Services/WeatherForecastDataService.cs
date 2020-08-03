@@ -39,7 +39,7 @@ namespace CEC.Blazor.Server.Services
                     Frost = temperatureC < 0,
                     PostCode = "GL2 5TP"
                 };
-                rec.Description = $"Weather is {rec.Outlook}";
+                rec.Description = $"The Weather forecast for {rec.Date.DayOfWeek} {rec.Date.ToLongDateString()} is mostly {rec.Outlook}";
                 Records.Add(rec);
             }
         }

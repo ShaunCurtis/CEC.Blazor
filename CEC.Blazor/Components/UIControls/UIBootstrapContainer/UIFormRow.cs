@@ -9,7 +9,7 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UIFormRow : UIBase
     {
-        protected override string _Css => $"row form-group {AddOnCss.Trim()}".Trim();
+        protected override string _BaseCss => $"row form-group";
 
     }
 }

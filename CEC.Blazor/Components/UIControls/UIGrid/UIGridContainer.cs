@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
-    /// UI Rendering Wrapper to build a row
-    ///  Provides a structured  mechanism for managing Bootstrap class elements used in Editors and Viewers in one place. 
-    /// The properties are pretty self explanatory and therefore not decorated with summaries
+    /// UI Rendering Wrapper to build a Bootstrap Container
     /// </summary>
 
     public class UIGridContainer : UIBase
@@ -15,14 +13,15 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public int MaxColumn { get; set; } = 1;
 
-        protected override string _Css => $"grid-container grid-max-{this.MaxColumn}";
+        protected override string _BaseCss => $"grid-container grid-max-{this.MaxColumn}";
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            this.ClearDuplicateAttributes();
             int i = 0;
             builder.OpenElement(i, "div");
+            builder.AddMultipleAttributes(i++, AdditionalAttributes);
             builder.AddAttribute(i++, "class", this._Css);
-            if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
             builder.OpenComponent<CascadingValue<int>>(i++);
             builder.AddAttribute(i++, "Name", "MaxColumn");
             builder.AddAttribute(i++, "Value", this.MaxColumn);

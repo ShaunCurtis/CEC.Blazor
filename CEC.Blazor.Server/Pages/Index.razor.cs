@@ -53,11 +53,11 @@ namespace CEC.Blazor.Server.Pages
             this.WorldService.MessageChanged -= this.MessageUpdated;
         }
 
-        public void buttonclick()
+        public async void buttonclick()
         {
             this.Message = "Here We Go";
             this.StateHasChanged();
-            this.WorldService.GetWorld();
+            await this.WorldService.GetWorld();
         }
 
         public void buttonchange()

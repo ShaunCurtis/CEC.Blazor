@@ -42,7 +42,6 @@ namespace CEC.Blazor.Components.UIControls
                 int i = 0;
                 builder.OpenElement(i, "div");
                 builder.AddAttribute(i++, "class", this._Css);
-                if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
                 if (this.IsHeader)
                 {
                     builder.OpenElement(i++, "div");

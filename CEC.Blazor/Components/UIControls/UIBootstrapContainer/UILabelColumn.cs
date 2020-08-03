@@ -9,6 +9,6 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UILabelColumn : UIColumn
     {
-        protected override string _Css => $"col-{Columns} col-form-label {AddOnCss.Trim()}".Trim();
+        protected override string _BaseCss => $"col-{Columns} col-form-label";
     }
 }

@@ -12,7 +12,7 @@ namespace CEC.Blazor.Components.UIControls
     /// The properties are pretty self explanatory and therefore not decorated with summaries
     /// </summary>
 
-    public class UITDColumn : UIBase
+    public class UITDColumn : UIComponent
     {
         /// <summary>
         /// Cascaded UICardList
@@ -35,7 +35,7 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public int Column { get; set; } = 1;
 
-        protected override string Tag => "td";
+        protected override string _Tag => "td";
 
     }
 }

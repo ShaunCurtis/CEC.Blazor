@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public class UIErrorHandler : UIBase
+    public class UIErrorHandler : UIComponent
     {
         [Parameter]
         public bool IsError { get; set; } = false;
@@ -11,38 +11,43 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public bool IsLoading { get; set; } = true;
 
+        protected override string _BaseCss => this.IsLoading? "text-center p-3": "label label-error m-2";
+
         [Parameter]
         public string ErrorMessage { get; set; } = "Loading....";
 
+        
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            this.ClearDuplicateAttributes();
+            var i = -1;
             if (IsLoading && IsError)
             {
-                builder.OpenElement(0, "div");
-                builder.AddAttribute(2, "class", "text-center p-3");
-                builder.OpenElement(1, "button");
-                builder.AddAttribute(2, "class", "btn btn-primary");
-                builder.AddAttribute(3, "type", "button");
-                builder.AddAttribute(4, "disabled", "disabled");
-                builder.OpenElement(5, "span");
-                builder.AddAttribute(6, "class", "spinner-border spinner-border-sm pr-2");
-                builder.AddAttribute(2, "role", "status");
-                builder.AddAttribute(2, "aria-hidden", "true");
+                builder.OpenElement(i++, "div");
+                builder.AddAttribute(i++, "class", this._Css);
+                builder.OpenElement(i++, "button");
+                builder.AddAttribute(i++, "class", "btn btn-primary");
+                builder.AddAttribute(i++, "type", "button");
+                builder.AddAttribute(i++, "disabled", "disabled");
+                builder.OpenElement(i++, "span");
+                builder.AddAttribute(i++, "class", "spinner-border spinner-border-sm pr-2");
+                builder.AddAttribute(i++, "role", "status");
+                builder.AddAttribute(i++, "aria-hidden", "true");
                 builder.CloseElement();
-                builder.AddContent(3, "  Loading...");
+                builder.AddContent(i++, "  Loading...");
                 builder.CloseElement();
                 builder.CloseElement();
             }
             else if (IsError)
             {
-                builder.OpenElement(0, "div");
-                builder.OpenElement(1, "span");
-                builder.AddAttribute(2, "class", "label label-error m-2");
-                builder.AddContent(3, ErrorMessage);
+                builder.OpenElement(i++, "div");
+                builder.OpenElement(i++, "span");
+                builder.AddAttribute(i++, "class", this._Css);
+                builder.AddContent(i++, ErrorMessage);
                 builder.CloseElement();
                 builder.CloseElement();
             }
-            else builder.AddContent(0, ChildContent);
+            else builder.AddContent(i++, ChildContent);
         }
     }
 }

@@ -2,9 +2,12 @@
 
 @namespace CEC.Blazor.Server.Pages
 
-<div class="card @this.CardBorderColour">
-    <div class="card-header @this.CardHeaderColour"><h4>@this.PageTitle</h4></div>
-    <div class="card-body pb-0">
+<UICard IsCollapsible="false">
+    <Header>
+        @this.PageTitle
+    </Header>
+
+    <Body>
 
         <UIErrorHandler IsError="@this.IsError" ErrorMessage="@this.RecordErrorMessage">
 
@@ -133,13 +136,13 @@
                             <UIColumn Columns="7">
                                 <UIAlert Alert="this.AlertMessage"></UIAlert>
                             </UIColumn>
-                            <UIButtonColumn Columns="5" AddOnCss="pb-3">
+                            <UIButtonColumn Columns="5">
 
                                 <UIButton Show="this.NavigationCancelled" ClickEvent="this.Cancel" ButtonColour="@UIButton.Colour.BtnWarning">Cancel</UIButton>
 
                                 <UIButton Show="this.NavigationCancelled" ClickEvent="this.SaveAndExit" ButtonColour="@UIButton.Colour.BtnSuccess">Save &amp; Exit</UIButton>
 
-                                <UIButton Show="(!this.IsClean)" ClickEvent="this.Save" ButtonColour="@UIButton.Colour.BtnSuccess">Save</UIButton>
+                                <UIButton Show="!this.IsClean" ClickEvent="this.Save" ButtonColour="@UIButton.Colour.BtnSuccess">Save</UIButton>
 
                                 <UIButton Show="this.ShowExitConfirmation" ClickEvent="this.ConfirmExit" ButtonColour="@UIButton.Colour.BtnDanger">Exit Without Saving</UIButton>
 
@@ -157,7 +160,8 @@
 
         </UIErrorHandler>
 
-    </div>
-</div>
+    </Body>
+
+</UICard>
 
 

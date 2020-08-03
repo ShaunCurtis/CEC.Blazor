@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -42,5 +43,11 @@ namespace CEC.Blazor.Components.UIControls
         /// Max Width Column max size in percent
         /// </summary>
         public int MaxColumnPercent { get; set; } = 50;
+
+        /// <summary>
+        /// Hashtable of Key Value Pairs for additional Properties
+        /// </summary>
+        public Hashtable Properties { get; set; } = new Hashtable();
+
     }
 }

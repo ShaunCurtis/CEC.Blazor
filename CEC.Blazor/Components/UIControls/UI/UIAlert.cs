@@ -1,31 +1,35 @@
 ﻿using Microsoft.AspNetCore.Components;
-using CEC.Blazor.Data;
-using Microsoft.AspNetCore.Components.Rendering;
 
 namespace CEC.Blazor.Components.UIControls
 {
     public class UIAlert : UIBase
     {
+        /// <summary>
+        /// Alert to display
+        /// </summary>
         [Parameter]
         public Alert Alert { get; set; } = new Alert();
 
+        /// <summary>
+        /// Property for sizing alert
+        /// </summary>
         [Parameter]
         public bool IsSmall { get; set; }
 
-        protected bool IsAlert => this.Alert != null && this.Alert.IsAlert;
+        /// <summary>
+        /// Boolean Show override
+        /// </summary>
+        protected override bool _Show => this.Alert?.IsAlert ?? false;
 
-        protected override string _Css => this.IsSmall ? $"alert alert-sm {this.Alert.CSS}" : $"alert {this.Alert.CSS}";
+        /// <summary>
+        /// CSS override
+        /// </summary>
+        protected override string _Css => this.CleanUpCss(this.IsSmall ? $"alert alert-sm {this.Alert.CSS}" : $"alert {this.Alert.CSS}");
 
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            if (this.IsAlert)
-            {
-                builder.OpenElement(0, "div");
-                builder.AddAttribute(1, "class", this._Css);
-                builder.AddContent(2, (MarkupString)this.Alert.Message);
-                builder.CloseElement();
-            }
-        }
+        /// <summary>
+        /// Override the content with the alert message
+        /// </summary>
+        protected override string _Content => this.Alert?.Message ?? string.Empty;
 
         #region CSS Constants
 

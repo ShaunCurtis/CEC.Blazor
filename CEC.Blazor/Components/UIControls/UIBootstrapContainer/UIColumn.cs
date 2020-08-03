@@ -3,13 +3,14 @@
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
-    /// UI Rendering Wrapper to build a Column
-    ///  Provides a structured  mechanism for managing Bootstrap class elements used in Editors and Viewers in one place. 
-    /// The properties are pretty self explanatory and therefore not decorated with summaries
+    /// UI Rendering Wrapper to build a Bootstrap Column
     /// </summary>
 
-    public class UIColumn : UIColumnBase
+    public class UIColumn : UIBase
     {
-        protected override string _Css => $"col-{Columns} {this.FormGroup}{AddOnCss.Trim()}".Trim();
+        [Parameter]
+        public int Columns { get; set; } = 1;
+
+        protected override string _BaseCss => $"col-{Columns}";
     }
 }

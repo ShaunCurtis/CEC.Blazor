@@ -12,39 +12,59 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UIButton : UIBase
     {
+        /// <summary>
+        /// Property setting the button HTML attribute Type
+        /// </summary>
         [Parameter]
         public string ButtonType { get; set; } = "button";
 
+        /// <summary>
+        /// Property to set the Bootstrap button size
+        /// </summary>
         [Parameter]
         public string ButtonFlavor { get; set; } = "";
 
+        /// <summary>
+        /// Property to set the Bootstrap colour
+        /// </summary>
         [Parameter]
         public string ButtonColour { get; set; } = "btn-primary";
 
+        /// <summary>
+        /// Property to set the HTML value
+        /// </summary>
         [Parameter]
         public string Value { get; set; } = "";
 
-        [Parameter]
-        public bool Show { get; set; } = true;
-
+        /// <summary>
+        /// Callback for a button click event
+        /// </summary>
         [Parameter]
         public EventCallback<MouseEventArgs> ClickEvent { get; set; }
 
-        protected override string _Css => $"btn {ButtonFlavor.Trim()} {ButtonColour.Trim()} {AddOnCss.Trim()}".Trim();
+        /// <summary>
+        /// Override of the CSS
+        /// </summary>
+        protected override string _Css => this.CleanUpCss($"btn {ButtonFlavor} {ButtonColour} {AddOnCss}");
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             if (this.Show)
             {
-                builder.OpenElement(0, "button");
-                builder.AddAttribute(1, "type", this.ButtonType);
-                builder.AddAttribute(2, "class", this._Css);
-                builder.AddAttribute(3, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, this.ButtonClick));
-                builder.AddContent(4, ChildContent);
+                var i = -1;
+                builder.OpenElement(i++, "button");
+                builder.AddAttribute(i++, "type", this.ButtonType);
+                builder.AddAttribute(i++, "class", this._Css);
+                builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, this.ButtonClick));
+                builder.AddContent(i++, ChildContent);
                 builder.CloseElement();
             }
         }
 
+        /// <summary>
+        /// Event handler for button click
+        /// </summary>
+        /// <param name="e"></param>
         protected void ButtonClick(MouseEventArgs e) => this.ClickEvent.InvokeAsync(e);
 
         #region CSS Constants
@@ -74,6 +94,7 @@ namespace CEC.Blazor.Components.UIControls
             public static string BtnOutlineInfo = "btn-outline-info";
 
         }
+        
         public static class Size
         {
             public static string BtnLarge = "btn-lg";

@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
-    /// UI Rendering Wrapper to build a row
+    /// UI Rendering Wrapper to build a Bootstrap Row
     /// </summary>
 
     public class UIRow : UIBase
     {
-        protected override string _Css => $"row {AddOnCss.Trim()}".Trim();
+        protected override string _BaseCss => "row";
     }
 }

@@ -1,49 +1,135 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System.Collections.Generic;
 
 namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
-    /// Base UI Rendering Wrapper to build a Botstrap Component
+    /// Base UI Rendering Wrapper to build a Bootstrap Html Component
     /// </summary>
 
-    public class UIBase : ComponentBase
+    public abstract class UIBase : ComponentBase
     {
 
-        [Parameter]
-        public string ComponentId { get; set; } = "";
+        #region Public Properties
+        /// <summary>
+        /// Gets or sets a collection of additional attributes that will be applied to the created <c>form</c> element.
+        /// </summary>
+        [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; }
 
+        /// <summary>
+        /// Child Content to add to Component
+        /// </summary>
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        /// <summary>
+        /// Css for component - can be overridden and fixed in inherited components
+        /// </summary>
         [Parameter]
-        public string Css { get; set; } = string.Empty;
+        public virtual string Css { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Additional Css to tag on the end of the base Css
+        /// </summary>
         [Parameter]
         public string AddOnCss { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Boolean property that dictates if the componet is rendered
+        /// </summary>
         [Parameter]
-        public bool IsFormGroup { get; set; }
+        public virtual bool Show { get; set; } = true;
 
-        [CascadingParameter]
-        public UIOptions UIOptions { get; set; } = new UIOptions();
+        #endregion
 
+        #region Protected properties used by inheriting components
+
+        /// <summary>
+        /// Html attributes that need to be removed if set on the control
+        /// </summary>
+        protected List<string> UsedAttributes { get; set; } = new List<string>() { "class" };
+
+
+        /// <summary>
+        /// Html tag for the control - default is a div.
+        /// In general use css display to change the block behaviour
+        /// </summary>
         protected virtual string _Tag { get; set; } = "div";
 
-        protected string FormGroup => this.IsFormGroup ? "form-group " : string.Empty;
+        /// <summary>
+        /// Property for fixing the base Css.  Base returns the Parameter Css, but can be overridden in inherited classes
+        /// </summary>
+        protected virtual string _BaseCss => this.Css;
 
-        protected virtual string _Css => $"{this.Css} {AddOnCss.Trim()}".Trim();
+        /// <summary>
+        /// Property for fixing the Add On Css.  Base returns the Parameter AddOnCss, but can be overridden say to String.Empty in inherited classes
+        /// </summary>
+        protected virtual string _AddOnCss => this.AddOnCss;
 
+        /// <summary>
+        /// Actual calculated Css string used in the component
+        /// </summary>
+        protected virtual string _Css => this.CleanUpCss($"{this._BaseCss} {this._AddOnCss}");
+
+        /// <summary>
+        /// Show Property used by the builder - allows override of the Parameter set version
+        /// </summary>
+        protected virtual bool _Show => this.Show;
+
+        /// <summary>
+        /// Property to override the content of the component
+        /// </summary>
+        protected virtual string _Content => string.Empty;
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// inherited
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            int i = 0;
-            builder.OpenElement(i, this._Tag);
-            builder.AddAttribute(i++, "class", this._Css);
-            if (!string.IsNullOrEmpty(this.ComponentId)) builder.AddAttribute(i++, "id", this.ComponentId);
-            if (this.ChildContent != null) builder.AddContent(i++, ChildContent);
-            builder.CloseElement();
+            if (this._Show)
+            {
+                this.ClearDuplicateAttributes();
+                int i = -1;
+                builder.OpenElement(i++, this._Tag);
+                builder.AddMultipleAttributes(i++, AdditionalAttributes);
+                builder.AddAttribute(i++, "class", this._Css);
+                if (string.IsNullOrEmpty(this._Content)) builder.AddContent(i++, (MarkupString)this._Content);
+                else if (this.ChildContent != null) builder.AddContent(i++, ChildContent);
+                builder.CloseElement();
+            }
         }
+
+        /// <summary>
+        /// Method to clean up the Additional Attributes
+        /// </summary>
+        protected void ClearDuplicateAttributes()
+        {
+            if (this.AdditionalAttributes != null && this.UsedAttributes != null)
+            {
+                foreach (var item in this.UsedAttributes)
+                {
+                    if (this.AdditionalAttributes.ContainsKey(item)) this.AdditionalAttributes.Remove(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Method to clean up the Css - remove leading and trailing spaces and any multiple spaces
+        /// </summary>
+        /// <param name="css"></param>
+        /// <returns></returns>
+        protected string CleanUpCss(string css)
+        {
+            while (css.Contains("  ")) css = css.Replace("  ", " ");
+            return css.Trim();
+        }
+
+        #endregion
     }
 }

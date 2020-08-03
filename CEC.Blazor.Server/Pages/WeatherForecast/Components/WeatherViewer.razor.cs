@@ -15,9 +15,7 @@ namespace CEC.Blazor.Server.Pages.Components
         [CascadingParameter(Name ="WeatherForecastID")]
         public int WeatherForecastID { get; set; }
 
-        public override string PageTitle =>  this.Service?.Record?.Date.AsShortDate() ?? string.Empty;
-
-        private string CardCSS => this.IsModal ? "m-0" : "";
+        public override string PageTitle => $"Weather Forecast Viewer {this.Service?.Record?.Date.AsShortDate() ?? string.Empty}".Trim();
 
         protected async override Task OnInitializedAsync()
         {
