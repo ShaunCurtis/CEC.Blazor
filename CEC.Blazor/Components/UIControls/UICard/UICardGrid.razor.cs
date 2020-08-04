@@ -1,10 +1,12 @@
 ﻿using CEC.Blazor.Components.Base;
+using CEC.Blazor.Data;
+using CEC.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardGrid<TRecord> : UICardListBase
+    public partial class UICardGrid<TRecord> where TRecord : IDbRecord<TRecord>, new()
     {
 
         [Parameter]
@@ -29,7 +31,7 @@ namespace CEC.Blazor.Components.UIControls
         public RenderFragment Footer { get; set; }
 
         [Parameter]
-        public PagingData<TRecord> Paging { get; set; }
+        public IControllerPagingService<TRecord> Paging { get; set; }
 
         protected string CardCSS { get; set; } = "card mt-2";
 
@@ -60,9 +62,9 @@ namespace CEC.Blazor.Components.UIControls
         
         protected string CollapseText { get => this.Collapsed ? "Show" : "Hide"; }
 
-        private bool IsLoading => this.Paging == null || this.Paging.Records == null || this.Paging.Records.Count < 1;
+        private bool IsLoading => this.Paging == null || this.Paging.PagedRecords == null || this.Paging.PagedRecords.Count < 1;
 
-        private bool IsError { get; set; }
+        private bool IsError => !this.Paging?.HasPagedRecords ?? true ;
 
         protected void Toggle()
         {
@@ -72,7 +74,6 @@ namespace CEC.Blazor.Components.UIControls
         protected override void OnAfterRender(bool firstRender)
         {
             base.OnAfterRender(firstRender);
-            if (this.IsLoading && firstRender) this.IsError = true;
         }
     }
 }

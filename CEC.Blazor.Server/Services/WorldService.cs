@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Services
@@ -32,7 +28,7 @@ namespace CEC.Blazor.Server.Services
             await Task.Delay(1000);
             this.Message = "Ah there you are, hiding away down the Orion Arm";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
-            await Task.Delay(1000);
+            await Task.Delay(2000);
             this.Message = @"Greetings Earthing \\//";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -48,7 +44,7 @@ namespace CEC.Blazor.Server.Services
             await Task.Delay(1000);
             this.Message = "Ah there you are, hiding away down the Orion Arm";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
-            await Task.Delay(1000);
+            await Task.Delay(2000);
             this.Message = @"Greetings Earthing \\//";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
         }

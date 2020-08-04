@@ -6,3 +6,101 @@
 @import "../wwwroot/css/open-iconic/font/css/open-iconic-bootstrap.min.css";
 @import "overrides";
 @import "addons";
+
+
+
+/*Left Nav CSS */
+div.sidebar {
+    background-color: rgb(78,115,223);
+    color: rgb(255,255,255);
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+div.sidebar a, .sidebar a:visited {
+    color: rgb(255,255,255);
+}
+
+
+div.sidebar .sidebar-divider {
+    display: block;
+    border-bottom: 2px solid rgba(240,240,240,0.2);
+}
+
+div.sidebar .sidebar-brand {
+    display: block;
+    height: 4.375rem;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 1.0rem 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    z-index: 1;
+}
+
+div.sidebar .sidebar-brand .sidebar-brand-icon {
+    display: inline-block;
+    font-size: 2rem;
+}
+
+div.sidebar .sidebar-brand .sidebar-brand-text {
+    display: inline-block;
+}
+
+div.sidebar .nav-item {
+    padding: 5px 10px 5px 15px;
+}
+
+div.sidebar .sidebar-heading {
+    font-size: 1.1rem;
+    font-variant-caps: all-small-caps;
+    color: rgb(224,224,224);
+    padding: 5px 10px 5px 15px;
+}
+
+div.sidebar .nav-item .collapse {
+    margin-left:10px;
+    margin-right: 10px;
+    background-color: rgb(255,255,255);
+    border-radius: 4px;
+    z-index: 1;
+}
+
+div.sidebar .nav-item .collapsing {
+    display: none;
+    transition: none;
+}
+
+div.sidebar .nav-item .collapse-inner {
+    padding: 8px 10px 8px 15px;
+}
+
+div.sidebar .nav-item .collapse-header {
+    font-variant-caps: all-small-caps;
+    color: rgb(92,92,92);
+}
+
+div.sidebar .nav-item .collapse a {
+    display: block;
+    margin-top: 10px;
+    color: rgb(16,16,16);
+}
+
+div.sidebar .nav-item .nav-link[data-toggle="collapse"]::after {
+    width: 1rem;
+    text-align: center;
+    float: right;
+    vertical-align: 0;
+    border: 0;
+    font-weight: 900;
+    content: '\f107';
+    font-family: 'Font Awesome 5 Free';
+}
+
+div.sidebar .nav-item .nav-link[data-toggle="collapse"].collapsed::after {
+    content: '\f105';
+}
+

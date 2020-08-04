@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
 {
-    public interface IControlService<T> where T : IDbRecord<T>, new()
+    public interface IControllerService<T> where T : IDbRecord<T>, new()
     {
         /// <summary>
         /// Unique ID for the Service
@@ -16,12 +16,12 @@ namespace CEC.Blazor.Services
         /// </summary>
         public Guid ID { get; set; }
 
-        public IDbService<T> Service { get; set; }
+        public IDataService<T> Service { get; set; }
 
         /// <summary>
         /// Record Configuration Object - provides name and routing information for the DB Model Class
         /// </summary>
-        public RecordConfigurationData RecordConfiguration { get; set; }
+        public RecordConfigurationData RecordConfiguration { get; }
 
         /// <summary>
         /// Current Record - for CRUD Component Operations
@@ -160,11 +160,15 @@ namespace CEC.Blazor.Services
         }
 
         /// <summary>
+        /// Method to load up the Paged Data to display
+        /// </summary>
+        public Task LoadPagingAsync(bool withDelegate = true);
+
+        /// <summary>
         /// Method to get a page of data from the database - used during paging operations
         /// </summary>
-        /// <param name="paging"></param>
         /// <returns></returns>
-        public Task<List<T>> GetDataPageAsync(PagingData<T> paging);
+        public Task<List<T>> GetDataPageAsync();
 
         /// <summary>
         /// Method to rest the list to empty
@@ -177,6 +181,5 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <returns></returns>
         public Task CopyRecordAsync() => Task.CompletedTask;
-
     }
 }

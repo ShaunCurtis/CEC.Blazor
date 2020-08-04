@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Services
 {
-    public class WeatherForecastDataService : BaseDataService<WeatherForecast>, IDbService<WeatherForecast>
+    public class WeatherForecastDataService : BaseDataService<WeatherForecast>, IDataService<WeatherForecast>
     {
 
         private List<WeatherForecast> Records { get; set; }
 
         public WeatherForecastDataService(IConfiguration configuration) : base(configuration)
         {
-            this.Configuration = new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
+            this.RecordConfiguration = new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
             this.GetDummyRecords(100);
         }
 
@@ -39,7 +39,7 @@ namespace CEC.Blazor.Server.Services
                     Frost = temperatureC < 0,
                     PostCode = "GL2 5TP"
                 };
-                rec.Description = $"The Weather forecast for {rec.Date.DayOfWeek} {rec.Date.ToLongDateString()} is mostly {rec.Outlook}";
+                rec.Description = $"The Weather forecast for {rec.Date.DayOfWeek} {rec.Date.ToLongDateString()} is mostly {rec.Outlook} and {rec.Summary}";
                 Records.Add(rec);
             }
         }

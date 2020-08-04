@@ -26,7 +26,7 @@ namespace CEC.Blazor.Components.UIControls
         public int RecordID { get; set; } = 0;
 
         /// <summary>
-        /// Boolena to define if each line should navigate to the record Viewer
+        /// Boolean to define if each line should navigate to the record Viewer
         /// </summary>
         [Parameter]
         public bool IsNavigation { get; set; } = true;
@@ -40,12 +40,12 @@ namespace CEC.Blazor.Components.UIControls
         /// <summary>
         /// Record Configuration
         /// </summary>
-        public RecordConfigurationData RecordConfiguration => this.UIWrapper.RecordConfiguration;
+        public RecordConfigurationData RecordConfiguration => this.UIWrapper?.RecordConfiguration ?? new RecordConfigurationData();
 
         /// <summary>
         /// Record ID used by the control
         /// </summary>
-        protected int _ID { get => this.RecordID > 0 ? this.RecordID : this.ID; }
+        protected int _ID => this.RecordID > 0 ? this.RecordID : this.ID;
 
         /// <summary>
         /// Boolean for UI to check if navigation is ok 

@@ -1,4 +1,5 @@
 ﻿
+using CEC.Blazor.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
@@ -9,7 +10,7 @@ namespace CEC.Blazor.Components.UIControls
     /// UI Rendering Wrapper to build a Grid Column
     /// </summary>
 
-    public class UIGridTableHeaderColumn<TRecord> : UIGridTableColumn<TRecord>
+    public class UIGridTableHeaderColumn<TRecord> : UIGridTableColumn<TRecord> where TRecord : IDbRecord<TRecord>, new()
     {
 
         [Parameter]

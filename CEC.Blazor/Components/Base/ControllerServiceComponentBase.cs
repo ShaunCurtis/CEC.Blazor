@@ -14,7 +14,7 @@ namespace CEC.Blazor.Components.Base
         /// Service with IDataRecordService Interface that corresponds to Type T
         /// Normally set as the first line in the Page OnInitialized event.
         /// </summary>
-        public IControlService<T> Service { get; set; }
+        public IControllerService<T> Service { get; set; }
 
         /// <summary>
         /// Property for the ID of the record to retrieve.

@@ -8,6 +8,7 @@ using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
 using System;
 using CEC.Blazor.Data;
+using CEC.Blazor.Services;
 
 namespace CEC.Blazor.Server.Pages.Components
 {
@@ -29,19 +30,6 @@ namespace CEC.Blazor.Server.Pages.Components
             this.UIOptions.MaxColumn = 3;
             this.Service = this.ControllerService;
             base.OnInitialized();
-        }
-
-        /// <summary>
-        /// Overrides the base method to load the sorted version of the list getter
-        /// and set the default sort column
-        /// </summary>
-        /// <param name="withDelegate"></param>
-        protected async override Task LoadPagingAsync(bool withDelegate = true)
-        {
-            await base.LoadPagingAsync(false);
-            this.Paging.PageLoaderAsync = new PagingData<WeatherForecast>.PageLoaderDelegateAsync(this.ControllerService.GetDataPageWithSortingAsync);
-            this.Paging.DefaultSortColumn = "WeatherForecastID";
-            await this.Paging.LoadAsync();
         }
 
         /// <summary>

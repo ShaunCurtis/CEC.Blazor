@@ -1,4 +1,5 @@
 ﻿using CEC.Blazor.Data;
+using CEC.Blazor.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -8,14 +9,9 @@ namespace CEC.Blazor.Components.Base
     {
 
         /// <summary>
-        /// Paging object that sorts the dataset into pages and tracks the page being displayed
+        /// Paging Interface giving access to the specific service that sorts the dataset into pages and tracks the page being displayed
         /// </summary>
-        public PagingData<T> Paging { get; set; }
-
-        /// <summary>
-        /// Used by Button Controls to checking if to display control or not if bottons are disabled
-        /// </summary>
-        public bool IsPagination => this.Paging != null && this.Paging.IsPagination;
+        public IControllerPagingService<T> Paging => this.Service != null ? (IControllerPagingService<T>)this.Service : null;
 
         /// <summary>
         /// constructed Value for the List Title based on the RecordConfiguration
@@ -23,21 +19,16 @@ namespace CEC.Blazor.Components.Base
         public string ListTitle => this.IsService ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : "Record List"; 
 
         /// <summary>
-        /// Used to determine if the page can display data
-        /// </summary>
-        public bool IsError => !(this.Paging != null && this.Service != null && this.Paging.Records != null);
-
-        /// <summary>
         /// Should be overridden in inherited components
         /// and called after setting the Service
         /// </summary>
         protected async override Task OnInitializedAsync()
         {
-            this.Paging = null;
             if (this.IsService)
             {
                 this.Service.Reset();
-                await this.LoadPagingAsync();
+                await this.Service.LoadPagingAsync();
+                this.Paging.PageHasChanged += UpdateUI;
             }
             this.Service.ListHasChanged += this.OnRecordsUpdate;
             await base.OnInitializedAsync();
@@ -53,37 +44,9 @@ namespace CEC.Blazor.Components.Base
         {
             if (this.IsService)
             {
-                this.Paging.ResetRecordCount(Service.RecordCount);
                 await this.Paging.LoadAsync();
             }
             this.StateHasChanged();
-        }
-
-        /// <summary>
-        /// Method to load up the Pager.  Gets a new PaginationData object, 
-        /// loads the delegate with the default service GetDataPage method and loads the first page
-        /// Can be overrideden for more complex situations
-        /// </summary>
-        protected async virtual Task LoadPagingAsync(bool withDelegate = true)
-        {
-            if (this.IsService)
-            {
-                // set the record to null to force a reload of the records
-                Service.Records = null;
-                // Cresates a new paging data object
-                this.Paging = new PagingData<T>(Service.DefaultPageSize, Service.RecordCount);
-                // if requested adds a default service function to the delegate
-                if (withDelegate)
-                {
-                    this.Paging.PageLoaderAsync = new PagingData<T>.PageLoaderDelegateAsync(Service.GetDataPageAsync);
-                    // loads the paging object
-                    await this.Paging.LoadAsync();
-                    // forces a UI update
-                    this.UpdateState();
-                }
-                // links the page p=changed event to update the UI
-                this.Paging.PageHasChanged += UpdateUI;
-            }
         }
 
         /// <summary>

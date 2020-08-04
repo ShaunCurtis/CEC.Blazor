@@ -1,9 +1,10 @@
 ﻿@namespace CEC.Blazor.Server.Pages.Components
 
 @inherits ListComponentBase<WeatherForecast>
+
 <UIWrapper UIOptions="@this.UIOptions" RecordConfiguration="@this.Service.RecordConfiguration" OnView="@OnView" OnEdit="@OnEdit">
 
-    <UICardGrid TItem="WeatherForecast" IsCollapsible="true" Paging="this.Paging">
+    <UICardGrid TRecord="WeatherForecast" IsCollapsible="true" Paging="this.Paging">
 
         <Title>
             @this.ListTitle
@@ -41,7 +42,7 @@
 
             <UIListButtonRow>
                 <Paging>
-                    <UIPagingControl TRecord="WeatherForecast" Paging="this.Paging"></UIPagingControl>
+                    <PagingControl TRecord="WeatherForecast" Paging="this.Paging"></PagingControl>
                 </Paging>
             </UIListButtonRow>
 
