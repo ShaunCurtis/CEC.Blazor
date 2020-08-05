@@ -46,29 +46,36 @@ It labels a method as asynchronous and :
 1. Lets you use the *await* keyword to wait on the completion of an asynchronous task.
 2. Wraps any return value in a task object set to complete.
 
-> A word on naming conventions.  It's become common practice to post fix Async on the end of an method name that can be run asynchronously.  
+> A word on naming conventions.  It's become common practice to postfix Async on the end of a method name that can be run asynchronously.  
 
 ##### The Async Task Patterns
+
+The Async Task patterns are used when you want to run one or more Tasks within your method.  You can run normal synchronous code within the same method.
 
 The classic pattern:
 ```c#
 private async Task MethodAsync(...)
 {
-    do some work;
+    do_normal_stuff;_
+    await do_some_work_Async;
+    do_dependant_stuff;_
 }
 ```
 or 
 ```c#
 private async Task<myobject> MethodAsync(...)
 {
-    do some work;
+    do_normal_stuff;_
+    await do_some_work_Async;
+    do_dependant_stuff;_
     return new myobject;
 }
 ```
 
 ##### The Task Patterns
 
-While these patterns don't contain the *async* keyword, they can be run asynchronously.
+While these patterns don't contain the *async* keyword, they can be run asynchronously.  They contain normal code, 
+often a relatively long running calculation.  They are also used in method declarations in Interfaces and base classes.
 
 ```c#
 private Task MethodAsync(...)
@@ -255,10 +262,10 @@ protected void MessageUpdated(object sender, EventArgs e) => InvokeAsync(this.St
 This is wired to the *CosmicDirectoryService.MessageChanged* event in *OnInitializedAsync()*.
 
 ```c#
-this.Message = this.CosmicDirectoryService.Message;
+    this.CosmicDirectoryService.MessageChanged += this.MessageUpdated;
 ```
 
-This event is triggered whenever the service changes the message.
+This event is triggered whenever the service changes the message.  For example:
 
 ```c#
 this.Message = "Ah there you are, hiding away down the Orion Arm";
