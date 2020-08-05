@@ -14,6 +14,9 @@ namespace CEC.Blazor.Server.Services
     public class WeatherForecastDataService : BaseDataService<WeatherForecast>, IDataService<WeatherForecast>
     {
 
+        /// <summary>
+        /// internal Property to hold the dummy records for CRUD operations
+        /// </summary>
         private List<WeatherForecast> Records { get; set; }
 
         public WeatherForecastDataService(IConfiguration configuration) : base(configuration)
@@ -22,10 +25,14 @@ namespace CEC.Blazor.Server.Services
             this.GetDummyRecords(100);
         }
 
-        private void GetDummyRecords (int recordcount)
+        /// <summary>
+        /// Method to get a set of 100 dummy records
+        /// </summary>
+        /// <param name="recordcount"></param>
+        private void GetDummyRecords(int recordcount)
         {
             this.Records = new List<WeatherForecast>();
-            for(var i = 1; i <= recordcount; i++ )
+            for (var i = 1; i <= recordcount; i++)
             {
                 var rng = new Random();
                 var temperatureC = rng.Next(-5, 35);
@@ -44,13 +51,32 @@ namespace CEC.Blazor.Server.Services
             }
         }
 
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<WeatherForecast> GetRecordAsync(int id)
         {
             return Task.FromResult(this.Records.FirstOrDefault(item => item.WeatherForecastID == id));
         }
 
-        public Task<List<WeatherForecast>> GetRecordListAsync() => Task.FromResult(this.Records);
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<WeatherForecast>> GetRecordListAsync()
+        {
+            // Delay to demonstrate Async Programming
+            await Task.Delay(2000);
+            return this.Records;
+        }
 
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
         public async Task<DbTaskResult> UpdateRecordAsync(WeatherForecast record)
         {
             var rec = await GetRecordAsync(record.WeatherForecastID);
@@ -61,6 +87,11 @@ namespace CEC.Blazor.Server.Services
             return result;
         }
 
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
         public Task<DbTaskResult> AddRecordAsync(WeatherForecast record)
         {
             record.WeatherForecastID = this.Records.Max(item => item.WeatherForecastID) + 1;
@@ -69,6 +100,11 @@ namespace CEC.Blazor.Server.Services
             return Task.FromResult(result);
         }
 
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<DbTaskResult> DeleteRecordAsync(int id)
         {
             var rec = await GetRecordAsync(id);

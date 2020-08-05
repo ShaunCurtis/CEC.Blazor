@@ -29,6 +29,7 @@ namespace CEC.Blazor.Server.Pages.Components
         {
             this.UIOptions.MaxColumn = 3;
             this.Service = this.ControllerService;
+            this.Service.Reset();
             base.OnInitialized();
         }
 

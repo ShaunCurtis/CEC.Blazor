@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor", "CEC.Blazor\CE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.Server", "CEC.Blazor.Server\CEC.Blazor.Server.csproj", "{4BCFDC54-5E15-4D51-8E0F-1A837001263C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{295A9984-5DBE-427B-815F-7FB8735DC716}"
+	ProjectSection(SolutionItems) = preProject
+		AsyncProgramming.md = AsyncProgramming.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

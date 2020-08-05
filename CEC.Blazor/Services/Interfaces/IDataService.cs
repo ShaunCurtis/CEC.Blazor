@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
 {
-    public interface IDataService<T> where T : new()
+    public interface IDataService<TRecord> where TRecord : new()
     {
         /// <summary>
         /// Record Configuration Property
@@ -17,28 +17,28 @@ namespace CEC.Blazor.Services
         /// Method to get the Record List
         /// </summary>
         /// <returns></returns>
-        public Task<List<T>> GetRecordListAsync() => Task.FromResult(new List<T>());
+        public Task<List<TRecord>> GetRecordListAsync() => Task.FromResult(new List<TRecord>());
 
         /// <summary>
         /// Method to get a Record
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<T> GetRecordAsync(int id) => Task.FromResult(new T());
+        public Task<TRecord> GetRecordAsync(int id) => Task.FromResult(new TRecord());
 
         /// <summary>
         /// Method to update a record
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public Task<DbTaskResult> UpdateRecordAsync(T record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+        public Task<DbTaskResult> UpdateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
         /// <summary>
         /// method to add a record
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public Task<DbTaskResult> AddRecordAsync(T record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+        public Task<DbTaskResult> AddRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
         /// <summary>
         /// Method to delete a record

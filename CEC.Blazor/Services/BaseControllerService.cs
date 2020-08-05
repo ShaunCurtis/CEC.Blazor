@@ -180,6 +180,7 @@ namespace CEC.Blazor.Services
             this.Record = new T();
             this.ShadowRecord = new T();
             this.Records = new List<T>();
+            this.PagedRecords = null;
             this.SetClean();
         }
 

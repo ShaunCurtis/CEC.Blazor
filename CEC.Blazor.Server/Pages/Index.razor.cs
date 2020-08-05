@@ -13,57 +13,40 @@ namespace CEC.Blazor.Server.Pages
     {
 
         [Inject]
-        protected WorldService WorldService { get; set; }
+        protected CosmicDirectoryService CosmicDirectoryService { get; set; }
 
-        [Inject]
-        protected RouterSessionService RouterSessionService { get; set; }
-
-        [Inject]
-        protected ProtectedSessionStorage ProtectedSessionStorage { get; set; }
-
-
-        public Guid GUID = Guid.NewGuid();
-
-        protected string Message { get; set; }
-
-        private string Alert = "Go!"; 
+        protected string Message => CosmicDirectoryService?.Message ?? "Waiting...";
 
         protected override Task OnInitializedAsync()
         {
-            this.WorldService.MessageChanged += this.MessageUpdated;
-            this.Message = this.WorldService.Message;
-            this.Message = "Waiting for an intercosmic connection";
+            this.CosmicDirectoryService.MessageChanged += this.MessageUpdated;
             return Task.CompletedTask;
         }
 
-        protected async override Task OnAfterRenderAsync(bool firstRender)
+        protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender) await this.WorldService.GetWorld();
+            if (firstRender) return this.CosmicDirectoryService.GetWorldAsync(true);
+            else return Task.CompletedTask;
         }
 
-        protected void MessageUpdated(object sender, EventArgs e)
+        protected void MessageUpdated(object sender, EventArgs e) => InvokeAsync(this.StateHasChanged);
+
+        public void Dispose() => this.CosmicDirectoryService.MessageChanged -= this.MessageUpdated;
+
+        public void ButtonClicked(bool fast)
         {
-            this.Message = this.WorldService.Message;
-            this.Alert = this.WorldService.Message;
-            InvokeAsync(this.StateHasChanged);
+            // This calls the unsafe function described in the Async Programming Article
+            // this.CosmicDirectoryService.GetWorld(fast);
+            this.CosmicDirectoryService.GetWorldAsync(fast).ContinueWith(task =>
+            {
+                InvokeAsync(this.StateHasChanged);
+            });
         }
 
-        public void Dispose()
+        public void UnsafeButtonClicked(bool fast)
         {
-            this.WorldService.MessageChanged -= this.MessageUpdated;
+            // This calls the unsafe function described in the Async Programming Article
+            this.CosmicDirectoryService.GetWorld(fast);
         }
-
-        public async void buttonclick()
-        {
-            this.Message = "Here We Go";
-            this.StateHasChanged();
-            await this.WorldService.GetWorld();
-        }
-
-        public void buttonchange()
-        {
-            this.Alert = this.WorldService.Message;
-        }
-
     }
 }
