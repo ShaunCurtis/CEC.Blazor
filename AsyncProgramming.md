@@ -1,31 +1,18 @@
 # Understanding Async Programming in C# and Blazor
 
-This article provides an insight into async programming in C# in Blazor.  I make no claim to be an expert, so this is a summary of my recent
-experiences and knowledge acquisition.  Ask a programmer if they understand async progamming.  They will probably nod their heads and then say yes. 
-I was one of those until I started to use async programming in earnest.  I soon became painfully aware of the shallow depth of that knowledge. 
-Yes I knew what it was and could explain it in broad terms, but actually writing well behaved code, ....
+This article provides an insight into async programming in C# in Blazor.  I make no claim to be an expert, so this is a summary of my recent experiences and knowledge acquisition.  Ask a programmer if they understand async progamming.  They will probably nod their heads and then say yes. I was one of those until I started to use async programming in earnest.  I soon became painfully aware of the shallow depth of that knowledge. Yes I knew what it was and could explain it in broad terms, but actually writing well behaved code, ....
 
 ##### So, What is Async(hronous) Programming?
 
-Put simply, asynchronous programming lets us run several tasks in parallel - like 
-driving your car whilst talking to your passenger.  There's a very good explanation on the Microsoft Docs site describing 
-[how to make a parallel task hot or sequential luke warm breakfast](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/).
+Put simply, asynchronous programming lets us run several tasks in parallel - like driving your car whilst talking to your passenger.  There's a very good explanation on the Microsoft Docs site describing [how to make a parallel task hot or sequential luke warm breakfast](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/).
 
 ##### Do we need it?
 
 A program running in isolation takes longer to running tasks in parallel - there's task switching involved which eats up pocessor cycles.
 
-Switch to the modern world: programs interacts with databases and services on other computers.  Execute a 
-set of tasks that depend on such services sequentially and our program spends considerable time twiddling its 
-thumbs. Execute the same set of tasks in parallel and it only waits on the longest running task.
+Switch to the modern world: programs interacts with databases and services on other computers.  Execute a set of tasks that depend on such services sequentially and our program spends more time twiddling its thumbs than doing anything useful. Execute the same set of tasks in parallel and it only waits on the longest running task.
 
-In the SPA world (Single Page Applications running in a web browser), we can also use async programming to interact with the 
-user while we are loading and executing services - not just present a blank web page.
-
-### Tasks and Threading
-
-Don't confuse tasks with threading.  Tasks run on a thread, but then so does all code.  Tasks are executed by a Task Scheduler which is 
-responsible for any threading operations.  A Task is equivalent to a promise in other languages.
+In the SPA world (Single Page Applications running in a web browser), we can also use async programming to interact with the user while we are loading and executing services - not just present a blank web page.
 
 ### Example and Code
 
@@ -37,9 +24,7 @@ The code is available on Github at [CEC.Blazor Repository](https://github.com/Sh
 
 ### Asnyc Coding Patterns
 
-At the core of Async programming is the Task object.  All methods that run asynchronously return a Task: there is one except to this that we will cover 
-shortly. Think of the Task as a wrapper object that provides information about the state of the method called, a certain level of control, and 
-exposes the return value when the Task completes.
+At the core of Async programming is the Task object.  All methods that run asynchronously return a Task: there is one except to this that we will cover shortly. Think of the Task as a wrapper object that provides information about the state of the method called, a certain level of control, and exposes the return value when the Task completes.
 
 First a word about the *async* keyword.  Along with *await* it's syntactic sugar to simplify coding async methods. 
 It labels a method as asynchronous and :
@@ -108,6 +93,96 @@ public async void MethodAsync(...);
 
 This is the exception.  It returns a void giving the calling function no control mechanism. It's a fire and forget pattern that runs in the background 
 until complete.  It's normally triggered by events such as a mouse click.
+
+### Blocking and Deadlocking
+
+One of the biggest challenges you will face is the Deadlock.  You'll write some async code that either always locks, or under load locks your program.  In Blazor, this manifests itself as a locked page.  The lights are on but there's no one at home. You've killed the application process running your SPA instance.  The only way out is to reload the page.
+
+#### Tasks and Threading
+
+Don't confuse tasks with threading.  Tasks run on a thread, but then so does all code.  Tasks are executed by a Task Scheduler which is 
+responsible for any threading operations. To quote Microsoft, a TaskScheduler "Represents an object that handles the low-level work of queuing tasks onto threads."  A Task is equivalent to a promise in other languages.
+
+#### What's really going on under the Hood?
+
+Lets start by looking at the classic pattern.
+
+```c#
+private async Task MethodAsync(...)
+{
+    code_Sync;_
+    await code_Async;
+    dependant_code_Sync;_
+}
+```
+
+Expand out the syntactic sugar and what you really have is:
+
+```c#
+public void MethodAsync(...)
+{
+    code_Sync;_
+    code_Async().ContinueWith(task => {
+        dependant_code_Sync;
+    });
+}
+```
+
+This looks a little different. The code that follows the await is now wrapped up as a sub Task of *code_Async()*.  What this means in practice is that the TaskScheduler associated with *code_Async()* schedules the sub task to run after the main task. There's no stop and wait - commonly referred to as blocking - for *code_Async()* to complete, just a reordering of the code execution order.  In a Blazor application, all the code runs on the main thread.
+
+Lets now look at a slighlty more complex pattern.
+
+```c#
+private async Task MethodAsync(...)
+{
+    code_Sync;_
+    await code_Async;
+    await code2_Async;
+    dependant_code_Sync;_
+}
+```
+
+Expanded out:
+
+```c#
+public void MethodAsync(...)
+{
+    code_Sync;_
+    code_Async().ContinueWith(task => {
+        code2_Async().ContinueWith(task => {
+            dependant_code_Sync;
+        });
+    });
+}
+```
+What we see is nesting, each subsequent await is a sub task of the previous task.  The execution order gets sorted by the Task Schedulers associated with each Task.  No blocking, and all executed on the main application thread.
+
+
+The normal reason is blocking code - program execution is stopped on the working thread for a task to complete because the process needs the data the task is getting to continue. The subtask also stops execution at some point - say waiting for a get request froom a web service - and waits for the returned string.  This works whle the subtask is running on a different threadpool to the first task.  If both are on the same thread pool then the outer process blocks the inner process from completing.
+
+Lets look at some classic blocking code - in ths case a button click event in the UI.
+
+```c#
+public void ButtonClicked()
+{
+    var task = this.SomeService.GetAListAsync();
+    task.Wait();
+    this.List = task.Result;
+    InvokeAsync(this.StateHasChanged);
+}
+```
+
+```c#
+public void GetAListAsync()
+{
+    var task = myDataContext.somedataset.GetListAsync();
+    task.Wait();
+    return task.Result;'
+    InvokeAsync(this.StateHasChanged);
+}
+```
+
+
 
 ### Some Real World Examples
 
