@@ -39,7 +39,9 @@ namespace CEC.Blazor.Server
             services.AddCECRouting();
             services.AddProtectedBrowserStorage();
             services.AddTransient<IValidator<WeatherForecast>, WeatherForecastValidator>();
-            services.AddSingleton<CosmicDirectoryService>();
+            services.AddScoped<CosmicDirectoryService>();
+            services.AddSingleton<SalaryDataService>();
+            services.AddTransient<SalaryControllerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Services
@@ -7,18 +9,39 @@ namespace CEC.Blazor.Server.Services
     {
         public event EventHandler MessageChanged;
 
-        public string Message { get; set; } = "Waiting for an intercosmic connection";
+        public string Message { get; set; } = "Ready for a intercosmic lookup.  Choose your speed?";
+
+        public async Task<bool> BlackHoleWarning(bool escaped)
+        {
+            this.Message = "Oh no, here comes a Black Hole. Be warned it may be the last you hear froommm mmmmmeeeeeeee....!";
+            this.MessageChanged?.Invoke(this, EventArgs.Empty);
+            await Task.Delay(1000);
+            this.Message = escaped ?  "TTThhat was close" : ".............";
+            this.MessageChanged?.Invoke(this, EventArgs.Empty);
+            await Task.Delay(1000);
+            return escaped;
+        }
 
         // This is the unsafe function described in the Async Programming Article
         // Call it from the UI and see what happens when you click a button
-        public void GetWorld(bool fast)
+        public async Task GetWorld(bool fast)
         {
+            var thread = Thread.CurrentThread;
+            var ts = TaskScheduler.Current;
+            var tsd = TaskScheduler.Default;
+            var sc = SynchronizationContext.Current;
+
             var task = this.GetWorldAsync(fast);
-            task.Wait();
+            this.Message = "Close encounter with a Black Hole. Be warned it may be the last you hear froommm mmmmmeeeeeeee....!";
+            this.MessageChanged?.Invoke(this, EventArgs.Empty);
+            await Task.Delay(1000);
+            await task;
         }
 
         public async Task GetWorldAsync(bool fast)
         {
+            var sc = SynchronizationContext.Current;
+
             var cosmosspeed = fast ? 2000 : 8000;
 
             var backtask = FixTheCosmosAsync(cosmosspeed);
@@ -30,11 +53,16 @@ namespace CEC.Blazor.Server.Services
                 this.MessageChanged?.Invoke(this, EventArgs.Empty);
                 await backtask.ContinueWith(task =>
                 {
-                    this.Message = "Fixed It";
+                    this.Message = "Fixed";
                     this.MessageChanged?.Invoke(this, EventArgs.Empty);
                 });
             }
-            await Task.Delay(500);
+            else
+            {
+                this.Message = "Surfing at light speed today";
+                this.MessageChanged?.Invoke(this, EventArgs.Empty);
+            }
+            await Task.Delay(1000);
             this.Message = @"Greetings Earthing \\//";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -46,7 +74,7 @@ namespace CEC.Blazor.Server.Services
             await Task.Delay(1000);
             if (!fixthecosmos.IsCompleted)
             {
-                this.Message = "Hmm, a bit slow today...";
+                this.Message = "Hmm, c's not squared today...";
                 this.MessageChanged?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(1000);
             }
@@ -57,8 +85,8 @@ namespace CEC.Blazor.Server.Services
 
         private Task FixTheCosmosAsync(int speed)
         {
-            if (speed > 3000) this.Message = "What, it's broken again? Background task - fix the Cosmos.  It might be a bit slow for a while!";
-            else this.Message = "Background task - greasing the cosmic wheels.  Make it superfast today.";
+            if (speed > 3000) this.Message = "What, it's broken again? Background task - fix c.  Space/time might be a wee slow for a while!";
+            else this.Message = "Background task - greasing the cosmic wheels, we need light speed.";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
             return Task.Delay(speed);
         }
