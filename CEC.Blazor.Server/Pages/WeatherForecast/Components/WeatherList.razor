@@ -1,10 +1,10 @@
 ﻿@namespace CEC.Blazor.Server.Pages.Components
 
-@inherits ListComponentBase<WeatherForecast>
+@inherits ListComponentBase<DbWeatherForecast>
 
 <UIWrapper UIOptions="@this.UIOptions" RecordConfiguration="@this.Service.RecordConfiguration" OnView="@OnView" OnEdit="@OnEdit">
 
-    <UICardGrid TRecord="WeatherForecast" IsCollapsible="true" Paging="this.Paging">
+    <UICardGrid TRecord="DbWeatherForecast" IsCollapsible="true" Paging="this.Paging" IsLoading="this.Loading" >
 
         <Title>
             @this.ListTitle
@@ -12,13 +12,13 @@
 
         <TableHeader>
 
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="1" FieldName="WeatherForecastID">ID</UIGridTableHeaderColumn>
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="2" FieldName="Date">Date</UIGridTableHeaderColumn>
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="3" FieldName="Description">Description</UIGridTableHeaderColumn>
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="4" FieldName="TemperatureC">@((MarkupString)"Temp &deg;C")</UIGridTableHeaderColumn>
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="5" FieldName="Summary">Summary</UIGridTableHeaderColumn>
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="6" FieldName="Outlook">Outlook</UIGridTableHeaderColumn>
-            <UIGridTableHeaderColumn TRecord="WeatherForecast" Column="7"></UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="1" FieldName="WeatherForecastID">ID</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="2" FieldName="Date">Date</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="3" FieldName="Description">Description</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="4" FieldName="TemperatureC">@((MarkupString)"Temp &deg;C")</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="5" FieldName="Summary">Summary</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="6" FieldName="Outlook">Outlook</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherForecast" Column="7"></UIGridTableHeaderColumn>
 
         </TableHeader>
 
@@ -26,13 +26,13 @@
 
             <CascadingValue Name="RecordID" Value="@context.WeatherForecastID">
 
-                <UIGridTableColumn TRecord="WeatherForecast" Column="1">@context.WeatherForecastID</UIGridTableColumn>
-                <UIGridTableColumn TRecord="WeatherForecast" Column="2">@context.Date.ToShortDateString()</UIGridTableColumn>
-                <UIGridTableColumn TRecord="WeatherForecast" Column="3">@context.Description</UIGridTableColumn>
-                <UIGridTableColumn TRecord="WeatherForecast" Column="4">@context.TemperatureC</UIGridTableColumn>
-                <UIGridTableColumn TRecord="WeatherForecast" Column="5">@context.Summary</UIGridTableColumn>
-                <UIGridTableColumn TRecord="WeatherForecast" Column="6">@context.Outlook</UIGridTableColumn>
-                <UIGridTableEditColumn TRecord="WeatherForecast"></UIGridTableEditColumn>
+                <UIGridTableColumn TRecord="DbWeatherForecast" Column="1">@context.WeatherForecastID</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherForecast" Column="2">@context.Date.ToShortDateString()</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherForecast" Column="3">@context.Description</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherForecast" Column="4">@context.TemperatureC</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherForecast" Column="5">@context.Summary</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherForecast" Column="6">@context.Outlook</UIGridTableColumn>
+                <UIGridTableEditColumn TRecord="DbWeatherForecast"></UIGridTableEditColumn>
 
             </CascadingValue>
 
@@ -42,7 +42,7 @@
 
             <UIListButtonRow>
                 <Paging>
-                    <PagingControl TRecord="WeatherForecast" Paging="this.Paging"></PagingControl>
+                    <PagingControl TRecord="DbWeatherForecast" Paging="this.Paging"></PagingControl>
                 </Paging>
             </UIListButtonRow>
 

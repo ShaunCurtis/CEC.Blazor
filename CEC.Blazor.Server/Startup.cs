@@ -14,6 +14,7 @@ using CEC.Routing;
 using CEC.Blazor.Server.Services;
 using CEC.Blazor.Server.Data.Validators;
 using FluentValidation;
+using CEC.Blazor.Server.Extensions;
 
 namespace CEC.Blazor.Server
 {
@@ -32,16 +33,10 @@ namespace CEC.Blazor.Server
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastDataService>();
-            services.AddScoped<WeatherForecastControllerService>();
-            // CEC - Services added here
             services.AddCECBlazor();
             services.AddCECRouting();
             services.AddProtectedBrowserStorage();
-            services.AddTransient<IValidator<WeatherForecast>, WeatherForecastValidator>();
-            services.AddScoped<CosmicDirectoryService>();
-            services.AddSingleton<SalaryDataService>();
-            services.AddTransient<SalaryControllerService>();
+            services.AddApplicationServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

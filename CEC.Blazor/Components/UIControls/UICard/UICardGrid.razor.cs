@@ -3,6 +3,7 @@ using CEC.Blazor.Data;
 using CEC.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CEC.Blazor.Components.UIControls
 {
@@ -50,6 +51,9 @@ namespace CEC.Blazor.Components.UIControls
         public bool IsMainHeader { get; set; } = false;
 
         [Parameter]
+        public bool IsLoading { get; set; } = false;
+
+        [Parameter]
         public int Columns { get; set; } = 3;
 
         public bool IsPaging => this.Paging != null;
@@ -62,9 +66,9 @@ namespace CEC.Blazor.Components.UIControls
         
         protected string CollapseText { get => this.Collapsed ? "Show" : "Hide"; }
 
-        private bool IsLoading => this.Paging == null || this.Paging.PagedRecords == null || this.Paging.PagedRecords.Count < 1;
+        private bool IsError => this.Paging == null || this.Paging.PagedRecords == null;
 
-        private bool IsError => !this.Paging?.HasPagedRecords ?? true ;
+        private string ErrorMessage => this.Paging != null && this.Paging.PagedRecords.Count == 0 ? "No Records To Display": "Page loading error";
 
         protected void Toggle()
         {

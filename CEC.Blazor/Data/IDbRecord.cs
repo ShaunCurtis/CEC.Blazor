@@ -7,6 +7,9 @@ namespace CEC.Blazor.Data
     /// </summary>
     public interface IDbRecord<T>
     {
+        /// <summary>
+        /// ID to ensure we have a unique key
+        /// </summary>
         public int ID { get; }
 
         public string DisplayName { get; }

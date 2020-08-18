@@ -92,6 +92,12 @@ namespace CEC.Blazor.Services
         /// </summary>
         public bool HasPagedRecords { get; }
 
+        /// <summary>
+        /// Bool to tell us if we have no records
+        /// Note this is different from records set to null
+        /// </summary>
+        public bool HasNoPagedRecords { get; }
+
 
         // Event that is triggered when a page update occurs
         /// <summary>

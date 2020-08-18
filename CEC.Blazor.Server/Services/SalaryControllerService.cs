@@ -23,7 +23,11 @@ namespace CEC.Blazor.Server.Services
         {
             this.Message = "Getting Employee record";
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
+            // Non blocking code line
             var rec = await this.SalaryDataService.GetEmployeeSalaryRecord(employeeID);
+            // blocking code line
+            // var rec = this.SalaryDataService.GetEmployeeSalaryRecord(employeeID).Result;
+
             if (rec.HasBonus)
             {
                 this.Message = "Wow big bonus to calculate - this could take a while!";
@@ -52,7 +56,6 @@ namespace CEC.Blazor.Server.Services
             this.MessageChanged?.Invoke(this, EventArgs.Empty);
             await Task.Delay(1000);
             return true;
-
         }
 
     }

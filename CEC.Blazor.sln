@@ -10,6 +10,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{295A9984-5DBE-427B-815F-7FB8735DC716}"
 	ProjectSection(SolutionItems) = preProject
 		AsyncProgramming.md = AsyncProgramming.md
+		Building a Blazor Project - Part 1.md = Building a Blazor Project - Part 1.md
+		Building a Blazor Project - Part 2.md = Building a Blazor Project - Part 2.md
 	EndProjectSection
 EndProject
 Global

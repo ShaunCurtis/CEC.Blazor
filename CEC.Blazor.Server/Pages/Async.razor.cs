@@ -25,9 +25,9 @@ namespace CEC.Blazor.Server.Pages
         protected override Task OnInitializedAsync()
         {
             this.SalaryControllerService.MessageChanged += this.MessageUpdated;
-            this.BossButton = BuildButton("btn-warning", "Boss's Salary", 1, false);
-            this.MyButton = BuildButton("btn-primary", "My Salary", 2, false);
-            this.DeadlockButton = BuildButton("btn-danger", "Road to DeadLock", 0, false);
+            this.BossButton = BuildButton(1, false);
+            this.MyButton = BuildButton(2, false);
+            this.DeadlockButton = BuildButton(0, false);
             return Task.CompletedTask;
         }
 
@@ -37,27 +37,49 @@ namespace CEC.Blazor.Server.Pages
 
         public async void ButtonClicked(int employeeID)
         {
-            if (employeeID == 1) this.BossButton = BuildButton("btn-warning", "Boss's Salary", 1, true);
-            else this.MyButton = BuildButton("btn-primary", "My Salary", 2, true);
+            this.SortButtons(employeeID, true);
             this.Salary = await this.SalaryControllerService.GetEmployeeSalary(employeeID, 3);
-            if (employeeID == 1) this.BossButton = BuildButton("btn-warning", "Boss's Salary", 1, false);
-            else this.MyButton = BuildButton("btn-primary", "My Salary", 2, false);
+            this.SortButtons(employeeID, false);
             await InvokeAsync(this.StateHasChanged);
         }
 
         public async void UnsafeButtonClicked()
         {
-            this.DeadlockButton = BuildButton("btn-danger", "Road to DeadLock", 0, true);
+            this.DeadlockButton = BuildButton(0, true);
             this.SalaryControllerService.Message = "You clicked it!";
             await Task.Delay(2000);
             await InvokeAsync(this.StateHasChanged);
             var x = this.SalaryControllerService.BlockerTask().Result;
-            this.DeadlockButton = BuildButton("btn-danger", "Road to DeadLock", 0, true);
+            this.DeadlockButton = BuildButton(0, true);
             await InvokeAsync(this.StateHasChanged);
         }
 
-        protected RenderFragment BuildButton(string css, string label, int Id, bool running)
+        protected void SortButtons(int employeeID,bool running)
         {
+            if (employeeID == 1) this.BossButton = BuildButton(employeeID, running);
+            else this.MyButton = BuildButton(employeeID, running);
+        }
+
+        protected RenderFragment BuildButton(int Id, bool running)
+        {
+            string css;
+            string label;
+
+            switch (Id)
+            {
+                case 0:
+                    css = "btn-danger";
+                    label = "Road to Deadlock";
+                    break;
+                case 1:
+                    css = "btn-warning";
+                    label = "Boss's Salary";
+                    break;
+                default:
+                    css = "btn-primary";
+                    label = "My Salary";
+                    break;
+            }
             var value = running ? "   Running..." : label;
             var i = -1;
             RenderFragment button = builder =>

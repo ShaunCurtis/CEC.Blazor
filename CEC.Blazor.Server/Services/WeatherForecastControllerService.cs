@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Services
 {
-    public class WeatherForecastControllerService : BaseControllerService<WeatherForecast>, IControllerService<WeatherForecast>
+    public class WeatherForecastControllerService : BaseControllerService<DbWeatherForecast>, IControllerService<DbWeatherForecast>
     {
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace CEC.Blazor.Server.Services
         public async override Task LoadPagingAsync(bool withDelegate = true)
         {
             await base.LoadPagingAsync(false);
-            this.PageLoaderAsync = new IControllerPagingService<WeatherForecast>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
+            this.PageLoaderAsync = new IControllerPagingService<DbWeatherForecast>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
             this.DefaultSortColumn = "WeatherForecastID";
             await this.LoadAsync();
         }
@@ -52,7 +52,7 @@ namespace CEC.Blazor.Server.Services
         /// </summary>
         /// <param name="paging"></param>
         /// <returns></returns>
-        public async override Task<List<WeatherForecast>> GetDataPageWithSortingAsync()
+        public async override Task<List<DbWeatherForecast>> GetDataPageWithSortingAsync()
         {
             await this.GetFilteredListAsync();
             if (this.PageStartRecord > this.Records.Count) this.CurrentPage = 1;

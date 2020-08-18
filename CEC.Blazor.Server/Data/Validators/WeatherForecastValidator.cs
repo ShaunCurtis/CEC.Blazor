@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CEC.Blazor.Server.Data.Validators
 {
-    public class WeatherForecastValidator : AbstractValidator<WeatherForecast>
+    public class WeatherForecastValidator : AbstractValidator<DbWeatherForecast>
     {
         public WeatherForecastValidator()
         {

@@ -21,7 +21,7 @@ namespace CEC.Blazor.Server.Services
             // return await mydatacontext.GetContext().EmployeeSalaryTable.FirstorDefaultAsync(item => item.EmployeeID == EmployeeID);
             await Task.Delay(2000);
             // Substitute sync version that runs on a list
-            return this.EmployeeSalaryRecords.First(item => item.EmployeeID == EmployeeID);
+            return this.EmployeeSalaryRecords.FirstOrDefault(item => item.EmployeeID == EmployeeID);
         }
 
     }

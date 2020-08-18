@@ -32,6 +32,7 @@ namespace CEC.Blazor.Components.Base
             }
             this.Service.ListHasChanged += this.OnRecordsUpdate;
             await base.OnInitializedAsync();
+            this.Loading = false;
         }
 
         /// <summary>
@@ -44,8 +45,10 @@ namespace CEC.Blazor.Components.Base
         {
             if (this.IsService)
             {
+                this.Loading = false;
                 await this.Paging.LoadAsync();
             }
+            this.Loading = false;
             this.StateHasChanged();
         }
 

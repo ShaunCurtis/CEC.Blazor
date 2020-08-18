@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Pages
 {
-    public partial class WeatherEditor : EditRecordComponentBase<WeatherForecast>
+    public partial class WeatherEditor : EditRecordComponentBase<DbWeatherForecast>
     {
         [Inject]
         public WeatherForecastControllerService ControllerService { get; set; }

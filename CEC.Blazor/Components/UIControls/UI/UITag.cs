@@ -15,7 +15,7 @@ namespace CEC.Blazor.Components.UIControls
         public virtual string Tag { get; set; } = "div";
 
         /// <summary>
-        /// Protected property to override the Tag in inherited classes.  By default it is set to the Tag Parameter Property
+        /// Override this Protected property to set the Tag in inherited classes.  Default implementation sets it to the Tag Parameter Property set by the user (default is div)
         /// </summary>
         protected override string _Tag => this.Tag;
 

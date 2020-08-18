@@ -1,12 +1,15 @@
 using CEC.Blazor.Data;
 using CEC.Blazor.Extensions;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CEC.Blazor.Server.Data
 {
-    public class WeatherForecast :IDbRecord<WeatherForecast>
+    /// <summary>
+    /// Data Record for a Weather Foreecast
+    /// Data validation is handled by the Fluent Validator
+    /// </summary>
+    public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
     {
         public int WeatherForecastID { get; set; }
 
@@ -14,12 +17,14 @@ namespace CEC.Blazor.Server.Data
 
         //[Required]
         //[Range(-40, 60, ErrorMessage = "Only Temperatures between -40 an 60 are allowed.")]
-        public int TemperatureC { get; set; } = 20;
+        public decimal TemperatureC { get; set; } = 20;
 
         public bool Frost { get; set; }
 
+        [NotMapped]
         public WeatherSummary Summary { get; set; } = WeatherSummary.Unknown;
 
+        [NotMapped]
         public WeatherOutlook Outlook { get; set; } = WeatherOutlook.Sunny;
 
         public string Description { get; set; } = string.Empty;
@@ -29,7 +34,8 @@ namespace CEC.Blazor.Server.Data
 
         public string Detail { get; set; } = string.Empty;
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        [NotMapped]
+        public decimal TemperatureF => decimal.Round(32 + (TemperatureC / 0.5556M), 2);
 
         public int OutlookValue
         {
@@ -37,13 +43,21 @@ namespace CEC.Blazor.Server.Data
             set => this.Outlook = (WeatherOutlook)value;
         }
 
+        public int SummaryValue
+        {
+            get => (int)this.Summary;
+            set => this.Summary = (WeatherSummary)value;
+        }
+
+        [NotMapped]
         public int ID => this.WeatherForecastID;
 
+        [NotMapped]
         public string DisplayName => $"Forecast for {this.Date.AsShortDate()}";
 
-        public WeatherForecast ShadowCopy()
+        public DbWeatherForecast ShadowCopy()
         {
-            return new WeatherForecast() {
+            return new DbWeatherForecast() {
                 Date = this.Date,
                 TemperatureC = this.TemperatureC,
                 Frost = this.Frost,

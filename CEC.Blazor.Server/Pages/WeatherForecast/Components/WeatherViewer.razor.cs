@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Server.Pages.Components
 {
-    public partial class WeatherViewer : RecordComponentBase<WeatherForecast>
+    public partial class WeatherViewer : RecordComponentBase<DbWeatherForecast>
     {
         [Inject]
         private WeatherForecastControllerService ControllerService { get; set; }

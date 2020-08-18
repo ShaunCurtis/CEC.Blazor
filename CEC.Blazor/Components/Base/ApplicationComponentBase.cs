@@ -81,6 +81,11 @@ namespace CEC.Blazor.Components.Base
         protected bool FirstLoad { get; set; } = true;
 
         /// <summary>
+        /// Property to check if the page is loading set internally
+        /// </summary>
+        public bool Loading { get; protected set; } = true;
+
+        /// <summary>
         /// Property that tells us if we are navigating within the component 
         /// such as where the component has multiple routes and we are navigating between them
         /// </summary>

@@ -467,6 +467,11 @@ namespace CEC.Blazor.Services
         public bool HasPagedRecords => this.PagedRecords != null && this.PagedRecords.Count > 0;
 
         /// <summary>
+        /// Bool to tell us if we have any records
+        /// </summary>
+        public bool HasNoPagedRecords => this.PagedRecords != null && this.PagedRecords.Count == 0;
+
+        /// <summary>
         /// Internal property to set the current page for the PageStartRecord to use
         /// </summary>
         private int _CurPage => this.CurrentPage > 1 ? this.CurrentPage - 1 : 0;

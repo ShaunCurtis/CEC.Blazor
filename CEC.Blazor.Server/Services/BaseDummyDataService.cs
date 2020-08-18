@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using CEC.Blazor.Data;
+using CEC.Blazor.Services;
 
-namespace CEC.Blazor.Services
+namespace CEC.Blazor.Server.Services
 {
-    public class BaseDataService<TRecord>: IDataService<TRecord> where TRecord : new()
+    public abstract class BaseDummyDataService<TRecord>: IDataService<TRecord> where TRecord : new()
     {
         /// <summary>
         /// Access to the Application Configuration data
@@ -15,14 +16,10 @@ namespace CEC.Blazor.Services
         /// </summary>
         public RecordConfigurationData RecordConfiguration { get; set; } = new RecordConfigurationData();
 
-        public BaseDataService(IConfiguration configuration)
+        public BaseDummyDataService(IConfiguration configuration)
         {
             this.AppConfiguration = configuration;
         }
-
-        // This would normally contain all the base boilerplate code for accessing the database context and doing CRUD operations
-        // I'm old school and a little paranoid with data so link datasets to read only views for listing and viewing operations
-        //  and use Stored Procedures and ExecuteSQLRawAsync for all CUD operations.
 
     }
 }

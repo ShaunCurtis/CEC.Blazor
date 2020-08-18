@@ -12,7 +12,7 @@ using CEC.Blazor.Services;
 
 namespace CEC.Blazor.Server.Pages.Components
 {
-    public partial class WeatherList : ListComponentBase<WeatherForecast>
+    public partial class WeatherList : ListComponentBase<DbWeatherForecast>
     {
         /// <summary>
         /// The Injected Controller service for this record
