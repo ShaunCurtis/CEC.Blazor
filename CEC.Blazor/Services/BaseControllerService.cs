@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
@@ -97,10 +98,10 @@ namespace CEC.Blazor.Services
         public virtual FilterList FilterList { get; set; }
 
         /// <summary>
-        /// Abstract Property to expose the Record ID
+        /// Property to expose the Record ID
         /// Implemented in inherited classes with error checking for Record Exists
         /// </summary>
-        public abstract int RecordID { get; }
+        public virtual int RecordID => this.Record is null ? -1 : this.Record.ID;
 
         /// <summary>
         /// Boolean Property to check if a real record exists 
@@ -274,8 +275,19 @@ namespace CEC.Blazor.Services
         public async virtual Task<List<T>> GetDataPageWithSortingAsync()
         {
             await this.GetFilteredListAsync();
-            if (this.PageStartRecord < this.Records.Count) return this.Records.GetRange(this.PageStartRecord, this.PageGetSize);
-            return new List<T>();
+            if (this.PageStartRecord > this.Records.Count) this.CurrentPage = 1;
+            if (string.IsNullOrEmpty(this.SortColumn)) return this.Records.Skip(this.PageStartRecord).Take(this._PageSize).ToList();
+            else
+            {
+                if (this.SortingDirection == SortDirection.Ascending)
+                {
+                    return this.Records.OrderBy(x => x.GetType().GetProperty(this.SortColumn).GetValue(x, null)).Skip(this.PageStartRecord).Take(this._PageSize).ToList();
+                }
+                else
+                {
+                    return this.Records.OrderByDescending(x => x.GetType().GetProperty(this.SortColumn).GetValue(x, null)).Skip(this.PageStartRecord).Take(this._PageSize).ToList();
+                }
+            }
         }
 
         /// <summary>
@@ -362,12 +374,13 @@ namespace CEC.Blazor.Services
         /// </summary>
         public async virtual Task LoadPagingAsync(bool withDelegate = true)
         {
+            await this.LoadAsync();
             // set the record to null to force a reload of the records
             this.Records = null;
             // if requested adds a default service function to the delegate
             if (withDelegate)
             {
-                this.PageLoaderAsync = new IControllerPagingService<T>.PageLoaderDelegateAsync(this.GetDataPageAsync);
+                this.PageLoaderAsync = new IControllerPagingService<T>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
                 // loads the paging object
                 await this.LoadAsync();
                 this.TriggerListChangedEvent(this);

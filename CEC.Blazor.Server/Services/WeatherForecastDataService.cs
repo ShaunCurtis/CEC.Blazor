@@ -14,11 +14,6 @@ namespace CEC.Blazor.Server.Services
     public class WeatherForecastDataService : BaseDataService<DbWeatherForecast>, IDataService<DbWeatherForecast>
     {
 
-        /// <summary>
-        /// internal Property to hold the dummy records for CRUD operations
-        /// </summary>
-        private List<DbWeatherForecast> Records { get; set; }
-
         public WeatherForecastDataService(IConfiguration configuration) : base(configuration)
         {
             this.RecordConfiguration = new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
@@ -28,9 +23,9 @@ namespace CEC.Blazor.Server.Services
         /// Method to get a set of 100 dummy records
         /// </summary>
         /// <param name="recordcount"></param>
-        private async Task GetDummyRecords(int recordcount)
+        private async Task<List<DbWeatherForecast>> GetDummyRecords(int recordcount)
         {
-            this.Records = new List<DbWeatherForecast>();
+            var recs = new List<DbWeatherForecast>();
             for (var i = 1; i <= recordcount; i++)
             {
                 var rng = new Random();
@@ -47,8 +42,9 @@ namespace CEC.Blazor.Server.Services
                 };
                 rec.Description = $"The Weather forecast for {rec.Date.DayOfWeek} {rec.Date.ToLongDateString()} is mostly {rec.Outlook} and {rec.Summary}";
                 await this.AddRecordAsync(rec);
-                Records.Add(rec);
+                recs.Add(rec);
             }
+            return recs;
         }
 
         /// <summary>
@@ -75,14 +71,14 @@ namespace CEC.Blazor.Server.Services
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> UpdateRecordAsync(DbWeatherForecast record) => await this.GetContext().RunDatabaseStoredProcedureAsync("sp_Update_WeatherForecast", this.GetSQLParameters(record, true), this.RecordConfiguration);
+        public async Task<DbTaskResult> UpdateRecordAsync(DbWeatherForecast record) => await this.GetContext().RunStoredProcedureAsync("sp_Update_WeatherForecast", this.GetSQLParameters(record, true), this.RecordConfiguration);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> AddRecordAsync(DbWeatherForecast record) => await this.GetContext().RunDatabaseStoredProcedureAsync("sp_Add_WeatherForecast", this.GetSQLParameters(record, false), this.RecordConfiguration);
+        public async Task<DbTaskResult> AddRecordAsync(DbWeatherForecast record) => await this.GetContext().RunStoredProcedureAsync("sp_Add_WeatherForecast", this.GetSQLParameters(record, false), this.RecordConfiguration);
 
         /// <summary>
         /// Inherited IDataService Method
@@ -94,11 +90,11 @@ namespace CEC.Blazor.Server.Services
             var parameters = new List<SqlParameter>() {
             new SqlParameter() {
                 ParameterName =  "@WeatherForecastID",
-                SqlDbType = SqlDbType.NVarChar,
+                SqlDbType = SqlDbType.Int,
                 Direction = ParameterDirection.Input,
                 Value = id }
             };
-            return await this.GetContext().RunDatabaseStoredProcedureAsync("sp_Add_WeatherForecast", parameters, this.RecordConfiguration);
+            return await this.GetContext().RunStoredProcedureAsync("sp_Delete_WeatherForecast", parameters, this.RecordConfiguration);
         }
 
         /// <summary>
@@ -107,7 +103,7 @@ namespace CEC.Blazor.Server.Services
         /// <param name="item"></param>
         /// <param name="withid"></param>
         /// <returns></returns>
-        public List<SqlParameter> GetSQLParameters(DbWeatherForecast item, bool withid = false)
+        private List<SqlParameter> GetSQLParameters(DbWeatherForecast item, bool isinsert = false)
         {
             var parameters = new List<SqlParameter>() {
             new SqlParameter("@Date", SqlDbType.SmallDateTime) { Direction = ParameterDirection.Input, Value = item.Date.ToString("dd-MMM-yyyy") },
@@ -119,7 +115,7 @@ namespace CEC.Blazor.Server.Services
             new SqlParameter("@PostCode", SqlDbType.NVarChar) { Direction = ParameterDirection.Input, Value = item.PostCode },
             new SqlParameter("@Detail", SqlDbType.NVarChar) { Direction = ParameterDirection.Input, Value = item.Detail },
             };
-            if (withid) parameters.Insert(0, new SqlParameter("@WeatherForecastID", SqlDbType.BigInt) { Direction = ParameterDirection.Input, Value = item.ID });
+            if (isinsert) parameters.Insert(0, new SqlParameter("@WeatherForecastID", SqlDbType.BigInt) { Direction = ParameterDirection.Input, Value = item.ID });
             else parameters.Insert(0, new SqlParameter("@WeatherForecastID", SqlDbType.BigInt) { Direction = ParameterDirection.Output });
             return parameters;
         }

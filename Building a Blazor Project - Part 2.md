@@ -1,17 +1,31 @@
 # Building a Blazor Project
 # Part 2 - Data
 
-In the first article I provided an overview of the way I build and structure my projects.  This article provides a detailed look at how I implement a multi-tiered data model in the project.
+In the first article I provided an overview of the way I build and structure my Blazor projects.  This article provides a detailed look at how I implement a multi-tiered data model in my projects.
 
-### The Entitiy Framework Tier
+### The Entity Framework Tier
 
-I use Entity Framework [EF] for database access. But, being old school (the application gets nowhere near my tables) I implement CUD [CRUD without the Read] through stored procedures, Read access data through views.  My data tier therefore has two layers - the EF Database Context and a Data Service.  In Blazor both of these are implemented as singleton services - all user requests go through the same objects.
+I use Entity Framework [EF] for database access. But, being old school (the application gets nowhere near my tables) I implement CUD [CRUD without the Read] through stored procedures, and R [Read access] through views.  My data tier has two layers - the EF Database Context and a Data Service.  In Blazor both of these are implemented as singleton services - all user requests go through the same objects.
 
-The Entity Framework database account I use for web access has database access limited to the Views and Stored Procedures.
+The Entity Framework database account I use for web access has database access limited to select on the Views and execute on the Stored Procedures.
 
-The demo application had no database so the EF layer isn't implemented.  If it was it would look like the code block below.  All EF code is impklemented in the project rather the the library.  The context and DBSets are all project specific.
+The demo application had no database so the EF layer isn't implemented.  If it was it would look like the code block below.  All EF code is implemented in the project rather the the library.  The context and DB Datasets are all project specific.
 
-There is a DBSet for each record that needed retrieval.  Each DBSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application is very simple as we only have one record type.
+#### WeatherForecastDBContext
+
+The class constructor looks like this:
+```c#
+protected WeatherForecastDbContext GetContext()
+{
+    var optionsBuilder = new DbContextOptionsBuilder<WeatherForecastDbContext>();
+
+    optionsBuilder.UseSqlServer(AppConfiguration.GetConnectionString("WeatherForecastConnection"));
+    return new WeatherForecastDbContext(optionsBuilder.Options);
+}
+
+```
+
+There's a DB DataSet for each record that needed retrieval.  Each DB DataSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application is very simple as we only have one record type.
 
 ```c#
 public class WeatherForecastDbContext : DbContext
@@ -32,9 +46,54 @@ public class WeatherForecastDbContext : DbContext
 }
 ```
 
+I place the Stored Procedure base method in the DBContext and use *ExecuteSqlRawAsync* to run all the stored procedures.  Note that Entity Framework for DotNet Core doesn't have many of the features in the DotNet version, so we're back to basics.
+
+There's a single method for executing all stored procedures.
+
+```c#
+internal async Task<DbTaskResult> RunStoredProcedureAsync(string storedprocname, List<SqlParameter> parameters, RecordConfigurationData recordConfiguration)
+{
+    var rows = await this.Database.ExecuteSqlRawAsync(this.GetParameterizedNames(storedprocname, parameters), parameters);
+    if (rows == 1)
+    {
+        var idparam = parameters.First(item => item.Direction == ParameterDirection.Output && item.SqlDbType == SqlDbType.Int && item.ParameterName.Contains("ID"));
+        var ret = new DbTaskResult()
+        {
+            Message = $"{recordConfiguration.RecordDescription} saved",
+            IsOK = true,
+            Type = MessageType.Success
+        };
+        if (idparam != null) ret.NewID = Convert.ToInt32(idparam.Value);
+        return ret;
+    }
+    else return new DbTaskResult()
+    {
+        Message = $"Error saving {recordConfiguration.RecordDescription}",
+        IsOK = false,
+        Type = MessageType.Error
+    };
+}
+```
+*GetParameterizedNames* builds the SQL query with the parameters.  Note the use of output parameters.
+
+```c#
+protected string GetParameterizedNames(string storedprocname, List<SqlParameter> parameters)
+{
+    var paramstring = new StringBuilder();
+
+    foreach (var par in parameters)
+    {
+        if (paramstring.Length > 0) paramstring.Append(", ");
+        if (par.Direction == ParameterDirection.Output) paramstring.Append($"{par.ParameterName} output");
+        else paramstring.Append(par.ParameterName);
+    }
+    return $"exec {storedprocname} {paramstring}";
+}
+```
+
 ### The Data Service Tier
 
-I use generics through all the data layers - *TRecord* is the generic term I use for *T*.  I also define an Interface *IDbRecord* to TRecord to ensure all records implement certain properties and methods.
+I use generics throughout the data layers - *TRecord* is the generic term for *T* which should always implement *IDbRecord* and *new* to ensure all records implement certain properties and methods.
 
 The data tier Interfaces live in the library, while the Base Service class - which uses Entity Framework - is project specific.
 
@@ -47,14 +106,10 @@ public interface IDbRecord<T>
 
     public string DisplayName { get; }
 
-    /// <summary>
-    /// Creates a deep copy of the object
-    /// </summary>
-    /// <returns></returns>
     public T ShadowCopy(); 
 }
 ```
-These ensure:
+IDbRecord ensure:
 * We can build a Id/Value pair for Select dropdowns if needed.
 * We have a name to use in the title area of any control when displaying the record.
 * We can make a copy of the record when needed during editing.
@@ -64,53 +119,22 @@ These ensure:
 IDataService defines the key functionality we need in DataServices
 
 ```c#
-    public interface IDataService<TRecord> where TRecord : new()
-    {
-        /// <summary>
-        /// Record Configuration Property
-        /// </summary>
-        public RecordConfigurationData RecordConfiguration { get; set; }
+public interface IDataService<TRecord> where TRecord : new()
+{
+    public RecordConfigurationData RecordConfiguration { get; set; }
 
-        /// <summary>
-        /// Method to get the Record List
-        /// </summary>
-        /// <returns></returns>
-        public Task<List<TRecord>> GetRecordListAsync() => Task.FromResult(new List<TRecord>());
+    public Task<List<TRecord>> GetRecordListAsync() => Task.FromResult(new List<TRecord>());
 
-        /// <summary>
-        /// Method to get a Filtered Record List
-        /// </summary>
-        /// <returns></returns>
-        public Task<List<TRecord>> GetFilteredRecordListAsync(IFilterList filterList) => Task.FromResult(new List<TRecord>());
+    public Task<List<TRecord>> GetFilteredRecordListAsync(IFilterList filterList) => Task.FromResult(new List<TRecord>());
 
-        /// <summary>
-        /// Method to get a Record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Task<TRecord> GetRecordAsync(int id) => Task.FromResult(new TRecord());
+    public Task<TRecord> GetRecordAsync(int id) => Task.FromResult(new TRecord());
 
-        /// <summary>
-        /// Method to update a record
-        /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        public Task<DbTaskResult> UpdateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+    public Task<DbTaskResult> UpdateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
-        /// <summary>
-        /// method to add a record
-        /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        public Task<DbTaskResult> AddRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+    public Task<DbTaskResult> AddRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
-        /// <summary>
-        /// Method to delete a record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Task<DbTaskResult> DeleteRecordAsync(int id) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
-    }
+    public Task<DbTaskResult> DeleteRecordAsync(int id) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+}
 ```
 Most of the properties and methods are self explanatory - core CRUD operations.  RecordConfiguration is a simple class that contains UI specific data such as the generic Record name and last name and the route name to get to the various UI component pages.   We'll see more about this in the UI article.
 
@@ -121,120 +145,113 @@ IDataService defines the key functionality we need in DataServices
 ```c#
 public abstract class BaseDataService<TRecord>: IDataService<TRecord> where TRecord : new()
 {
-    /// <summary>
-    /// Access to the Application Configuration data
-    /// </summary>
     public IConfiguration AppConfiguration { get; set; }
 
-    /// <summary>
-    /// Record Configuration data used by UI for display and navigation for records of type T
-    /// </summary>
     public RecordConfigurationData RecordConfiguration { get; set; } = new RecordConfigurationData();
 
     public BaseDataService(IConfiguration configuration)
     {
         this.AppConfiguration = configuration;
     }
-
-    // This would normally contain all the base boilerplate code for accessing the database context and doing CRUD operations
-    // I'm old school and a little paranoid with data so link datasets to read only views for listing and viewing operations
-    //  and use Stored Procedures and ExecuteSQLRawAsync for all CUD operations.
-
 }
 ```
 
 The code below show the code in a BaseService class implementing EF and using Stored Procedures for CUD. 
 
-GetContext gets a DBcontext to execute the Stored Procedures on.  You need a Context per quiery, rather than a shared context because operations are async: there's no way of ensuring the shared context isn't in use when an async method wahts to use it.
+GetContext gets a DBcontext to execute the Stored Procedures on.  You need a Context per query, rather than a shared context as operations are async: there's no way of ensuring the shared context isn't in use when an async method wahts to use it.
 
+#### WeatherForecastDataService
+
+This is the specific data service for WeatherForecast records.
+
+The class new method configures the RecordConfiguration and passes the necessary injected objects to the base class.
 ```c#
-protected WeatherForecastDbContext GetContext()
+public WeatherForecastDataService(IConfiguration configuration) : base(configuration)
 {
-    var optionsBuilder = new DbContextOptionsBuilder<BugTrackerDbContext>();
-
-    optionsBuilder.UseSqlServer(AppConfiguration.GetConnectionString("BugTrackerConnection"));
-    return new BugTrackerDbContext(optionsBuilder.Options);
+    this.RecordConfiguration = new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
 }
-
 ```
 
-*GetParameterizedSqlCommand* builds a SQL query from a set of parameters: We use *ExecuteSqlRawAsync* which doesn't take parameters.  This doesn't cover all options in *SQLParameter* so feel free to enhance it.  Maybe EF will change and give us parameterized Async Sql Executer one day.
+The main interface declarations are all async methods using the dbcontext to access the records.  *DbTaskResult* is a custom class to pass information back up to the UI.
 
 ```c#
+public async Task<DbWeatherForecast> GetRecordAsync(int id) => await this.GetContext().WeatherForecasts.FirstOrDefaultAsync(item => item.WeatherForecastID == id);
 
-protected string GetParameterizedSqlCommand(string storedprocname, List<SqlParameter> parameters)
+public async Task<List<DbWeatherForecast>> GetRecordListAsync() => await this.GetContext().WeatherForecasts.ToListAsync();
+
+public async Task<DbTaskResult> UpdateRecordAsync(DbWeatherForecast record) => await this.GetContext().RunStoredProcedureAsync("sp_Update_WeatherForecast", this.GetSQLParameters(record, true), this.RecordConfiguration);
+
+public async Task<DbTaskResult> AddRecordAsync(DbWeatherForecast record) => await this.GetContext().RunStoredProcedureAsync("sp_Add_WeatherForecast", this.GetSQLParameters(record, false), this.RecordConfiguration);
+
+public async Task<DbTaskResult> DeleteRecordAsync(int id)
 {
-    var paramstring = new StringBuilder();
-    var quotedtypes = new List<SqlDbType>() { SqlDbType.NVarChar, SqlDbType.Char, SqlDbType.NChar, SqlDbType.NText, SqlDbType.Text, SqlDbType.VarChar };
-    var datetypes = new List<SqlDbType>() { SqlDbType.Date, SqlDbType.DateTime, SqlDbType.DateTime, SqlDbType.DateTime2, SqlDbType.SmallDateTime };
+    var parameters = new List<SqlParameter>() {
+    new SqlParameter() {
+        ParameterName =  "@WeatherForecastID",
+        SqlDbType = SqlDbType.Int,
+        Direction = ParameterDirection.Input,
+        Value = id }
+    };
+    return await this.GetContext().RunStoredProcedureAsync("sp_Delete_WeatherForecast", parameters, this.RecordConfiguration);
+}
 
-    foreach (var par in parameters)
+private List<SqlParameter> GetSQLParameters(DbWeatherForecast item, bool isinsert = false)
+{
+    var parameters = new List<SqlParameter>() {
+    new SqlParameter("@Date", SqlDbType.SmallDateTime) { Direction = ParameterDirection.Input, Value = item.Date.ToString("dd-MMM-yyyy") },
+    new SqlParameter("@TemperatureC", SqlDbType.Decimal) { Direction = ParameterDirection.Input, Value = item.TemperatureC },
+    new SqlParameter("@Frost", SqlDbType.Bit) { Direction = ParameterDirection.Input, Value = item.Frost },
+    new SqlParameter("@SummaryValue", SqlDbType.Int) { Direction = ParameterDirection.Input, Value = item.SummaryValue },
+    new SqlParameter("@OutlookValue", SqlDbType.Int) { Direction = ParameterDirection.Input, Value = item.OutlookValue },
+    new SqlParameter("@Description", SqlDbType.NVarChar) { Direction = ParameterDirection.Input, Value = item.Description },
+    new SqlParameter("@PostCode", SqlDbType.NVarChar) { Direction = ParameterDirection.Input, Value = item.PostCode },
+    new SqlParameter("@Detail", SqlDbType.NVarChar) { Direction = ParameterDirection.Input, Value = item.Detail },
+    };
+    if (isinsert) parameters.Insert(0, new SqlParameter("@WeatherForecastID", SqlDbType.BigInt) { Direction = ParameterDirection.Input, Value = item.ID });
+    else parameters.Insert(0, new SqlParameter("@WeatherForecastID", SqlDbType.BigInt) { Direction = ParameterDirection.Output });
+    return parameters;
+}
+```
+
+### The Business Logic/Controller Service Tier
+
+Again I use the *TRecord* generic throughout the controller layerdata layers.  Controllers are normally scoped as Scoped Services and then further restricted using OwningComponentBase in the UI.
+
+The controller tier interface and base class lives in the library.  There are two interfaces *IControllerService* and *IControllerPagingService*.  Both are implemented in the BaseControllerService class.  I'm don't show the code for the  interface and base class here - they are rather large.  We'll cover most of the functionality when we look at how the UI layer interfaces with the controller layer.
+
+The main functionality implemented is:
+
+1. Properties to hold the current record and recordset and their status.
+2. Properties and Methods, defined in *IControllerPagingService*, for UI paging operations on large datasets.
+4. Properties and Methods to sort the the dataset.
+3. Properties and methods to track the edit status of the record (Dirty/Clean).
+4. Methods to implement CRUD operations through the IDataService Interface.
+5. Events triggered on record and record set changes.  Used by the UI to control page refreshes.
+7. Methods to reset the Controller during routing to a new page that uses the same scoped instance of the controller.
+
+The important point to note is that almost all the code needed for the above functionality is in the bolier plated in the base class.  Implementing specific record based controllers is a simple task with minimal coding.
+
+#### WeatherForecastControllerService
+
+This is where the bolier plate code in the base class pays dividends.  The specific WeatherForecast record implementation of the Controller Service:
+ 
+1. Implements the class constructor that gets the required DI services, sets up the base class and sets the default sort column for db dataset paging and sorting.
+3. Gets the Dictionary object for the Outlook Enum Select box in the UI.
+
+```c#
+public class WeatherForecastControllerService : BaseControllerService<DbWeatherForecast>, IControllerService<DbWeatherForecast>
+{
+    public SortedDictionary<int, string> OutlookOptionList => Utils.GetEnumList<WeatherOutlook>();
+
+    public WeatherForecastControllerService(NavigationManager navmanager, IConfiguration appconfiguration, WeatherForecastDataService weatherForecastDataService) : base(appconfiguration, navmanager)
     {
-        if (paramstring.Length > 0) paramstring.Append(", ");
-        if (quotedtypes.Contains(par.SqlDbType)) paramstring.Append(string.Concat(par.ParameterName, "='", par.Value, "'"));
-        else if (datetypes.Contains(par.SqlDbType)) paramstring.Append(string.Concat(par.ParameterName, "='", par.Value, "'"));
-        else paramstring.Append(string.Concat(par.ParameterName, "=", par.Value));
-
+        this.Service = weatherForecastDataService;
+        this.DefaultSortColumn = "WeatherForecastID";
     }
-    return $"exec {storedprocname} {paramstring.ToString()}";
-}
-
-```
-
-There are two methods for executing Stored Procedures.  The first doesn't have a return value
-
-```c#
-protected async Task<DbTaskResult> RunDatabaseStoredProcedureAsync(string storedprocname, List<SqlParameter> parameters)
-{
-    var result = new DbTaskResult();
-    var newsqlcommand = this.GetParameterizedSqlCommand(storedprocname, parameters);
-    var rows = await this.GetContext().Database.ExecuteSqlRawAsync(newsqlcommand);
-    if (rows == -1) result = new DbTaskResult() {Message = $"{this.Configuration.RecordDescription} saved", IsOK = true, Type= MessageType.Success, NewID = id };
-    else result = new DbTaskResult() {Message = $"Error saving {this.Configuration.RecordDescription}", IsOK = false, Type= MessageType.Error, NewID = 0 };
-    return result;
 }
 ```
 
+It's pretty simple and straightforward.
 
-```c#
-
-protected async Task<DbTaskResult> RunDatabaseIDStoredProcedureAsync(string sqlcommand)
-{
-    int id = 0;
-    var result = new DbTaskResult();
-
-    var rows = GetContext().IDs.FromSqlRaw(sqlcommand).AsAsyncEnumerable();
-    await foreach (var row in rows) id = Convert.ToInt32(row.Id);
-    if (id > 0) result = new DbTaskResult() {Message = $"{this.Configuration.RecordDescription} saved", IsOK = true, Type= MessageType.Success, NewID = id };
-    else result = new DbTaskResult() {Message = $"Error saving {this.Configuration.RecordDescription}", IsOK = false, Type= MessageType.Error, NewID = 0 };
-    return await Task.FromResult(result);
-}
-```
-
-
-```c#
-
-protected string GetParameterizedSqlCommand(string storedprocname, List<SqlParameter> parameters)
-{
-    var paramstring = new StringBuilder();
-    var quotedtypes = new List<SqlDbType>() { SqlDbType.NVarChar, SqlDbType.Char, SqlDbType.NChar, SqlDbType.NText, SqlDbType.Text, SqlDbType.VarChar };
-    var datetypes = new List<SqlDbType>() { SqlDbType.Date, SqlDbType.DateTime, SqlDbType.DateTime, SqlDbType.DateTime2, SqlDbType.SmallDateTime };
-
-    foreach (var par in parameters)
-    {
-        if (paramstring.Length > 0) paramstring.Append(", ");
-        if (quotedtypes.Contains(par.SqlDbType)) paramstring.Append(string.Concat(par.ParameterName, "='", par.Value, "'"));
-        else if (datetypes.Contains(par.SqlDbType)) paramstring.Append(string.Concat(par.ParameterName, "='", par.Value, "'"));
-        else paramstring.Append(string.Concat(par.ParameterName, "=", par.Value));
-
-    }
-    return $"exec {storedprocname} {paramstring.ToString()}";
-}
-
-```
-
-
-My DataService functionality is defined through an IDataService Interface which implements generics.  The TRecord geneneric object itself implements a IDBRecord Interface which defines common data object functionality.  We'll look at these later in more detail.  The IDataService core functionality is implemented in a boilerplate abstract BaseDataService class.  All higher level DataService inherit from this class.
-
-```c#
-```
+### Wrap Up
+That wraps up this section.  I've demonstrated a framework for building the data access section of a project, and how to boilerplate most of the code through interfaces and bas classes.  The next section will look at the Presentation Layer / UI framework.

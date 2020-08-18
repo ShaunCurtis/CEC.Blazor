@@ -10,6 +10,7 @@ namespace CEC.Blazor.Services
 {
     public interface IDataService<TRecord> where TRecord : new()
     {
+
         /// <summary>
         /// Record Configuration Property
         /// </summary>
