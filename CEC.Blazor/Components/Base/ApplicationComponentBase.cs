@@ -12,7 +12,7 @@ using CEC.Blazor.Components.Modal;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class ApplicationComponentBase : ComponentBase, IGuidComponent, IDisposable
+    public class ApplicationComponentBase : OwningComponentBase, IGuidComponent, IDisposable
     {
         /// <summary>
         /// Injected Property for the Browser Service

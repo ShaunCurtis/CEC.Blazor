@@ -29,8 +29,8 @@ namespace CEC.Blazor.Components.Base
                 this.Service.Reset();
                 await this.Service.LoadPagingAsync();
                 this.Paging.PageHasChanged += UpdateUI;
+                this.Service.ListHasChanged += this.OnRecordsUpdate;
             }
-            this.Service.ListHasChanged += this.OnRecordsUpdate;
             await base.OnInitializedAsync();
             this.Loading = false;
         }
@@ -80,9 +80,12 @@ namespace CEC.Blazor.Components.Base
 
         public override void Dispose()
         {
-            this.Paging.PageHasChanged -= UpdateUI;
+            try
+            {
+                this.Paging.PageHasChanged -= UpdateUI;
+            }
+            catch { }
             base.Dispose();
         }
-
     }
 }
