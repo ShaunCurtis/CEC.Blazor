@@ -35,10 +35,5 @@ namespace CEC.Blazor.Server.Services
             optionsBuilder.UseSqlServer(AppConfiguration.GetConnectionString("WeatherForecastConnection"));
             return new WeatherForecastDbContext(optionsBuilder.Options);
         }
-
-        // This would normally contain all the base boilerplate code for accessing the database context and doing CRUD operations
-        // I'm old school and a little paranoid with data so link datasets to read only views for listing and viewing operations
-        //  and use Stored Procedures and ExecuteSQLRawAsync for all CUD operations.
-
     }
 }

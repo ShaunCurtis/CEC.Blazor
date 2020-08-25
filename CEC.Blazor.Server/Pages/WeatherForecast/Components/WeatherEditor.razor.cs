@@ -11,9 +11,6 @@ namespace CEC.Blazor.Server.Pages
         [Inject]
         public WeatherForecastControllerService ControllerService { get; set; }
 
-        [CascadingParameter(Name = "WeatherForecastID")]
-        public int WeatherForecastID { get; set; }
-
         private string CardCSS => this.IsModal ? "m-0" : "";
 
         protected async override Task OnInitializedAsync()
@@ -21,7 +18,6 @@ namespace CEC.Blazor.Server.Pages
             // Assign the correct controller service
             this.Service = this.ControllerService;
             // Try to get the ID from either the cascaded value or a Modal passed in value
-            if (this.WeatherForecastID > -1) this.ID = this.WeatherForecastID;
             if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
             await base.OnInitializedAsync();
         }

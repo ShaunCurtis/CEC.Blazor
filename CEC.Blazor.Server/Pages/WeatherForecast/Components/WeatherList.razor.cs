@@ -14,24 +14,24 @@ namespace CEC.Blazor.Server.Pages.Components
 {
     public partial class WeatherList : ListComponentBase<DbWeatherForecast>
     {
-        ///// <summary>
-        ///// The Injected Controller service for this record
-        ///// </summary>
-        //[Inject]
-        //protected WeatherForecastControllerService ControllerService { get; set; }
+        /// <summary>
+        /// The Injected Controller service for this record
+        /// </summary>
+        [Inject]
+        protected WeatherForecastControllerService ControllerService { get; set; }
 
         /// <summary>
         /// Property referencing the Bootstrap modal instance
         /// </summary>
         private BootstrapModal _BootstrapModal { get; set; }
 
-        protected override void OnInitialized()
+        protected async override Task OnInitializedAsync()
         {
             this.UIOptions.MaxColumn = 3;
-            this.Service = (WeatherForecastControllerService)ScopedServices.GetService(typeof(WeatherForecastControllerService));
-            //this.Service = this.ControllerService;
-            //this.Service.Reset();
-            base.OnInitialized();
+            //this.Service = (WeatherForecastControllerService)ScopedServices.GetService(typeof(WeatherForecastControllerService));
+            this.Service = this.ControllerService;
+            await this.Service.Reset();
+            await base.OnInitializedAsync();
         }
 
         /// <summary>

@@ -67,9 +67,21 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected override bool IsError { get => !(this.IsRecord && this.EditContext != null); }
 
-        protected async override Task LoadAsync()
+        /// <summary>
+        /// Inherited - Always call the base method last
+        /// </summary>
+        protected async override Task OnInitializedAsync()
         {
-            await base.LoadAsync();
+            await this.Service.ResetRecordAsync();
+            await base.OnInitializedAsync();
+        }
+
+        /// <summary>
+        /// Inherited - Always call the base method first
+        /// </summary>
+        protected async override Task LoadRecord()
+        {
+            await base.LoadRecord();
 
             //set up the Edit Context
             this.EditContext = new EditContext(this.Service.Record);
@@ -81,11 +93,12 @@ namespace CEC.Blazor.Components.Base
             this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            base.OnAfterRender(firstRender);
+            await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
+                this.RouterSessionService.IntraPageNavigation += this.OnIntraPageRouting;
             }
         }
 
@@ -202,7 +215,7 @@ namespace CEC.Blazor.Components.Base
             {
                 // Check if we have a Url the user tried to navigate to - default exit to the root
                 if (!string.IsNullOrEmpty(this.RouterSessionService.NavigationCancelledUrl)) this.NavManager.NavigateTo(this.RouterSessionService.NavigationCancelledUrl);
-                else if (!string.IsNullOrEmpty(this.ReturnPageUrl)) this.NavManager.NavigateTo(this.ReturnPageUrl);
+                else if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnPageUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnPageUrl);
                 else this.NavManager.NavigateTo("/");
             }
         }

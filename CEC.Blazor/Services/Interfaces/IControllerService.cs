@@ -46,17 +46,17 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Property to get current record count
         /// </summary>
-        public int RecordCount => this.IsRecord ? this.Records.Count : 0;
+        public int RecordCount => this.Records?.Count ?? 0;
+
+        /// <summary>
+        /// Property to hold the record count by direct database query
+        /// </summary>
+        public int BaseRecordCount { get; }
 
         /// <summary>
         /// Boolean Property to check if a record exists
         /// </summary>
-        public virtual bool IsRecord => this.Record != null;
-
-        /// <summary>
-        /// Boolean Property to check if an Edit record exists 
-        /// </summary>
-        public virtual bool IsEditRecord => this.IsRecord && this.RecordID > -1;
+        public virtual bool IsRecord => this.Record != null && this.RecordID > -1;
 
         /// <summary>
         /// Boolean Property to check if a New record exists 
@@ -103,7 +103,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Method to Reset the Service to New condition
         /// </summary>
-        public void Reset();
+        public Task Reset();
 
         /// <summary>
         /// Method to set the state to clean
@@ -141,7 +141,7 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<bool> GetRecordAsync(int? id) => Task.FromResult(false);
+        public Task<bool> GetRecordAsync(int? id, bool reload = false) => Task.FromResult(false);
 
         /// <summary>
         /// Method to get a new Record

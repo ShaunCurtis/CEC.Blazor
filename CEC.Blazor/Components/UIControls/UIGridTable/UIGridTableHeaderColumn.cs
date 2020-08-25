@@ -9,7 +9,6 @@ namespace CEC.Blazor.Components.UIControls
     /// <summary>
     /// UI Rendering Wrapper to build a Grid Column
     /// </summary>
-
     public class UIGridTableHeaderColumn<TRecord> : UIGridTableColumn<TRecord> where TRecord : IDbRecord<TRecord>, new()
     {
 
@@ -27,10 +26,9 @@ namespace CEC.Blazor.Components.UIControls
 
         protected bool Sorted { get => (this.Card?.IsPaging ?? false) && !string.IsNullOrEmpty(this.FieldName); }
 
-        protected override void OnInitialized()
+        public UIGridTableHeaderColumn()
         {
             this.IsHeader = true;
-            base.OnInitialized();
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)

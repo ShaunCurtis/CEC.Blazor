@@ -1,7 +1,7 @@
-﻿using CEC.Blazor.Data;
+﻿using CEC.Blazor.Components.UIControls;
+using CEC.Blazor.Data;
 using CEC.Blazor.Extensions;
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 namespace CEC.Blazor.Components.Base
 {
@@ -13,14 +13,9 @@ namespace CEC.Blazor.Components.Base
         public virtual string PageTitle { get; }
 
         /// <summary>
-        /// Version of the ID that sets null to 0
-        /// </summary>
-        public int CurrentID { get; protected set; } = -1;
-
-        /// <summary>
         /// Boolean Property that checks if a record exists
         /// </summary>
-        protected virtual bool IsRecord => this.IsService && this.Service.IsEditRecord;
+        protected virtual bool IsRecord => this?.Service.IsRecord ?? false;
 
         /// <summary>
         /// Used to determine if the page can display data
@@ -30,58 +25,77 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Used to determine if the page can display data
         /// </summary>
-        protected virtual bool IsLoading { get; set; }
+        protected virtual bool IsDataLoading { get; set; } = true;
 
         /// <summary>
-        /// Should be overriddebn in inherited components
-        /// and called after setting the Service
+        /// Used to determine if the page has display data i.e. it's not loading or in error
+        /// </summary>
+        protected virtual bool IsLoaded => !(this.IsDataLoading) && !(this.IsError);
+
+        /// <summary>
+        /// Inherited - Always call the base method last
         /// </summary>
         protected async override Task OnInitializedAsync()
         {
-            this.IsLoading = true;
+            await this.Service.ResetRecordAsync();
             await base.OnInitializedAsync();
         }
 
-        protected async override Task LoadAsync()
+        /// <summary>
+        /// Inherited - Always call the base method first
+        /// </summary>
+        protected async override Task OnParametersSetAsync()
         {
-            await base.LoadAsync();
-            if (this.IsService)
-            {
-                await this.Service.ResetRecordAsync();
-                // Check if we have a query string value and use it if we do
-                this.NavManager.TryGetQueryString<int>("id", out int id);
-                this.ID = id > 0 ? id : this._ID;
-                this.CurrentID = this._ID;
-                // Get the current ID record
-                await this.Service.GetRecordAsync(this._ID);
-                this.Service.RecordHasChanged += this.UpdateState;
-                this.RouterSessionService.IntraPageNavigation += this.OnIntraPageNavigation;
-                this.IsLoading = false;
-            }
+            await base.OnParametersSetAsync();
+            // Get the record if required
+            await this.LoadRecord();
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            if (this.IsError)
+            if (firstRender)
             {
-                this.RecordErrorMessage = "The Application can't load the Record";
-                this.UpdateState();
+                this.RouterSessionService.IntraPageNavigation += this.OnIntraPageRouting;
             }
         }
 
-        protected async void OnIntraPageNavigation(object sender, EventArgs e)
+        /// <summary>
+        /// Reloads the record if the ID has changed
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task LoadRecord()
+        {
+            if (this.IsService)
+            {
+                this.IsDataLoading = true;
+                StateHasChanged();
+                // Check if we have a query string value for id and if so use it
+                if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > 0 ? querystringid : this._ID;
+                // Check if the component is a modal and if so get the supplied ID
+                else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > 0 ? (int)modalid : this.ID;
+
+                await Task.Delay(500);
+                // Get the current ID record if the id is different from the current record
+                await this.Service.GetRecordAsync(this._ID, false);
+
+                //await this.Service.ResetRecordAsync();
+
+                this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
+                this.IsDataLoading = false;
+                StateHasChanged();
+            }
+        }
+
+        /// <summary>
+        /// Event triggered when we have IntraPage routing - in our case we are lokking for querystring changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected async void OnIntraPageRouting(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"RecordComponentBase IntraPage Navigation Triggered");
-            // Check if we have a query string value and use it if we do
-            this.NavManager.TryGetQueryString<int>("id", out int id);
-            this.ID = id > 0 ? id : this._ID;
-            // Check if it's changed and if so reload the record
-            if (this.CurrentID != this._ID)
-            {
-                await this.Service.GetRecordAsync(this._ID);
-                this.CurrentID = this._ID;
-            }
+            await LoadRecord();
         }
     }
 }

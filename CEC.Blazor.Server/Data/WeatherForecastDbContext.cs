@@ -38,7 +38,7 @@ namespace CEC.Blazor.Server.Data
             var rows = await this.Database.ExecuteSqlRawAsync(this.GetParameterizedNames(storedprocname, parameters), parameters);
             if (rows == 1)
             {
-                var idparam = parameters.First(item => item.Direction == ParameterDirection.Output && item.SqlDbType == SqlDbType.Int && item.ParameterName.Contains("ID"));
+                var idparam = parameters.FirstOrDefault(item => item.Direction == ParameterDirection.Output && item.SqlDbType == SqlDbType.Int && item.ParameterName.Contains("ID"));
                 var ret = new DbTaskResult()
                 {
                     Message = $"{recordConfiguration.RecordDescription} saved",

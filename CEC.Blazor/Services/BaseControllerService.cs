@@ -41,12 +41,6 @@ namespace CEC.Blazor.Services
         public DbTaskResult TaskResult { get; protected set; } = new DbTaskResult();
 
         /// <summary>
-        /// Property that gets the page size to use in Paging operations
-        /// Reads it from the application configuration file
-        /// </summary>
-        public int DefaultPageSize => int.TryParse(this.AppConfiguration["Paging:PageSize"], out int value) ? value : 20;
-
-        /// <summary>
         /// The record Configuration - read from the data service
         /// </summary>
         public RecordConfigurationData RecordConfiguration => this.Service?.RecordConfiguration ?? new RecordConfigurationData();
@@ -59,7 +53,7 @@ namespace CEC.Blazor.Services
         {
             get
             {
-                if (this._Record is null) this._Record = new T();
+                this._Record ??= new T();
                 return this._Record;
             }
 
@@ -93,35 +87,31 @@ namespace CEC.Blazor.Services
         public List<T> _Records { get; private set; }
 
         /// <summary>
-        /// Used by the list methods to filter the list contents.
-        /// </summary>
-        public virtual FilterList FilterList { get; set; }
-
-        /// <summary>
         /// Property to expose the Record ID
         /// Implemented in inherited classes with error checking for Record Exists
         /// </summary>
-        public virtual int RecordID => this.Record is null ? -1 : this.Record.ID;
+        public virtual int RecordID => this.Record?.ID ?? -1;
 
         /// <summary>
         /// Boolean Property to check if a real record exists 
         /// </summary>
-        public virtual bool IsRecord => this.Record != null;
-
-        /// <summary>
-        /// Boolean Property to check if an Edit record exists 
-        /// </summary>
-        public virtual bool IsEditRecord => this.IsRecord && this.RecordID > -1;
+        public virtual bool IsRecord => this.RecordID > -1;
 
         /// <summary>
         /// Boolean Property to check if a New record exists 
         /// </summary>
-        public virtual bool IsNewRecord => this.IsRecord && this.RecordID == 0;
+        public virtual bool IsNewRecord => this.RecordID == 0;
 
         /// <summary>
         /// Property exposing the number of records in the current list
         /// </summary>
         public int RecordCount => this.Records?.Count ?? 0;
+
+
+        /// <summary>
+        /// Property to hold the record count by direct database query
+        /// </summary>
+        public int BaseRecordCount { get; protected set; } = 0;
 
         /// <summary>
         /// Boolean Property used to check if the record list exists
@@ -137,6 +127,15 @@ namespace CEC.Blazor.Services
         /// Property exposing the current save state of the record 
         /// </summary>
         public bool IsClean { get; protected set; } = true;
+
+        /// <summary>
+        /// Used by the list methods to filter the list contents.
+        /// </summary>
+        public virtual FilterList FilterList { get; set; }
+
+        #endregion
+
+        #region protected/private properties
 
         #endregion
 
@@ -175,13 +174,14 @@ namespace CEC.Blazor.Services
         /// May need to overridden in more complex services
         /// Called in edit mode when user navigates to New
         /// </summary>
-        public virtual void Reset()
+        public async virtual Task Reset()
         {
             this.FilterList = new FilterList();
             this.Record = new T();
             this.ShadowRecord = new T();
             this.Records = new List<T>();
             this.PagedRecords = null;
+            this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.SetClean();
         }
 
@@ -200,9 +200,10 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ResetList(object sender, EventArgs e)
+        public async void ResetList(object sender, EventArgs e)
         {
             Records = new List<T>();
+            this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.TriggerListChangedEvent(sender);
         }
 
@@ -211,9 +212,10 @@ namespace CEC.Blazor.Services
         /// A null list means the list needs reloading.  It's how the Paging system knows to reload the list
         /// An empty list may be a no results returned list
         /// </summary>
-        public virtual void ResetList()
+        public async virtual Task ResetList()
         {
             this.Records = null;
+            this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.TriggerListChangedEvent(this);
         }
 
@@ -222,11 +224,11 @@ namespace CEC.Blazor.Services
         /// A null list means the list needs reloading.  It's how the Paging system knows to reload the list
         /// An empty list may be a no results returned list
         /// </summary>
-        public virtual Task ResetListAsync()
+        public async virtual Task ResetListAsync()
         {
             this.Records = null;
+            this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.TriggerListChangedEvent(this);
-            return Task.CompletedTask;
         }
 
         public virtual Task<bool> GetNewRecordAsync()
@@ -309,15 +311,19 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async virtual Task<bool> GetRecordAsync(int? id)
+        public async virtual Task<bool> GetRecordAsync(int? id, bool refresh = false)
         {
             if (this.IsService)
             {
-                this.Record = await this.Service.GetRecordAsync(id ?? 0);
-                this.Record ??= new T();
-                this.ShadowRecord = this.Record.ShadowCopy();
-                this.SetClean();
-                this.TriggerRecordChangedEvent(this);
+                if (id != this.RecordID || refresh)
+                {
+                    this.Record = await this.Service.GetRecordAsync(id ?? 0);
+                    this.Record ??= new T();
+                    this.ShadowRecord = this.Record.ShadowCopy();
+                    if (!this.IsRecords) this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
+                    this.SetClean();
+                    this.TriggerRecordChangedEvent(this);
+                }
             }
             return this.IsRecord;
         }
@@ -396,6 +402,11 @@ namespace CEC.Blazor.Services
 
         #region Paging Methods
 
+        /// <summary>
+        /// Property that gets the page size to use in Paging operations
+        /// Reads it from the application configuration file
+        /// </summary>
+        public int DefaultPageSize => int.TryParse(this.AppConfiguration["Paging:PageSize"], out int value) ? value : 20;
 
         /// <summary>
         /// List of the records to display

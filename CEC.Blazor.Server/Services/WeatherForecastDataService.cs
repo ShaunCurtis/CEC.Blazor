@@ -60,11 +60,11 @@ namespace CEC.Blazor.Server.Services
         /// <returns></returns>
         public async Task<List<DbWeatherForecast>> GetRecordListAsync() => await this.GetContext().WeatherForecasts.ToListAsync();
 
-        //public async Task<List<DbWeatherForecast>> GetRecordListAsync() {
-        //    var recs =  await this.GetContext().WeatherForecasts.ToListAsync();
-        //    if (recs.Count == 0) await this.GetDummyRecords(100);
-        //    return recs;
-        //}
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetRecordListCountAsync() => await this.GetContext().WeatherForecasts.CountAsync();
 
         /// <summary>
         /// Inherited IDataService Method

@@ -36,6 +36,12 @@ namespace CEC.Blazor.Services
         public Task<TRecord> GetRecordAsync(int id) => Task.FromResult(new TRecord());
 
         /// <summary>
+        /// Method to get the current record count
+        /// </summary>
+        /// <returns></returns>
+        public Task<int> GetRecordListCountAsync() => Task.FromResult(0);
+
+        /// <summary>
         /// Method to update a record
         /// </summary>
         /// <param name="record"></param>

@@ -11,7 +11,7 @@ namespace CEC.Blazor.Server.Data
     /// </summary>
     public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
     {
-        public int WeatherForecastID { get; set; }
+        public int WeatherForecastID { get; set; } = -1;
 
         public DateTime Date { get; set; } = DateTime.Now.Date;
 

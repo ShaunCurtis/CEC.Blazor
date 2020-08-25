@@ -71,11 +71,6 @@ namespace CEC.Blazor.Components.Base
         public string ClassName => this.GetType().ToString();
 
         /// <summary>
-        /// The last page visited. Exiting this page returns to this page
-        /// </summary>
-        public string ReturnPageUrl { get; set; }
-
-        /// <summary>
         /// Property to check the state of the page during re-rendering
         /// </summary>
         protected bool FirstLoad { get; set; } = true;
@@ -115,10 +110,9 @@ namespace CEC.Blazor.Components.Base
 
         protected async override Task OnInitializedAsync()
         {
+            if (this.AuthenticationState != null) await this.GetUserAsync();
             await this.LoadAsync();
             await base.OnInitializedAsync();
-            // kick off a manual UI update
-            this.UpdateState();
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -131,11 +125,7 @@ namespace CEC.Blazor.Components.Base
         /// Load routine to call at startup and during program execution
         /// Put stuff in here that you may want to run on a reload of the object as well at intialisition
         /// </summary>
-        protected async virtual Task LoadAsync()
-        {
-            if (this.AuthenticationState != null) await this.GetUserAsync();
-            this.ReturnPageUrl = this.RouterSessionService.LastPageUrl;
-        }
+        protected virtual Task LoadAsync() => Task.CompletedTask;
 
         /// <summary>
         /// Method to get the current user from the Authentication State

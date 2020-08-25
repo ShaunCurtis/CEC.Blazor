@@ -9,7 +9,7 @@
 
             <Body>
 
-                <UIErrorHandler IsError="this.IsError" IsLoading="this.IsLoading" >
+                <UIErrorHandler IsError="this.IsError" IsLoading="this.IsDataLoading" ErrorMessage="@this.RecordErrorMessage" >
 
                     <UIContainer>
 
@@ -19,15 +19,23 @@
                                 Date
                             </UIColumn>
 
-                            <UIColumn Columns="4">
+                            <UIColumn Columns="2">
                                 <FormControlPlainText Value="@this.Service.Record.Date.AsShortDate()"></FormControlPlainText>
+                            </UIColumn>
+
+                            <UIColumn Columns="2">
+                                ID
+                            </UIColumn>
+
+                            <UIColumn Columns="2">
+                                <FormControlPlainText Value="@this.Service.Record.ID.ToString()"></FormControlPlainText>
                             </UIColumn>
 
                             <UIColumn Columns="2">
                                 Frost
                             </UIColumn>
 
-                            <UIColumn Columns="4">
+                            <UIColumn Columns="2">
                                 <FormControlPlainText Value="@this.Service.Record.Frost.AsYesNo()"></FormControlPlainText>
                             </UIColumn>
 
@@ -97,23 +105,45 @@
 
                         </UIRow>
 
-                        <UIRow>
-                            <UIButtonColumn Columns="12">
-                                <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))">
-                                    Exit To List
-                                </UIButton>
-                                <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToLast))">
-                                    Exit
-                                </UIButton>
-                                <UIButton Show="this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.ModalExit())">
-                                    Exit
-                                </UIButton>
-                            </UIButtonColumn>
-                        </UIRow>
-
                     </UIContainer>
 
                 </UIErrorHandler>
+
+                <UIContainer>
+
+                    <UIRow>
+                        <UIButtonColumn Columns="6">
+
+                            <UIButton Show="this.IsLoaded" ButtonColour="@UIButton.Colour.BtnDark" ClickEvent="(e => this.NextRecord(-1))">
+                                Previous
+                            </UIButton>
+
+                            <UIButton Show="this.IsLoaded" ButtonColour="@UIButton.Colour.BtnDark" ClickEvent="(e => this.NextRecord(1))">
+                                Next
+                            </UIButton>
+
+                        </UIButtonColumn>
+
+                        <UIButtonColumn Columns="6">
+
+                            <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))">
+                                Exit To List
+                            </UIButton>
+
+                            <UIButton Show="!this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToLast))">
+                                Exit
+                            </UIButton>
+
+                            <UIButton Show="this.IsModal" ButtonColour="@UIButton.Colour.BtnSecondary" ClickEvent="(e => this.ModalExit())">
+                                Exit
+                            </UIButton>
+
+                        </UIButtonColumn>
+
+                    </UIRow>
+
+
+                </UIContainer>
 
             </Body>
 

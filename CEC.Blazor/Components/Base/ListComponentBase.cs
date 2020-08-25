@@ -26,7 +26,7 @@ namespace CEC.Blazor.Components.Base
         {
             if (this.IsService)
             {
-                this.Service.Reset();
+                await this.Service.Reset();
                 await this.Service.LoadPagingAsync();
                 this.Paging.PageHasChanged += UpdateUI;
                 this.Service.ListHasChanged += this.OnRecordsUpdate;

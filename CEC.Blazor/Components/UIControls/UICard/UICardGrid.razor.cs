@@ -74,10 +74,5 @@ namespace CEC.Blazor.Components.UIControls
         {
             this.Collapsed = !this.Collapsed;
         }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-        }
     }
 }
