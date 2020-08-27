@@ -79,9 +79,9 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Inherited - Always call the base method first
         /// </summary>
-        protected async override Task LoadRecord()
+        protected async override Task LoadRecordAsync()
         {
-            await base.LoadRecord();
+            await base.LoadRecordAsync();
 
             //set up the Edit Context
             this.EditContext = new EditContext(this.Service.Record);
@@ -98,7 +98,7 @@ namespace CEC.Blazor.Components.Base
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
-                this.RouterSessionService.IntraPageNavigation += this.OnIntraPageRouting;
+                this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
             }
         }
 
@@ -215,7 +215,7 @@ namespace CEC.Blazor.Components.Base
             {
                 // Check if we have a Url the user tried to navigate to - default exit to the root
                 if (!string.IsNullOrEmpty(this.RouterSessionService.NavigationCancelledUrl)) this.NavManager.NavigateTo(this.RouterSessionService.NavigationCancelledUrl);
-                else if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnPageUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnPageUrl);
+                else if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);
                 else this.NavManager.NavigateTo("/");
             }
         }

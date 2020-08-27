@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using CEC.Blazor.Components;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
-using System;
-using CEC.Blazor.Data;
-using CEC.Blazor.Services;
 
 namespace CEC.Blazor.Server.Pages.Components
 {
@@ -28,7 +25,6 @@ namespace CEC.Blazor.Server.Pages.Components
         protected async override Task OnInitializedAsync()
         {
             this.UIOptions.MaxColumn = 3;
-            //this.Service = (WeatherForecastControllerService)ScopedServices.GetService(typeof(WeatherForecastControllerService));
             this.Service = this.ControllerService;
             await this.Service.Reset();
             await base.OnInitializedAsync();

@@ -80,12 +80,6 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         public bool Loading { get; protected set; } = true;
 
-        /// <summary>
-        /// Property that tells us if we are navigating within the component 
-        /// such as where the component has multiple routes and we are navigating between them
-        /// </summary>
-        protected bool IsIntraComponentNavigation => (!this.FirstLoad) && NavManager.Uri != RouterSessionService.LastPageUrl;
-
 
         /// <summary>
         /// Boolean Property to check if this component is in Modal Mode
@@ -111,7 +105,6 @@ namespace CEC.Blazor.Components.Base
         protected async override Task OnInitializedAsync()
         {
             if (this.AuthenticationState != null) await this.GetUserAsync();
-            await this.LoadAsync();
             await base.OnInitializedAsync();
         }
 
@@ -120,12 +113,6 @@ namespace CEC.Blazor.Components.Base
             this.FirstLoad = false;
             base.OnAfterRender(firstRender);
         }
-
-        /// <summary>
-        /// Load routine to call at startup and during program execution
-        /// Put stuff in here that you may want to run on a reload of the object as well at intialisition
-        /// </summary>
-        protected virtual Task LoadAsync() => Task.CompletedTask;
 
         /// <summary>
         /// Method to get the current user from the Authentication State
@@ -180,7 +167,7 @@ namespace CEC.Blazor.Components.Base
                     this.NavManager.NavigateTo(string.Format("/{0}/New?qid={1}", e.RecordName, e.ID));
                     break;
                 case PageExitType.ExitToLast:
-                    if (!string.IsNullOrEmpty(this.RouterSessionService.LastPageUrl)) this.NavManager.NavigateTo(this.RouterSessionService.LastPageUrl);
+                    if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);
                     this.NavManager.NavigateTo("/");
                     break;
                 case PageExitType.ExitToRoot:

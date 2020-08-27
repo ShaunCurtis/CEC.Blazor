@@ -48,7 +48,7 @@ namespace CEC.Blazor.Components.Base
         {
             await base.OnParametersSetAsync();
             // Get the record if required
-            await this.LoadRecord();
+            await this.LoadRecordAsync();
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -56,7 +56,7 @@ namespace CEC.Blazor.Components.Base
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
-                this.RouterSessionService.IntraPageNavigation += this.OnIntraPageRouting;
+                this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
             }
         }
 
@@ -64,24 +64,32 @@ namespace CEC.Blazor.Components.Base
         /// Reloads the record if the ID has changed
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task LoadRecord()
+        protected virtual async Task LoadRecordAsync()
         {
             if (this.IsService)
             {
+                // Set the Loading flag and call statehaschanged to force UI changes 
+                // in this case making the UIErrorHandler show the loading spinner 
                 this.IsDataLoading = true;
                 StateHasChanged();
-                // Check if we have a query string value for id and if so use it
+
+                // Check if we have a query string value in the Route for ID.  If so use it
                 if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > 0 ? querystringid : this._ID;
-                // Check if the component is a modal and if so get the supplied ID
+
+                // Check if the component is a modal.  If so get the supplied ID
                 else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > 0 ? (int)modalid : this.ID;
 
+                // make this look async by adding a load delay
                 await Task.Delay(500);
-                // Get the current ID record if the id is different from the current record
+
+                // Get the current record - this will check if the id is different from the current record and only update if it's changed
                 await this.Service.GetRecordAsync(this._ID, false);
 
-                //await this.Service.ResetRecordAsync();
-
+                // Set the error message - it will only be displayed if we have an error
                 this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
+
+                // Set the Loading flag and call statehaschanged to force UI changes 
+                // in this case making the UIErrorHandler show the record or the erro message 
                 this.IsDataLoading = false;
                 StateHasChanged();
             }
@@ -92,10 +100,11 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected async void OnIntraPageRouting(object sender, EventArgs e)
+        protected async void OnSameRouteRouting(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"RecordComponentBase IntraPage Navigation Triggered");
-            await LoadRecord();
+            // Gets the record - checks for a new ID in the querystring and if we have one loads the records
+            await LoadRecordAsync();
         }
     }
 }

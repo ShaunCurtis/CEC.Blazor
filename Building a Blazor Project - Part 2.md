@@ -1,15 +1,20 @@
-# Building a Blazor Project
-# Part 2 - Data
+# Boilerplating a Database Appication in Blazor 
+## Part 1 - CRUD Data Access and Logic Operations
 
-In the first article I provided an overview of the way I build and structure my Blazor projects.  This article provides a detailed look at how I implement a multi-tiered data model in my projects.
+This article provides a detailed look methodolgies to build CRUD Application projects based on multi-tiered data models.
+
+This part describes methodologies for boilerplating the data and business logic layers.  A second article demonstrates methodologies for boilerplating the presentation layer.
+
+The article uses a demonstration solution, with code split between a library where (almost) all the reusable classes reside, and the project where project specific code resides.  It relies heavily on inheritance.  The developement process and code refactoring should always seek to migrate code downwards through the inheritance tree, and from specific (project) code to generic (library) code.  While this may seem like stating the obvious - yes "we" always do it - it's amazing how often what we preach is not what we implement.  I'm sure people will point out code in the demo project where I'm as guilty as everyone else. 
+
 
 ### The Entity Framework Tier
 
 I use Entity Framework [EF] for database access. But, being old school (the application gets nowhere near my tables) I implement CUD [CRUD without the Read] through stored procedures, and R [Read access] through views.  My data tier has two layers - the EF Database Context and a Data Service.  In Blazor both of these are implemented as singleton services - all user requests go through the same objects.
 
-The Entity Framework database account I use for web access has database access limited to select on the Views and execute on the Stored Procedures.
+The Entity Framework database account has access limited to Select on the Views and Execute on the Stored Procedures.
 
-The demo application had no database so the EF layer isn't implemented.  If it was it would look like the code block below.  All EF code is implemented in the project rather the the library.  The context and DB Datasets are all project specific.
+The demo application can be run with or without a database. All EF code is implemented in the project rather the the library - it's project specific.
 
 #### WeatherForecastDBContext
 
@@ -25,7 +30,7 @@ protected WeatherForecastDbContext GetContext()
 
 ```
 
-There's a DB DataSet for each record that needed retrieval.  Each DB DataSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application is very simple as we only have one record type.
+The DBContext has a DB DataSet for each record.  Each DB DataSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application is very simple as it only have one record type.
 
 ```c#
 public class WeatherForecastDbContext : DbContext
@@ -46,7 +51,7 @@ public class WeatherForecastDbContext : DbContext
 }
 ```
 
-I place the Stored Procedure base method in the DBContext and use *ExecuteSqlRawAsync* to run all the stored procedures.  Note that Entity Framework for DotNet Core doesn't have many of the features in the DotNet version, so we're back to basics.
+The Stored Procedure base method is in the DBContext and uses *ExecuteSqlRawAsync* to run all the stored procedures.  Note that Entity Framework for DotNet Core doesn't support many of the features in the DotNet version, so it's back to basics.
 
 There's a single method for executing all stored procedures.
 
@@ -56,7 +61,7 @@ internal async Task<DbTaskResult> RunStoredProcedureAsync(string storedprocname,
     var rows = await this.Database.ExecuteSqlRawAsync(this.GetParameterizedNames(storedprocname, parameters), parameters);
     if (rows == 1)
     {
-        var idparam = parameters.First(item => item.Direction == ParameterDirection.Output && item.SqlDbType == SqlDbType.Int && item.ParameterName.Contains("ID"));
+        var idparam = parameters.FirstOrDefault(item => item.Direction == ParameterDirection.Output && item.SqlDbType == SqlDbType.Int && item.ParameterName.Contains("ID"));
         var ret = new DbTaskResult()
         {
             Message = $"{recordConfiguration.RecordDescription} saved",
@@ -74,7 +79,7 @@ internal async Task<DbTaskResult> RunStoredProcedureAsync(string storedprocname,
     };
 }
 ```
-*GetParameterizedNames* builds the SQL query with the parameters.  Note the use of output parameters.
+*GetParameterizedNames* builds the SQL query with the parameters.  Note the use of output parameters to get the new ID.
 
 ```c#
 protected string GetParameterizedNames(string storedprocname, List<SqlParameter> parameters)
@@ -93,9 +98,9 @@ protected string GetParameterizedNames(string storedprocname, List<SqlParameter>
 
 ### The Data Service Tier
 
-I use generics throughout the data layers - *TRecord* is the generic term for *T* which should always implement *IDbRecord* and *new* to ensure all records implement certain properties and methods.
+Generics are used throughout the data layers - *TRecord* is used as the generic term for *T*.  It should always implement *IDbRecord* and *new* to ensure all records implement certain properties and methods.
 
-The data tier Interfaces live in the library, while the Base Service class - which uses Entity Framework - is project specific.
+The data tier Interfaces reside in the library, while the Base Service class - which uses Entity Framework - is project specific.
 
 #### IDbRecord
   
@@ -129,14 +134,20 @@ public interface IDataService<TRecord> where TRecord : new()
 
     public Task<TRecord> GetRecordAsync(int id) => Task.FromResult(new TRecord());
 
+    public Task<int> GetRecordListCountAsync() => Task.FromResult(0);
+
     public Task<DbTaskResult> UpdateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
     public Task<DbTaskResult> AddRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
     public Task<DbTaskResult> DeleteRecordAsync(int id) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+
+    public List<SqlParameter> GetSQLParameters(TRecord item, bool withid = false) => new List<SqlParameter>();
 }
 ```
-Most of the properties and methods are self explanatory - core CRUD operations.  RecordConfiguration is a simple class that contains UI specific data such as the generic Record name and last name and the route name to get to the various UI component pages.   We'll see more about this in the UI article.
+Most of the properties and methods are self explanatory - core CRUD operations.
+
+RecordConfiguration is a simple class that contains UI specific data such as the generic Record name and last name and the route name to get to the various UI component pages.   We'll see more about this in the UI article.
 
 #### BaseDataService
 
@@ -158,7 +169,17 @@ public abstract class BaseDataService<TRecord>: IDataService<TRecord> where TRec
 
 The code below show the code in a BaseService class implementing EF and using Stored Procedures for CUD. 
 
-GetContext gets a DBcontext to execute the Stored Procedures on.  You need a Context per query, rather than a shared context as operations are async: there's no way of ensuring the shared context isn't in use when an async method wahts to use it.
+```c#
+protected WeatherForecastDbContext GetContext()
+{
+    var optionsBuilder = new DbContextOptionsBuilder<WeatherForecastDbContext>();
+
+    optionsBuilder.UseSqlServer(AppConfiguration.GetConnectionString("WeatherForecastConnection"));
+    return new WeatherForecastDbContext(optionsBuilder.Options);
+}
+```
+
+GetContext gets a DBcontext to execute the Stored Procedures on.  You need a new context per query, rather than a shared context, as operations are async: you don't know when an async method wants to use it or release it.
 
 #### WeatherForecastDataService
 
@@ -215,21 +236,21 @@ private List<SqlParameter> GetSQLParameters(DbWeatherForecast item, bool isinser
 
 ### The Business Logic/Controller Service Tier
 
-Again I use the *TRecord* generic throughout the controller layerdata layers.  Controllers are normally scoped as Scoped Services and then further restricted using OwningComponentBase in the UI.
+Again *TRecord* generic is used throughout the controller layerdata layers.  Controllers are normally scoped as Scoped Services and then further restricted using OwningComponentBase in the UI when needed.
 
-The controller tier interface and base class lives in the library.  There are two interfaces *IControllerService* and *IControllerPagingService*.  Both are implemented in the BaseControllerService class.  I'm don't show the code for the  interface and base class here - they are rather large.  We'll cover most of the functionality when we look at how the UI layer interfaces with the controller layer.
+The controller tier interface and base class are library classes.  Two interfaces *IControllerService* and *IControllerPagingService* defined the required functionality.  Both are implemented in the BaseControllerService class.  The code for the interface and base class are too long to show here.  We'll cover most of the functionality when we look at how the UI layer interfaces with the controller layer.
 
 The main functionality implemented is:
 
 1. Properties to hold the current record and recordset and their status.
-2. Properties and Methods, defined in *IControllerPagingService*, for UI paging operations on large datasets.
-4. Properties and Methods to sort the the dataset.
+2. Properties and methods - defined in *IControllerPagingService* - for UI paging operations on large datasets.
+4. Properties and methods to sort the the dataset.
 3. Properties and methods to track the edit status of the record (Dirty/Clean).
 4. Methods to implement CRUD operations through the IDataService Interface.
 5. Events triggered on record and record set changes.  Used by the UI to control page refreshes.
 7. Methods to reset the Controller during routing to a new page that uses the same scoped instance of the controller.
 
-The important point to note is that almost all the code needed for the above functionality is in the bolier plated in the base class.  Implementing specific record based controllers is a simple task with minimal coding.
+Almost all code needed for the above functionality is boiler plated in the base class.  Implementing specific record based controllers is a simple task with minimal coding.
 
 #### WeatherForecastControllerService
 
@@ -254,4 +275,4 @@ public class WeatherForecastControllerService : BaseControllerService<DbWeatherF
 It's pretty simple and straightforward.
 
 ### Wrap Up
-That wraps up this section.  I've demonstrated a framework for building the data access section of a project, and how to boilerplate most of the code through interfaces and bas classes.  The next section will look at the Presentation Layer / UI framework.
+That wraps up this section.  It demonstrates a framework for building the data access section of a project and how to boilerplate most of the code through interfaces and bas classes.  The next section looks at the Presentation Layer / UI framework.

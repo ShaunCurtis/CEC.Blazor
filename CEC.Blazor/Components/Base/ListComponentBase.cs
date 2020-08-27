@@ -16,7 +16,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// constructed Value for the List Title based on the RecordConfiguration
         /// </summary>
-        public string ListTitle => this.IsService ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : "Record List"; 
+        public string ListTitle => this.IsService ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : "Record List";
 
         /// <summary>
         /// Should be overridden in inherited components
@@ -28,11 +28,23 @@ namespace CEC.Blazor.Components.Base
             {
                 await this.Service.Reset();
                 await this.Service.LoadPagingAsync();
-                this.Paging.PageHasChanged += UpdateUI;
-                this.Service.ListHasChanged += this.OnRecordsUpdate;
             }
             await base.OnInitializedAsync();
             this.Loading = false;
+        }
+
+        /// <summary>
+        /// Inherited
+        /// </summary>
+        /// <param name="firstRender"></param>
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                this.Paging.PageHasChanged += this.UpdateUI;
+                this.Service.ListHasChanged += this.OnRecordsUpdate;
+            }
+            base.OnAfterRender(firstRender);
         }
 
         /// <summary>
@@ -45,7 +57,8 @@ namespace CEC.Blazor.Components.Base
         {
             if (this.IsService)
             {
-                this.Loading = false;
+                this.Loading = true;
+                this.StateHasChanged();
                 await this.Paging.LoadAsync();
             }
             this.Loading = false;
@@ -82,7 +95,8 @@ namespace CEC.Blazor.Components.Base
         {
             try
             {
-                this.Paging.PageHasChanged -= UpdateUI;
+                this.Service.ListHasChanged -= this.OnRecordsUpdate;
+                this.Paging.PageHasChanged -= this.UpdateUI;
             }
             catch { }
             base.Dispose();

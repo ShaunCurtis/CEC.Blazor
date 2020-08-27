@@ -41,7 +41,7 @@ namespace CEC.Blazor.Components
                     this.NavManager.NavigateTo(string.Format("/{0}/New?qid={1}", e.RecordName, e.ID));
                     break;
                 case PageExitType.ExitToLast:
-                    if (!string.IsNullOrEmpty(this.RouterSessionService.LastPageUrl)) this.NavManager.NavigateTo(this.RouterSessionService.LastPageUrl);
+                    if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);
                     this.NavManager.NavigateTo("/");
                     break;
                 case PageExitType.ExitToRoot:
