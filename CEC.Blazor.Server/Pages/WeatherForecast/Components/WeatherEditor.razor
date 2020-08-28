@@ -152,21 +152,21 @@
                 <UIRow>
 
                     <UIColumn Columns="7">
-                        <UIAlert Alert="this.AlertMessage"></UIAlert>
+                        <UIAlert Alert="this.AlertMessage" SizeCode="Bootstrap.SizeCode.sm"></UIAlert>
                     </UIColumn>
                     <UIButtonColumn Columns="5">
 
-                        <UIButton Show="this.NavigationCancelled && this.IsLoaded" ClickEvent="this.Cancel" ButtonColour="@UIButton.Colour.BtnWarning">Cancel</UIButton>
+                        <UIButton Show="this.NavigationCancelled && this.IsLoaded" ClickEvent="this.Cancel" ColourCode="Bootstrap.ColourCode.cancel">Cancel</UIButton>
 
-                        <UIButton Show="this.NavigationCancelled && this.IsLoaded" ClickEvent="this.SaveAndExit" ButtonColour="@UIButton.Colour.BtnSuccess">Save &amp; Exit</UIButton>
+                        <UIButton Show="this.NavigationCancelled && this.IsLoaded" ClickEvent="this.SaveAndExit" ColourCode="Bootstrap.ColourCode.save">Save &amp; Exit</UIButton>
 
-                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.Save" ButtonColour="@UIButton.Colour.BtnSuccess">Save</UIButton>
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.Save" ColourCode="Bootstrap.ColourCode.save">Save</UIButton>
 
-                        <UIButton Show="this.ShowExitConfirmation && this.IsLoaded" ClickEvent="this.ConfirmExit" ButtonColour="@UIButton.Colour.BtnDanger">Exit Without Saving</UIButton>
+                        <UIButton Show="this.ShowExitConfirmation && this.IsLoaded" ClickEvent="this.ConfirmExit" ColourCode="Bootstrap.ColourCode.danger_exit">Exit Without Saving</UIButton>
 
-                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation"  ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))" ButtonColour="@UIButton.Colour.BtnSecondary">Exit To List</UIButton>
+                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation"  ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))" ColourCode="Bootstrap.ColourCode.nav">Exit To List</UIButton>
 
-                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="this.Exit" ButtonColour="@UIButton.Colour.BtnSecondary">Exit</UIButton>
+                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="this.Exit" ColourCode="Bootstrap.ColourCode.nav">Exit</UIButton>
 
                     </UIButtonColumn>
 

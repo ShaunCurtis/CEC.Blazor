@@ -1,67 +1,69 @@
 ﻿
-div.grid-table {
-    display: table;
+.grid-table {
     width: 100%;
     margin-bottom: 10px;
 }
 
-    div.grid-table .grid-row {
-        display: table-row;
-    }
+.grid-table tr.grid-row {
+    cursor: pointer;
+}
 
-    div.grid-table .grid-row:nth-child(odd) {
-        background-color: rgb(240,240,255);
-    }
+.grid-table .grid-row:nth-child(odd) {
+    background-color: rgb(240,240,255);
+}
 
-    div.grid-table .grid-col {
-        display: table-cell;
-        padding: 4px 6px;
-    }
+.grid-table .grid-row:hover {
+    background-color: rgb(220,220,220);
+}
 
-    div.grid-table .grid-col-overflow {
-        width: 100%;
-    }
+.grid-table .grid-col {
+    padding: 4px 6px;
+}
 
-    div.grid-table .grid-col-header {
-        font-size: 1.2rem;
-        font-weight: 600;
-        background-color: rgb(233,236,239);
-        white-space: nowrap;
-        font-variant: small-caps;
-    }
+.grid-table .grid-col-overflow {
+    width: 100%;
+}
 
-    div.grid-table h6 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        font-variant: small-caps;
-    }
+.grid-table .grid-col-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    background-color: rgb(233,236,239);
+    white-space: nowrap;
+    font-variant: small-caps;
+}
 
-    div.grid-table .grid-sub-total {
-        font-size: 1.0rem;
-        font-weight: 500;
-        font-variant: small-caps;
-        border-top: 1px solid rgb(128,128,192);
-    }
+.grid-table h6 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-variant: small-caps;
+}
 
-    div.grid-table .grid-total {
-        font-size: 1.2rem;
-        font-weight: 600;
-        font-variant: small-caps;
-        border-top: 4px double rgb(64,64,128);
-        border-bottom: 1px solid rgb(64,64,128);
-    }
+.grid-table .grid-sub-total {
+    font-size: 1.0rem;
+    font-weight: 500;
+    font-variant: small-caps;
+    border-top: 1px solid rgb(128,128,192);
+}
 
-    div.grid-table .grid-overflow {
-        display: flex;
-    }
+.grid-table .grid-total {
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-variant: small-caps;
+    border-top: 4px double rgb(64,64,128);
+    border-bottom: 1px solid rgb(64,64,128);
+}
 
-    div.grid-table .grid-overflowinner {
-        flex: 1;
-        width: 1px;
-        overflow-x: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
+.grid-table .grid-overflow {
+    display: flex;
+}
+
+.grid-table .grid-overflowinner {
+    flex: 1;
+    width: 1px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
 .grid-container {
     display: grid;

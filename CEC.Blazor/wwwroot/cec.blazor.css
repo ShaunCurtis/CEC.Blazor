@@ -1,50 +1,51 @@
-﻿div.grid-table {
-  display: table;
+﻿.grid-table {
   width: 100%;
   margin-bottom: 10px; }
 
-div.grid-table .grid-row {
-  display: table-row; }
+.grid-table tr.grid-row {
+  cursor: pointer; }
 
-div.grid-table .grid-row:nth-child(odd) {
+.grid-table .grid-row:nth-child(odd) {
   background-color: #f0f0ff; }
 
-div.grid-table .grid-col {
-  display: table-cell;
+.grid-table .grid-row:hover {
+  background-color: gainsboro; }
+
+.grid-table .grid-col {
   padding: 4px 6px; }
 
-div.grid-table .grid-col-overflow {
+.grid-table .grid-col-overflow {
   width: 100%; }
 
-div.grid-table .grid-col-header {
+.grid-table .grid-col-header {
   font-size: 1.2rem;
   font-weight: 600;
   background-color: #e9ecef;
   white-space: nowrap;
   font-variant: small-caps; }
 
-div.grid-table h6 {
+.grid-table h6 {
   font-size: 1.1rem;
   font-weight: 600;
   font-variant: small-caps; }
 
-div.grid-table .grid-sub-total {
+.grid-table .grid-sub-total {
   font-size: 1.0rem;
   font-weight: 500;
   font-variant: small-caps;
   border-top: 1px solid #8080c0; }
 
-div.grid-table .grid-total {
+.grid-table .grid-total {
   font-size: 1.2rem;
   font-weight: 600;
   font-variant: small-caps;
   border-top: 4px double #404080;
   border-bottom: 1px solid #404080; }
 
-div.grid-table .grid-overflow {
+.grid-table .grid-overflow {
   display: flex; }
 
-div.grid-table .grid-overflowinner {
+.grid-table .grid-overflowinner {
   flex: 1;
   width: 1px;
   overflow-x: hidden;

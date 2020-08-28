@@ -30,6 +30,8 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public int ColumnSpan { get; set; }
 
+        protected override string _Tag => "td";
+
         /// <summary>
         /// Inherited
         /// </summary>

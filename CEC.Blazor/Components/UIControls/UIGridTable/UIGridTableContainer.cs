@@ -15,7 +15,7 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public int MaxColumn { get; set; } = 1;
 
-        protected override string _Tag => "div";
+        protected override string _Tag => "table";
 
         protected override string _BaseCss => "grid-table";
 

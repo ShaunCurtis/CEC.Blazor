@@ -9,7 +9,7 @@ namespace CEC.Blazor.Components.UIControls
 /// This removes the need for complex error checking - such as if a record or list exists - in the child content.
 /// Connect IsError and IsLoading to boolean properties in the parent and update them when loading is complete.
 /// </summary>
-    public class UIErrorHandler : UIComponent
+    public class UIErrorHandler : UIBase
     {
         /// <summary>
         /// Boolean Property that determines if the child content or an error message is diplayed
@@ -66,11 +66,6 @@ namespace CEC.Blazor.Components.UIControls
                 builder.CloseElement();
             }
             else builder.AddContent(i++, ChildContent);
-        }
-
-        public override Task SetParametersAsync(ParameterView parameters)
-        {
-            return base.SetParametersAsync(parameters);
         }
 
     }

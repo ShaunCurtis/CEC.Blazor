@@ -17,10 +17,10 @@
                 @if (ShowButtons)
                 {
                     @Buttons
-                    <UIButton Show="this.ShowAdd" ButtonColour="@UIButton.Colour.BtnPrimary" ButtonType="@UIButton.Size.BtnSmall" ClickEvent="(e => this.Navigate(PageExitType.ExitToNew))">
+                    <UIButton Show="this.ShowAdd" ColourCode="Bootstrap.ColourCode.add" SizeCode="Bootstrap.SizeCode.sm" ClickEvent="(e => this.Navigate(PageExitType.ExitToNew))">
                         @String.Concat("Add New ", this.RecordConfiguration.RecordDescription)
                     </UIButton>
-                    <UIButton Show="this.ShowAdd" ButtonColour="@UIButton.Colour.BtnPrimary" ButtonType="@UIButton.Size.BtnSmall" ClickEvent="(e => this.Navigate(PageExitType.ExitToRoot))">
+                    <UIButton Show="this.ShowAdd"  ColourCode="Bootstrap.ColourCode.nav" SizeCode="Bootstrap.SizeCode.sm" ClickEvent="(e => this.Navigate(PageExitType.ExitToRoot))">
                         Exit
                     </UIButton>
                 }

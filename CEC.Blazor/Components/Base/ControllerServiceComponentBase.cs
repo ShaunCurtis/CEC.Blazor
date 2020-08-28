@@ -64,7 +64,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected void ClearAlert()
         {
-            this.AlertMessage.CSS = Alert.AlertInfo;
+            this.AlertMessage.ColourCode = Bootstrap.ColourCode.info;
             this.AlertMessage.IsAlert = false;
             this.AlertMessage.Message = "All Clear";
         }

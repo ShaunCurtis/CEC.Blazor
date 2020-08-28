@@ -42,6 +42,8 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public bool IsHeader { get; set; }
 
+        protected override string _Tag => "td";
+
         protected string Style => this.IsMaxColumn ? $"width: {this.UIWrapper?.UIOptions?.MaxColumnPercent ?? 50}%" : string.Empty;
 
         protected override string _Css => this.CleanUpCss($"grid-col {this.CssAlignment} {this.CssHeader} {this.MaxRowCss} {this.AddOnCss}");

@@ -1,4 +1,5 @@
 ﻿
+using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Data;
 using CEC.Blazor.Utilities;
 
@@ -6,14 +7,6 @@ namespace CEC.Blazor.Components
 {
     public class Alert
     {
-        public static string AlertPrimary = "alert-primary";
-        public static string AlertSecondary = "alert-secondary";
-        public static string AlertSuccess = "alert-success";
-        public static string AlertDanger = "alert-danger";
-        public static string AlertWarning = "alert-warning";
-        public static string AlertInfo = "alert-info";
-        public static string AlertLight = "alert-light";
-        public static string AlertDark = "alert-dark";
 
         /// <summary>
         /// Alert Message to display
@@ -24,7 +17,7 @@ namespace CEC.Blazor.Components
         /// <summary>
         /// Css for the Alert
         /// </summary>
-        public string CSS { get; set; } = string.Empty;
+        public Bootstrap.ColourCode ColourCode { get; set; } = Bootstrap.ColourCode.info;
 
         /// <summary>
         /// Bool Property to set the alert
@@ -37,7 +30,7 @@ namespace CEC.Blazor.Components
         public void ClearAlert()
         {
             this.Message = string.Empty;
-            this.CSS = Alert.AlertInfo;
+            this.ColourCode = Bootstrap.ColourCode.info;
             this.IsAlert = false;
         }
 
@@ -46,10 +39,10 @@ namespace CEC.Blazor.Components
         /// </summary>
         /// <param name="message"></param>
         /// <param name="Css"></param>
-        public void SetAlert(string message, string Css)
+        public void SetAlert(string message, Bootstrap.ColourCode colourcode)
         {
             this.Message = message;
-            this.CSS = Css;
+            this.ColourCode = colourcode;
             this.IsAlert = true;
         }
         
@@ -64,19 +57,19 @@ namespace CEC.Blazor.Components
             switch (result.Type)
             {
                 case MessageType.Error:
-                    this.CSS = Alert.AlertDanger;
+                    this.ColourCode = Bootstrap.ColourCode.danger;
                     break;
                 case MessageType.Information:
-                    this.CSS = Alert.AlertInfo;
+                    this.ColourCode = Bootstrap.ColourCode.info;
                     break;
                 case MessageType.Success:
-                    this.CSS = Alert.AlertSuccess;
+                    this.ColourCode = Bootstrap.ColourCode.success;
                     break;
                 case MessageType.Warning:
-                    this.CSS = Alert.AlertWarning;
+                    this.ColourCode = Bootstrap.ColourCode.warning;
                     break;
                 default:
-                    this.CSS = Alert.AlertPrimary;
+                    this.ColourCode = Bootstrap.ColourCode.primary;
                     this.IsAlert = false;
                     break;
             }

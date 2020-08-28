@@ -1,4 +1,4 @@
-# Boilerplating a Database Appication in Blazor 
+# Boilerplating a Database Application in Blazor 
 ## Part 1 - CRUD Data Access and Logic Operations
 
 This article provides a detailed look methodolgies to build CRUD Application projects based on multi-tiered data models.
@@ -276,3 +276,8 @@ It's pretty simple and straightforward.
 
 ### Wrap Up
 That wraps up this section.  It demonstrates a framework for building the data access section of a project and how to boilerplate most of the code through interfaces and bas classes.  The next section looks at the Presentation Layer / UI framework.
+
+Some key points to note:
+1. Aysnc code is used wherever possible.  The data access functions are all async.
+2. The use of generics to make much of the boilerplating possible.
+3. Using Interfaces for Dependancy Injection and UI boilerplating.

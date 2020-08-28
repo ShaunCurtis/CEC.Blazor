@@ -39,24 +39,7 @@ $brand: #b3ccff;
 
 $theme-colors: () !default;
 // stylelint-disable-next-line scss/dollar-variable-default
-$theme-colors: map-merge( ( 
-    "primary": $primary, 
-    "secondary": $secondary, 
-    "success": $success, 
-    "info": $info, 
-    "warning": $warning, 
-    "danger": $danger, 
-    "light": $light, 
-    "dark": $dark,
-    "brand": $brand,
-    "add": $primary,
-    "new": $info,
-    "edit": $primary,
-    "delete": $danger,
-    "nav": $secondary,
-    "change": $warning
-), 
-$theme-colors );
+$theme-colors: map-merge( ( "primary": $primary, "secondary": $secondary, "success": $success, "info": $info, "warning": $warning, "danger": $danger, "light": $light, "dark": $dark, "brand": $brand, "cancel": $light, "add": $primary, "new": $info, "edit": $primary, "delete": $danger, "nav": $secondary, "change": $warning, "save": $success, "danger-exit": $danger, ), $theme-colors );
 
 // Custom Colors
 $brand-google: #ea4335 !default;

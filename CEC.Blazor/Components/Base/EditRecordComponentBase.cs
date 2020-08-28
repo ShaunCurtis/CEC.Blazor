@@ -1,4 +1,5 @@
-﻿using CEC.Blazor.Data;
+﻿using CEC.Blazor.Components.UIControls;
+using CEC.Blazor.Data;
 using CEC.Routing.Components;
 using CEC.Routing.Services;
 using Microsoft.AspNetCore.Components;
@@ -111,7 +112,7 @@ namespace CEC.Blazor.Components.Base
         {
             this.NavigationCancelled = true;
             this.ShowExitConfirmation = true;
-            this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Alert.AlertDanger);
+            this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Bootstrap.ColourCode.danger);
             InvokeAsync(this.StateHasChanged);
         }
 
@@ -133,7 +134,7 @@ namespace CEC.Blazor.Components.Base
                 }
                 else
                 {
-                    this.AlertMessage.SetAlert("The Record isn't Saved", Alert.AlertWarning);
+                    this.AlertMessage.SetAlert("The Record isn't Saved", Bootstrap.ColourCode.warning);
                     this.RouterSessionService.SetPageExitCheck(true);
                 }
                 this.UpdateUI();
@@ -155,7 +156,7 @@ namespace CEC.Blazor.Components.Base
             this.NavigationCancelled = false;
             this.RouterSessionService.NavigationCancelledUrl = string.Empty;
             if (this.IsClean) this.AlertMessage.ClearAlert();
-            else this.AlertMessage.SetAlert($"{this.Service.RecordConfiguration.RecordDescription} Changed", Alert.AlertWarning);
+            else this.AlertMessage.SetAlert($"{this.Service.RecordConfiguration.RecordDescription} Changed", Bootstrap.ColourCode.warning);
             this.UpdateState();
         }
 
@@ -179,7 +180,7 @@ namespace CEC.Blazor.Components.Base
                 this.AlertMessage.SetAlert(this.Service.TaskResult);
                 this.UpdateState();
             }
-            else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Alert.AlertDanger);
+            else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Bootstrap.ColourCode.danger);
             return ok;
         }
 

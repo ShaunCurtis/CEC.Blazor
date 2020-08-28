@@ -15,6 +15,8 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public string FieldName { get; set; }
 
+        protected override string _Tag => "th";
+
         protected override string _Css
         {
             get

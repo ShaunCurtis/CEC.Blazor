@@ -10,6 +10,10 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UIGridTableRow : UIBase
     {
+
+        protected override string _Tag => "tr";
+
+
         protected override string _Css => $"grid-row {AddOnCss.Trim()}".Trim();
 
     }
