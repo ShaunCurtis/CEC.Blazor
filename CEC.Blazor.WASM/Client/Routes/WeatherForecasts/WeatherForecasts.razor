@@ -1,0 +1,22 @@
+﻿@page "/WeatherForecast"
+@page "/WeatherForecasts"
+
+@layout MainLayout
+
+@namespace CEC.Blazor.WASM.Client.RoutedComponents
+
+@inherits ApplicationComponentBase
+
+<WeatherList UIOptions="this.UIOptions" ></WeatherList>
+
+@code {
+
+    public UIOptions UIOptions => new UIOptions()
+    {
+        ListNavigationToViewer = true,
+        ShowButtons = true,
+        ShowAdd = true,
+        ShowEdit = true
+    };
+
+}

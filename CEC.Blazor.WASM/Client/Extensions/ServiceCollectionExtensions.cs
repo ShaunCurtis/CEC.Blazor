@@ -1,23 +1,20 @@
-﻿using CEC.Weather.Data;
+﻿using CEC.Blazor.Services;
+using CEC.Weather.Data;
 using CEC.Weather.Data.Validators;
 using CEC.Weather.Services;
-using CEC.Blazor.Server.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CEC.Blazor.Server.Extensions
+namespace CEC.Blazor.WASM.Client.Extensions
 {
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddSingleton<WeatherForecastDummyDataService>();
-            services.AddSingleton<WeatherForecastDataService>();
+            services.AddScoped<BrowserService>();
             services.AddScoped<WeatherForecastControllerService>();
+            services.AddScoped<IWeatherForecastDataService, WeatherForecastWASMDataService>();
             services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
-            services.AddScoped<CosmicDirectoryService>();
-            services.AddSingleton<SalaryDataService>();
-            services.AddTransient<SalaryControllerService>();
             return services;
         }
 

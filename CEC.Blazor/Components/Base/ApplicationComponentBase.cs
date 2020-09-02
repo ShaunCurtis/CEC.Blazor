@@ -37,7 +37,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Injected Authentication Service giving access to logged in  user data
         /// </summary>
-        [Inject]
+        //[Inject]
         public AuthenticationStateProvider AuthenticationState { get; set; }
 
         /// <summary>

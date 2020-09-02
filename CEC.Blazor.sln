@@ -22,6 +22,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{29
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Routing", "..\CEC.Routing\CEC.Routing\CEC.Routing.csproj", "{7D964967-65EC-4C13-9A49-88A1985FB56F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.WASM.Server", "CEC.Blazor.WASM\Server\CEC.Blazor.WASM.Server.csproj", "{C4055B7D-89F2-4F99-BCAD-72C0F4269525}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.WASM.Client", "CEC.Blazor.WASM\Client\CEC.Blazor.WASM.Client.csproj", "{87E2687A-C561-42A2-BC02-B1CF0949DCEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.Shared", "CEC.Blazor.WASM\Shared\CEC.Blazor.Shared.csproj", "{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Weather", "CEC.Weather\CEC.Weather.csproj", "{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +48,22 @@ Global
 		{7D964967-65EC-4C13-9A49-88A1985FB56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D964967-65EC-4C13-9A49-88A1985FB56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D964967-65EC-4C13-9A49-88A1985FB56F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4055B7D-89F2-4F99-BCAD-72C0F4269525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4055B7D-89F2-4F99-BCAD-72C0F4269525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4055B7D-89F2-4F99-BCAD-72C0F4269525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4055B7D-89F2-4F99-BCAD-72C0F4269525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87E2687A-C561-42A2-BC02-B1CF0949DCEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87E2687A-C561-42A2-BC02-B1CF0949DCEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87E2687A-C561-42A2-BC02-B1CF0949DCEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87E2687A-C561-42A2-BC02-B1CF0949DCEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

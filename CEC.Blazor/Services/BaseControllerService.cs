@@ -295,7 +295,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         ///Base implementation that gets the full list.  Override for specific filtering
         /// </summary>
-        protected async virtual Task<bool> GetFilteredListAsync()
+        public async virtual Task<bool> GetFilteredListAsync()
         {
             if (!this.IsRecords)
             {
