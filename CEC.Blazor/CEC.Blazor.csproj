@@ -1,31 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Components\UIControls\UICardGrid\**" />
-    <Content Remove="Components\UIControls\UICardGrid\**" />
-    <EmbeddedResource Remove="Components\UIControls\UICardGrid\**" />
-    <None Remove="Components\UIControls\UICardGrid\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Components\FormControls\InputControlButtonCheckBox.razor.cs" />
-    <Compile Remove="Components\FormControls\UIEnumButtonGroup.razor.cs" />
-    <Compile Remove="Components\UIControls\UICard\UICardList.razor.cs" />
-    <Compile Remove="Components\UIControls\UI\UIModal.razor.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-    <Content Remove="Components\FormControls\InputControlButtonCheckBox.razor" />
-    <Content Remove="Components\FormControls\UIEnumButtonGroup.razor" />
-    <Content Remove="Components\UIControls\UICard\UICardList.razor" />
-    <Content Remove="Components\UIControls\UI\UIModal.razor" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Scss\site.scss" />
@@ -38,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="CEC.FormControls" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />
