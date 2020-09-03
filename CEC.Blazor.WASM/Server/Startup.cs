@@ -26,7 +26,7 @@ namespace CEC.Blazor.WASM.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddSingleton<IWeatherForecastDataService, WeatherForecastDataService >();
+            services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService >();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

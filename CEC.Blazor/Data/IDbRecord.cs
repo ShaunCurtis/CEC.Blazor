@@ -18,7 +18,13 @@ namespace CEC.Blazor.Data
         /// Creates a deep copy of the object
         /// </summary>
         /// <returns></returns>
-        public T ShadowCopy(); 
+        public T ShadowCopy();
+
+        /// <summary>
+        /// Set the record ID to 0 to represent a new record
+        /// default value should be -1
+        /// </summary>
+        public void SetNew();
 
     }
 }

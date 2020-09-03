@@ -2,13 +2,19 @@
 using CEC.Blazor.Data;
 using CEC.Blazor.Utilities;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
 {
     public interface IDataService<TRecord> where TRecord : new()
     {
+
+        public HttpClient HttpClient { get; set; }
+
+        public IConfiguration AppConfiguration { get; set; }
 
         /// <summary>
         /// Record Configuration Property

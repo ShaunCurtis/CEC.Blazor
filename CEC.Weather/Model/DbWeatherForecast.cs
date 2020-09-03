@@ -55,6 +55,8 @@ namespace CEC.Weather.Data
         [NotMapped]
         public string DisplayName => $"Forecast for {this.Date.AsShortDate()}";
 
+        public void SetNew() => this.WeatherForecastID = 0;
+
         public DbWeatherForecast ShadowCopy()
         {
             return new DbWeatherForecast() {

@@ -317,7 +317,12 @@ namespace CEC.Blazor.Services
             {
                 if (id != this.RecordID || refresh)
                 {
-                    this.Record = await this.Service.GetRecordAsync(id ?? 0);
+                    if (id == 0)
+                    {
+                        this.Record = new T();
+                        this.Record.SetNew();
+                    }
+                    else this.Record = await this.Service.GetRecordAsync(id ?? 0);
                     this.Record ??= new T();
                     this.ShadowRecord = this.Record.ShadowCopy();
                     if (!this.IsRecords) this.BaseRecordCount = await this.Service.GetRecordListCountAsync();

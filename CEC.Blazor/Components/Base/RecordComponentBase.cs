@@ -74,10 +74,10 @@ namespace CEC.Blazor.Components.Base
                 StateHasChanged();
 
                 // Check if we have a query string value in the Route for ID.  If so use it
-                if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > 0 ? querystringid : this._ID;
+                if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > -1 ? querystringid : this._ID;
 
                 // Check if the component is a modal.  If so get the supplied ID
-                else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > 0 ? (int)modalid : this.ID;
+                else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > -1 ? (int)modalid : this.ID;
 
                 // make this look async by adding a load delay
                 await Task.Delay(500);

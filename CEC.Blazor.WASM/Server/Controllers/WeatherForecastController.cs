@@ -1,5 +1,4 @@
-﻿using CEC.Blazor.Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MVC = Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CEC.Weather.Services;
-using Microsoft.AspNetCore.Components;
 using CEC.Weather.Data;
-using Microsoft.IdentityModel.Tokens;
 using CEC.Blazor.Data;
 
 namespace CEC.Blazor.WASM.Server.Controllers
@@ -30,37 +27,30 @@ namespace CEC.Blazor.WASM.Server.Controllers
 
         [MVC.Route("weatherforecast/list")]
         [HttpGet]
-        public async Task<List<DbWeatherForecast>> GetList()
-        {
-            return await DataService.GetRecordListAsync();
-        }
+        public async Task<List<DbWeatherForecast>> GetList() => await DataService.GetRecordListAsync();
 
         [MVC.Route("weatherforecast/count")]
         [HttpGet]
-        public async Task<int> Count()
-        {
-            return await DataService.GetRecordListCountAsync();
-        }
+        public async Task<int> Count() => await DataService.GetRecordListCountAsync();
+
+        [MVC.Route("weatherforecast/get")]
+        [HttpGet]
+        public async Task<DbWeatherForecast> GetRec(int id) => await DataService.GetRecordAsync(id);
+
+        [MVC.Route("weatherforecast/read")]
+        [HttpPost]
+        public async Task<DbWeatherForecast> Read([FromBody]int id) => await DataService.GetRecordAsync(id);
 
         [MVC.Route("weatherforecast/update")]
         [HttpPost]
-        public async Task<DbTaskResult> Update(DbWeatherForecast record)
-        {
-            return await DataService.UpdateRecordAsync(record);
-        }
+        public async Task<DbTaskResult> Update([FromBody]DbWeatherForecast record) => await DataService.UpdateRecordAsync(record);
 
         [MVC.Route("weatherforecast/create")]
         [HttpPost]
-        public async Task<DbTaskResult> Create(DbWeatherForecast record)
-        {
-            return await DataService.AddRecordAsync(record);
-        }
+        public async Task<DbTaskResult> Create([FromBody]DbWeatherForecast record) => await DataService.AddRecordAsync(record);
 
         [MVC.Route("weatherforecast/delete")]
         [HttpPost]
-        public async Task<DbTaskResult> Delete(int id)
-        {
-            return await DataService.DeleteRecordAsync(id);
-        }
+        public async Task<DbTaskResult> Delete([FromBody]int id) => await DataService.DeleteRecordAsync(id);
     }
 }

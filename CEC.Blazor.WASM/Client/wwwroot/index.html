@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -6,18 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>CEC.Blazor.WASM</title>
     <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="stylesheet" href="_content/CEC.Blazor/cec.blazor.min.css" />
+    <link href="_content/CEC.Weather/css/site.min.css" rel="stylesheet" />
 </head>
 
 <body>
-    <app>Loading...</app>
+    <app>
+        <div class="mt-4" style="margin-right:auto; margin-left:auto; width:100%;" >
+            <div class="loader"></div>
+            <div style="width:100%; text-align:center;"><h4>Web Application Loading</h4></div>
+        </div>
+    </app>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+    <script src="_content/CEC.Routing/cec.routing.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
