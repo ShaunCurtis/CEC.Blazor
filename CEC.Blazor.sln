@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{29
 		Blazor Components.md = Blazor Components.md
 		Boilerplating a Database Application in Blazor - Part 1.md = Boilerplating a Database Application in Blazor - Part 1.md
 		Boilerplating a Database Application in Blazor - Part 2.md = Boilerplating a Database Application in Blazor - Part 2.md
+		Boilerplating a Database Application in Blazor - Part 3.md = Boilerplating a Database Application in Blazor - Part 3.md
 		Building a Blazor Project - Part 1.md = Building a Blazor Project - Part 1.md
 		Building a Blazor Project - Part 3.md = Building a Blazor Project - Part 3.md
 		Building Blazor UI Components.md = Building Blazor UI Components.md
@@ -22,13 +23,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{29
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Routing", "..\CEC.Routing\CEC.Routing\CEC.Routing.csproj", "{7D964967-65EC-4C13-9A49-88A1985FB56F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.WASM.Server", "CEC.Blazor.WASM\Server\CEC.Blazor.WASM.Server.csproj", "{C4055B7D-89F2-4F99-BCAD-72C0F4269525}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.WASM.Server", "CEC.Blazor.WASM\Server\CEC.Blazor.WASM.Server.csproj", "{C4055B7D-89F2-4F99-BCAD-72C0F4269525}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.WASM.Client", "CEC.Blazor.WASM\Client\CEC.Blazor.WASM.Client.csproj", "{87E2687A-C561-42A2-BC02-B1CF0949DCEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.WASM.Client", "CEC.Blazor.WASM\Client\CEC.Blazor.WASM.Client.csproj", "{87E2687A-C561-42A2-BC02-B1CF0949DCEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor.Shared", "CEC.Blazor.WASM\Shared\CEC.Blazor.Shared.csproj", "{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.Shared", "CEC.Blazor.WASM\Shared\CEC.Blazor.Shared.csproj", "{8DCD1D5A-0DCE-4923-84C7-D9EB6811AFC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Weather", "CEC.Weather\CEC.Weather.csproj", "{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Weather", "CEC.Weather\CEC.Weather.csproj", "{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ACEE5B1D-2CDF-4EBD-8D15-5AB9813903A2}"
+	ProjectSection(SolutionItems) = preProject
+		Images\CEC.Blazor.WASM.Client.png = Images\CEC.Blazor.WASM.Client.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +73,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACEE5B1D-2CDF-4EBD-8D15-5AB9813903A2} = {295A9984-5DBE-427B-815F-7FB8735DC716}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4D6C222-7639-42B0-80BD-27D9CDC0FB41}

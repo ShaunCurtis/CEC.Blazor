@@ -11,8 +11,10 @@ namespace CEC.Blazor.Server.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<IWeatherForecastDataService, WeatherForecastServerDataService>();
+
             services.AddScoped<WeatherForecastDummyDataService>();
-            services.AddScoped<WeatherForecastServerDataService>();
+            //services.AddScoped<WeatherForecastServerDataService>();
             services.AddScoped<WeatherForecastControllerService>();
             services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
             services.AddScoped<CosmicDirectoryService>();

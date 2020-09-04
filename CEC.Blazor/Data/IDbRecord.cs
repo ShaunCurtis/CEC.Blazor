@@ -12,6 +12,10 @@ namespace CEC.Blazor.Data
         /// </summary>
         public int ID { get; }
 
+        /// <summary>
+        /// Display name for the Record
+        /// Point to the field that you want to use for the dipslay name
+        /// </summary>
         public string DisplayName { get; }
 
         /// <summary>

@@ -366,7 +366,7 @@ namespace CEC.Blazor.Services
         /// <returns></returns>
         public async virtual Task<bool> AddRecordAsync()
         {
-            this.TaskResult = await this.Service.AddRecordAsync(this.Record);
+            this.TaskResult = await this.Service.CreateRecordAsync(this.Record);
             if (this.TaskResult.IsOK)
             {
                 this.Record = await this.Service.GetRecordAsync(this.TaskResult.NewID);

@@ -1,9 +1,7 @@
 ﻿using CEC.Blazor.Services;
 using CEC.Weather.Data;
 using System.Collections.Generic;
-using CEC.Blazor.Utilities;
 using System.Threading.Tasks;
-using CEC.Blazor.Data;
 using System;
 
 namespace CEC.Weather.Services
@@ -15,7 +13,7 @@ namespace CEC.Weather.Services
         /// Method to get a set of 100 dummy records
         /// </summary>
         /// <param name="recordcount"></param>
-        private async Task<List<DbWeatherForecast>> GetDummyRecords(int recordcount)
+        public async Task<List<DbWeatherForecast>> GetDummyRecords(int recordcount)
         {
             var recs = new List<DbWeatherForecast>();
             for (var i = 1; i <= recordcount; i++)
@@ -33,7 +31,7 @@ namespace CEC.Weather.Services
                     PostCode = "GL2 5TP"
                 };
                 rec.Description = $"The Weather forecast for {rec.Date.DayOfWeek} {rec.Date.ToLongDateString()} is mostly {rec.Outlook} and {rec.Summary}";
-                await this.AddRecordAsync(rec);
+                await this.CreateRecordAsync(rec);
                 recs.Add(rec);
             }
             return recs;

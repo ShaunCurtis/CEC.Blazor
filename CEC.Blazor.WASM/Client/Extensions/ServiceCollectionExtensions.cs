@@ -17,6 +17,5 @@ namespace CEC.Blazor.WASM.Client.Extensions
             services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
             return services;
         }
-
     }
 }

@@ -19,9 +19,8 @@ namespace CEC.Weather.Services
         /// </summary>
         private List<DbWeatherForecast> Records { get; set; }
 
-        public WeatherForecastDummyDataService(IConfiguration configuration)
+        public WeatherForecastDummyDataService(IConfiguration configuration) : base(configuration)
         {
-            this.AppConfiguration = configuration;
             this.RecordConfiguration = new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
             this.GetDummyRecords(100);
         }
@@ -93,7 +92,7 @@ namespace CEC.Weather.Services
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public Task<DbTaskResult> AddRecordAsync(DbWeatherForecast record)
+        public Task<DbTaskResult> CreateRecordAsync(DbWeatherForecast record)
         {
             record.WeatherForecastID = this.Records.Max(item => item.WeatherForecastID) + 1;
             this.Records.Add(record);

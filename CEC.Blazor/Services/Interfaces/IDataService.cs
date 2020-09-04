@@ -58,14 +58,14 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public Task<DbTaskResult> AddRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+        public Task<DbTaskResult> CreateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
         /// <summary>
         /// Method to delete a record
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<DbTaskResult> DeleteRecordAsync(int id) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+        public Task<DbTaskResult> DeleteRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
 
         /// <summary>
         /// Method to build the a list of SqlParameters for a CUD Stored Procedure

@@ -1,12 +1,8 @@
 using CEC.Blazor.Data;
 using CEC.Weather.Data;
 using CEC.Blazor.Services;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -18,11 +14,7 @@ namespace CEC.Weather.Services
 
         public override RecordConfigurationData RecordConfiguration => new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
 
-        public WeatherForecastWASMDataService(IConfiguration configuration, HttpClient httpClient)
-        {
-            this.HttpClient = httpClient;
-            this.AppConfiguration = configuration;
-        }
+        public WeatherForecastWASMDataService(IConfiguration configuration, HttpClient httpClient): base(configuration) => this.HttpClient = httpClient;
 
         /// <summary>
         /// Inherited IDataService Method
@@ -66,7 +58,7 @@ namespace CEC.Weather.Services
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> AddRecordAsync(DbWeatherForecast record)
+        public async Task<DbTaskResult> CreateRecordAsync(DbWeatherForecast record)
         {
             var response = await this.HttpClient.PostAsJsonAsync<DbWeatherForecast>($"weatherforecast/create", record);
             var result = await response.Content.ReadFromJsonAsync<DbTaskResult>();

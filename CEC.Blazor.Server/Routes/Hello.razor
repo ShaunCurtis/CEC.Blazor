@@ -1,0 +1,14 @@
+﻿@page "/Hello"
+@inherits ComponentBase
+
+@namespace CEC.Blazor.Server.Routes
+
+<h1>@this.Message</h1>
+<div class="m-2">
+    <button class="btn btn-warning mr-2" @onclick="e => this.ButtonClicked(false)">Slow Ole 4G Cosmos</button>
+    <button class="btn btn-dark" @onclick="e => this.ButtonClicked(true)">Superfast Dark Cosmos</button>
+    <button class="btn btn-danger" @onclick="e => this.UnsafeButtonClicked(true)">Faster Than Light</button>
+</div>
+<p>Apologies, a bit of a demo for an Async Programming Article!</p>
+<SurveyPrompt Title="How is Blazor working for you?" />
+

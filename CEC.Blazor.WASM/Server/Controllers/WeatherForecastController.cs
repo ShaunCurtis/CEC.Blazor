@@ -47,10 +47,10 @@ namespace CEC.Blazor.WASM.Server.Controllers
 
         [MVC.Route("weatherforecast/create")]
         [HttpPost]
-        public async Task<DbTaskResult> Create([FromBody]DbWeatherForecast record) => await DataService.AddRecordAsync(record);
+        public async Task<DbTaskResult> Create([FromBody]DbWeatherForecast record) => await DataService.CreateRecordAsync(record);
 
         [MVC.Route("weatherforecast/delete")]
         [HttpPost]
-        public async Task<DbTaskResult> Delete([FromBody]int id) => await DataService.DeleteRecordAsync(id);
+        public async Task<DbTaskResult> Delete([FromBody] DbWeatherForecast record) => await DataService.DeleteRecordAsync(record);
     }
 }

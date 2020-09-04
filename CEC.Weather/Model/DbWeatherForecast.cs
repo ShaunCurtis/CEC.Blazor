@@ -2,52 +2,61 @@ using CEC.Blazor.Data;
 using CEC.Blazor.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace CEC.Weather.Data
 {
     /// <summary>
     /// Data Record for a Weather Foreecast
     /// Data validation is handled by the Fluent Validator
+    /// Custom Attributes are for building the EF strored procedures
     /// </summary>
+    [DbAccess(CreateSP = "sp_Create_WeatherForecast", UpdateSP ="sp_Update_WeatherForecast", DeleteSP ="sp_Delete_WeatherForecast") ]
     public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
     {
+        [SPParameter(IsID = true, DataType = SqlDbType.Int)]
         public int WeatherForecastID { get; set; } = -1;
 
+        [SPParameter(DataType = SqlDbType.SmallDateTime)]
         public DateTime Date { get; set; } = DateTime.Now.Date;
 
-        //[Required]
-        //[Range(-40, 60, ErrorMessage = "Only Temperatures between -40 an 60 are allowed.")]
+        [SPParameter(DataType = SqlDbType.Decimal)]
         public decimal TemperatureC { get; set; } = 20;
 
-        public bool Frost { get; set; }
-
-        [NotMapped]
-        public WeatherSummary Summary { get; set; } = WeatherSummary.Unknown;
-
-        [NotMapped]
-        public WeatherOutlook Outlook { get; set; } = WeatherOutlook.Sunny;
-
-        public string Description { get; set; } = string.Empty;
-
-        //[RegularExpression(@"^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$", ErrorMessage = "This must be a valid UK Post Code - try GL2 5TP")]
+        [SPParameter(DataType = SqlDbType.VarChar)]
         public string PostCode { get; set; } = string.Empty;
 
-        public string Detail { get; set; } = string.Empty;
+        [SPParameter(DataType = SqlDbType.Bit)]
+        public bool Frost { get; set; }
 
-        [NotMapped]
-        public decimal TemperatureF => decimal.Round(32 + (TemperatureC / 0.5556M), 2);
+        [SPParameter(DataType = SqlDbType.Int)]
+        public int SummaryValue
+        {
+            get => (int)this.Summary;
+            set => this.Summary = (WeatherSummary)value;
+        }
 
+        [SPParameter(DataType = SqlDbType.Int)]
         public int OutlookValue
         {
             get => (int)this.Outlook;
             set => this.Outlook = (WeatherOutlook)value;
         }
 
-        public int SummaryValue
-        {
-            get => (int)this.Summary;
-            set => this.Summary = (WeatherSummary)value;
-        }
+        [SPParameter(DataType = SqlDbType.VarChar)]
+        public string Description { get; set; } = string.Empty;
+
+        [SPParameter(DataType = SqlDbType.VarChar)]
+        public string Detail { get; set; } = string.Empty;
+
+        [NotMapped]
+        public decimal TemperatureF => decimal.Round(32 + (TemperatureC / 0.5556M), 2);
+
+        [NotMapped]
+        public WeatherSummary Summary { get; set; } = WeatherSummary.Unknown;
+
+        [NotMapped]
+        public WeatherOutlook Outlook { get; set; } = WeatherOutlook.Sunny;
 
         [NotMapped]
         public int ID => this.WeatherForecastID;

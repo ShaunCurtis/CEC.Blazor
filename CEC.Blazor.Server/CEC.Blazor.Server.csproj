@@ -5,12 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\WeatherForecast\Components\WeatherList.razor.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="compilerconfig.json" />
-    <Content Remove="Pages\WeatherForecast\Components\WeatherList.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,10 +31,6 @@
     <ProjectReference Include="..\CEC.Blazor.WASM\Shared\CEC.Blazor.Shared.csproj" />
     <ProjectReference Include="..\CEC.Blazor\CEC.Blazor.csproj" />
     <ProjectReference Include="..\CEC.Weather\CEC.Weather.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\WeatherForecast\Components\" />
   </ItemGroup>
 
 </Project>
