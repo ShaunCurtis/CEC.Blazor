@@ -14,7 +14,18 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// This Page URL/route
         /// </summary>
+        [Obsolete]
         public string PageUrl { get; set; }
+
+        /// <summary>
+        /// This Route URL
+        /// </summary>
+        public string RouteUrl { get; set; }
+
+        /// <summary>
+        /// RouterDelay
+        /// </summary>
+        public virtual int RouterDelay => 100;
 
         /// <summary>
         /// Boolean Property controlling Routing
@@ -88,7 +99,7 @@ namespace CEC.Blazor.Components.Base
             this.EditContext = new EditContext(this.Service.Record);
 
             // Get the actual page Url from the Navigation Manager
-            this.PageUrl = this.NavManager.Uri;
+            this.RouteUrl = this.NavManager.Uri;
             // Set up the router service
             this.RouterSessionService.ActiveComponent = this;
             this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;

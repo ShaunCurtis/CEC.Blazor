@@ -33,7 +33,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Weather", "CEC.Weather\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ACEE5B1D-2CDF-4EBD-8D15-5AB9813903A2}"
 	ProjectSection(SolutionItems) = preProject
+		Images\CEC.Blazor.Server.png = Images\CEC.Blazor.Server.png
 		Images\CEC.Blazor.WASM.Client.png = Images\CEC.Blazor.WASM.Client.png
+		Images\CEC.Blazor.WASM.Server.png = Images\CEC.Blazor.WASM.Server.png
+		Images\WASM-Start-Screen.png = Images\WASM-Start-Screen.png
 	EndProjectSection
 EndProject
 Global

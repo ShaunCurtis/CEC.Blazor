@@ -25,7 +25,6 @@ namespace CEC.Blazor.Server
             services.AddServerSideBlazor();
             services.AddCECBlazor();
             services.AddCECRouting();
-            services.AddProtectedBrowserStorage();
             services.AddApplicationServices();
         }
 
