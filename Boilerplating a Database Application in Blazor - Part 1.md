@@ -3,16 +3,16 @@
 
 This set of articles looks at how to build and structure a real Database Application in Blazor.  There are 4 articles:
 
-1. Project Structure and Framework
-2. Services
-3. Routed View Components
-4. UI Components
+1. Project Structure and Framework.
+2. Services - Building the CRUD Data Layers.
+3. Routed View Components - Building the CRUD Presentation Layer.
+4. UI Components.
 
 They are not:
 1. A definition of Best Practice - I'm not in that league!
 2. A finished product.
 
-It really a state of playis a framework and methodology I've developed writing Blazor Applications.  Use as much or as little of it as you like, and please offer suggestions to improve it.  I do make a few recommendations, principly to try and break old routines.  For example, don't call a routed component a page.  It's not, call it a page and you subconciously attribute other web page features to it that simply don't apply.    I call these **Routed Views** after the component that displays them - *RouteView*. 
+It really a state of play on the frameworks and methodologies I've developed writing Blazor Applications.  Use as much or as little of it as you like, and please offer suggestions to improve it.  I do make a few recommendations, principly to try and break old routines.  For example, don't call a routed component a page.  It's not, call it a page and you subconciously attribute other web page features to it that simply don't apply.    I call these **Routed Views** after the component that displays them - *RouteView*.
 
 There's a [GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor)
 
@@ -299,14 +299,9 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
 }
 ```
 
-
-
-
-
 ### Wrap Up
-That wraps up this section.  It demonstrates a framework for building the data access section of a project and how to boilerplate most of the code through interfaces and bas classes.  The next section looks at the Presentation Layer / UI framework.
+That wraps up this section.  It's a bit of an overview, with the details to come later.  Hopefully it demonstrates the level of abstraction you can achieve with Blazor projects.  The next section looks in detail at Sevices and implementing the data layers.
 
 Some key points to note:
-1. Aysnc code is used wherever possible.  The data access functions are all async.
-2. The use of generics to make much of the boilerplating possible.
-3. Using Interfaces for Dependancy Injection and UI boilerplating.
+1. The differences in code between a Blazor Server and a Blazor WASM project are very minor.
+2. Be very careful about the terminology.  The use of the term "Pages" is a good example.

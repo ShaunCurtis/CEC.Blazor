@@ -1,9 +1,71 @@
 # Boilerplating a Database Application in Blazor 
-## Part 2 - CRUD Data Access and Logic Operations
+## Part 2 - Services - Building the CRUD Data Layers
 
-This article provides a detailed look methodolgies to build CRUD Application projects based on multi-tiered data models.
+This article is the second in a series on Building Blazor Projects: it describes methodologies for boilerplating the data and business logic layers.
 
-This part describes methodologies for boilerplating the data and business logic layers.  A second article demonstrates methodologies for boilerplating the presentation layer.
+There's a [GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor)
+
+### Services
+
+Blazor is built around DI [Dependency Injection] and IOC [Inversion of Control].  If you don't understand these concepts, you need to do a little backgound reading before diving into Blazor.   The IOC [Inversion of Control] container in Blazor is Services, and is configured in *startup.cs* in Server:
+
+```c#
+// startup.cs
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRazorPages();
+    services.AddServerSideBlazor();
+    // the Services for the CEC.Blazor Library
+    services.AddCECBlazor();
+    // the Services for the CEC.Routing Library
+    services.AddCECRouting();
+    // the local application Services defined in ServiceCollectionExtensions.cs
+    services.AddApplicationServices();
+}
+
+// ServiceCollectionExtensions.cs
+public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+{
+    // Singleton service for the Server Side version of WeatherForecast Data Service 
+    services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService>();
+    // Scoped service for the WeatherForecast Controller Service
+    services.AddScoped<WeatherForecastControllerService>();
+    // Transient service for the Fluent Validator for the WeatherForecast record
+    services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
+    return services;
+}
+```
+ and *program.cs* in WASM:
+```c#
+// program.cs
+public static async Task Main(string[] args)
+{
+    .....
+    // Added here as we don't have access to buildler in AddApplicationServices
+    builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+    // the Services for the CEC.Blazor Library
+    builder.Services.AddCECBlazor();
+    // the Services for the CEC.Routing Library
+    builder.Services.AddCECRouting();
+    // the local application Services defined in ServiceCollectionExtensions.cs
+    builder.Services.AddApplicationServices();
+    .....
+}
+
+// ServiceCollectionExtensions.cs
+public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+{
+    // Scoped service for the WASM Client version of WeatherForecast Data Service 
+    services.AddScoped<IWeatherForecastDataService, WeatherForecastWASMDataService>();
+    // Scoped service for the WeatherForecast Controller Service
+    services.AddScoped<WeatherForecastControllerService>();
+    services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
+    // Transient service for the Fluent Validator for the WeatherForecast record
+    return services;
+}
+```
+
+
 
 The article uses a demonstration solution, with code split between a library where (almost) all the reusable classes reside, and the project where project specific code resides.  It relies heavily on inheritance.  The developement process and code refactoring should always seek to migrate code downwards through the inheritance tree, and from specific (project) code to generic (library) code.  While this may seem like stating the obvious - yes "we" always do it - it's amazing how often what we preach is not what we implement.  I'm sure people will point out code in the demo project where I'm as guilty as everyone else. 
 
