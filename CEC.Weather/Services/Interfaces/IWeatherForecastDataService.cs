@@ -3,12 +3,13 @@ using CEC.Weather.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using CEC.Blazor.Data;
 
 namespace CEC.Weather.Services
 {
-    public interface IWeatherForecastDataService : IDataService<DbWeatherForecast, WeatherForecastDbContext>
+    public interface IWeatherForecastDataService : 
+        IDataService<DbWeatherForecast, WeatherForecastDbContext>
     {
-
         /// <summary>
         /// Method to get a set of 100 dummy records
         /// </summary>
@@ -22,7 +23,7 @@ namespace CEC.Weather.Services
                 var temperatureC = rng.Next(-5, 35);
                 var rec = new DbWeatherForecast()
                 {
-                    WeatherForecastID = i,
+                    ID = i,
                     Date = DateTime.Now.AddDays(-(recordcount - i)),
                     TemperatureC = temperatureC,
                     Summary = (WeatherSummary)rng.Next(11),
@@ -36,7 +37,5 @@ namespace CEC.Weather.Services
             }
             return recs;
         }
-
-
     }
 }

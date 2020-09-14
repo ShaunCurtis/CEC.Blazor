@@ -6,9 +6,9 @@ using System;
 using System.Threading.Tasks;
 namespace CEC.Blazor.Components.Base
 {
-    public class RecordComponentBase<T, TContext> : 
-        ControllerServiceComponentBase<T, TContext> 
-        where T : IDbRecord<T>, new()
+    public class RecordComponentBase<TRecord, TContext> : 
+        ControllerServiceComponentBase<TRecord, TContext> 
+        where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
     {
         /// <summary>

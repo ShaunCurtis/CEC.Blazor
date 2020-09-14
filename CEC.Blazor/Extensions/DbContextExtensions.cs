@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using CEC.Blazor.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
@@ -39,6 +40,30 @@ namespace CEC.Blazor.Extensions
                 }
             }
             return result;
+        }
+
+        public async static Task<List<TRecord>> GetRecordListAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        {
+            var par = context.GetType().GetProperty(dbSetName ?? IDbRecord<TRecord>.RecordName);
+            var set = par.GetValue(context);
+            var sets = (DbSet<TRecord>)set;
+            return await sets.ToListAsync();
+        }
+
+        public async static Task<int> GetRecordListCountAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        {
+            var par = context.GetType().GetProperty(dbSetName ?? IDbRecord<TRecord>.RecordName);
+            var set = par.GetValue(context);
+            var sets = (DbSet<TRecord>)set;
+            return await sets.CountAsync();
+        }
+
+        public async static Task<TRecord> GetRecordAsync<TRecord>(this DbContext context, int id, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        {
+            var par = context.GetType().GetProperty(dbSetName ?? IDbRecord<TRecord>.RecordName);
+            var set = par.GetValue(context);
+            var sets = (DbSet<TRecord>)set;
+            return await sets.FirstOrDefaultAsync(item => ((IDbRecord<TRecord>)item).ID == id);
         }
 
     }

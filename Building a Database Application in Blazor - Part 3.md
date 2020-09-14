@@ -1,35 +1,37 @@
-# Boilerplating a Database Appication in Blazor 
-## Part 2 - CRUD Operations in the UI
+# Buildinging a Database Appication in Blazor 
+## Part 3 - CRUD Operations in the UI
 
-Part 1 describes methodologies for boilerplating the data and business logic layers of a Blazor Application.  This article demonstrates methodologies for boilerplating the presentation layer.
-
-The article uses a demonstration solution, with code split between a library where (almost) all the reusable classes reside, and the project where project specific code resides.  It relies heavily on inheritance.  The developement process and code refactoring should always seek to migrate code downwards through the inheritance tree, and from specific (project) code to generic (library) code.  While this may seem like stating the obvious - yes "we" always do it - it's amazing how often what we preach is not what we implement.  I'm sure people will point out code in the demo project where I'm as guilty as everyone else. 
+Part 2 describes techniques and methodologies for abstracting the data and business logic layers into boilerplate code in a library.  This article does the same with the presentation layer.
 
 ### Sample Project and Code
 
-Here
+See the [CEC.Blazor GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor) for the libraries and sample projects.
 
 ### The WeatherForecast Application
 
-The CRUD UI is implemented as a set of boilerplate components inheriting from *OwningComponentBase*.  We use *OwningComponentBase* to give us control on the scope of Scoped Services.
+The CRUD UI is implemented as a set of boilerplate components inheriting from *OwningComponentBase*.  *OwningComponentBase* is used to give us control on the scope of Scoped Services.  Code is available on the Github site and linked at appropriate places in this article.
 
 #### ApplicationComponentBase
 
-  *ApplicationComponentBase* is the base component and contains all the common client application code:
+[CEC.Blazor/Components/Base.ApplicationComponentBase.cs](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Components/Base/ApplicationComponentBase.cs)
+
+*ApplicationComponentBase* is the base component and contains all the common client application code:
 
   1. Injection of common services, such as Navigation Manager and Application Configuration.
   2. Authentication and user management.
   3. Navigation and Routing.
 
-Everything shared that can be migrated down to this point in the class hierarchy goes here.
+All code that can be migrated down to this point in the class hierarchy goes here.
 
 #### ControllerServiceComponent and Its Children
 
-*ControllerServiceComponent* is the base CRUD component.
+[CEC.Blazor/Components/Base.ControllerServiceComponentBase.cs](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Components/Base/ControllerServiceComponentBase.cs)
+
+[*ControllerServiceComponentBase*](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Components/Base/ControllerServiceComponentBase.cs) is the base CRUD component.
 There are three inherited classes for specific CRUD operations:
-1. *ListComponentBase* for all list pages
-2. *RecordComponentBase* for displaying individual records.
-3. *EditComponentBase* for CUD [Create/Update/Delete] operations.
+1. [*ListComponentBase*](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Components/Base/ListComponentBase.cs) for all list pages
+2. [*RecordComponentBase*]((https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Components/Base/RecordComponentBase.cs)) for displaying individual records.
+3. [*EditComponentBase*](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Components/Base/EditComponentBase.cs) for CUD [Create/Update/Delete] operations.
 
 All common code resides in *ControllerServiceComponent*, specific code in the inherited class.
 
@@ -37,7 +39,7 @@ All common code resides in *ControllerServiceComponent*, specific code in the in
 
 #### Viewing a Record
 
-This is the simplest, so we'll start here.  The routed component is simple.  The Weather Forecast Viewer looks like this:
+This is the simplest, so we'll start here.  The routed view is simple.  We separate out the actual view component from the routed view so we can use the component in other pages - in the project we also use it in the modal dialog editor.
 
 ```html
 @page "/WeatherForecast/View"
@@ -79,7 +81,7 @@ This:
 
 ##### OnInitializedAsync
 
-*OnInitializeAsync* is implemented from top down (code is executed from the top of inheritance hierarchy down).
+*OnInitializedAsync* is implemented from top down (code is executed from the top of the inheritance hierarchy down).
 
 WeatherViewer (code above) runs *OnInitializedAsync*.  This sets up the Service (IControllerService) and then calls down the hierarchy.
 
@@ -171,7 +173,7 @@ protected async override Task OnAfterRenderAsync(bool firstRender)
 
 ##### Event Handling
 
-The only events that ned handling are button events:
+The only events that need handling are button events:
 
 1. Previous and Next Buttons which call *NextRecord* in *WeatherViewer*.  This navigates to the same route with the new ID in the query string.  The router translates this into *SameComponentNavigation* event which is wired to *OnSameRouteRouting* in *OnAfterRenderAsync* in *RecordComponentBase*, and triggers *LoadRecordAsync*.  See above.
 
@@ -215,7 +217,7 @@ protected override void NavigateTo(EditorEventArgs e)
     }
 }
 ```
-
+And then down to *NavigateTo* in *ApplicationComponentBase**
 ```c#
 // ApplicationComponentBase Code
 // based on structured approach to organising record CRUD routes

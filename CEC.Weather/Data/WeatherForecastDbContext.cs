@@ -18,7 +18,7 @@ namespace CEC.Weather.Data
             Debug.WriteLine($"{_id} context created.");
         }
 
-        public DbSet<DbWeatherForecast> WeatherForecasts { get; set; }
+        public DbSet<DbWeatherForecast> WeatherForecast { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,7 @@ namespace CEC.Weather.Data
                 .Entity<DbWeatherForecast>(eb =>
                 {
                     eb.HasNoKey();
-                    eb.ToView("vw_WeatherForecasts");
+                    eb.ToView("vw_WeatherForecast");
                 });
         }
 

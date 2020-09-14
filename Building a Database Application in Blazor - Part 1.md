@@ -1,4 +1,4 @@
-﻿# Boilerplating a Database Application in Blazor 
+﻿# Building a Database Application in Blazor 
 ## Part 1 - Project Structure and Framework
 
 This set of articles looks at how to build and structure a real Database Application in Blazor.  There are 4 articles:

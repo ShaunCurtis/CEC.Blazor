@@ -16,7 +16,7 @@ namespace CEC.Blazor.Services
     public abstract class BaseServerDataService<TRecord, TContext> : 
         BaseDataService<TRecord, TContext>, 
         IDataService<TRecord, TContext>
-        where TRecord : IDbRecord<TRecord>, new()
+        where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
     {
 
@@ -25,11 +25,30 @@ namespace CEC.Blazor.Services
         /// </summary>
         protected DbRecordInfo RecordInfo { get; set; } = new DbRecordInfo();
 
-        public BaseServerDataService(IConfiguration configuration): base(configuration)
+        public BaseServerDataService(IConfiguration configuration, IDbContextFactory<TContext> dbContext) : base(configuration)
         {
+            this.DBContext = dbContext;
             this.GetSPParameterAttributes();
             this.GetDbAccessAttribute();
         }
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<TRecord>> GetRecordListAsync() => await this.DBContext.CreateDbContext().GetRecordListAsync<TRecord>();
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<TRecord> GetRecordAsync(int id) => await this.DBContext.CreateDbContext().GetRecordAsync<TRecord>(id);
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetRecordListCountAsync() => await this.DBContext.CreateDbContext().GetRecordListCountAsync<TRecord>();
 
         /// <summary>
         /// Inherited IDataService Method
@@ -89,6 +108,7 @@ namespace CEC.Blazor.Services
             RecordInfo.CreateSP = attribute is null || string.IsNullOrEmpty(attribute.CreateSP) ? $"sp_Create_{classname}" : attribute.CreateSP;
             RecordInfo.DeleteSP = attribute is null || string.IsNullOrEmpty(attribute.DeleteSP) ? $"sp_Delete_{classname}" : attribute.DeleteSP;
             RecordInfo.UpdateSP = attribute is null || string.IsNullOrEmpty(attribute.UpdateSP) ? $"sp_Update_{classname}" : attribute.UpdateSP;
+            RecordInfo.RecordName = attribute is null || string.IsNullOrEmpty(attribute.RecordName) ? $"{classname}" : attribute.RecordName;
         }
 
         /// <summary>

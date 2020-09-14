@@ -25,6 +25,8 @@ namespace CEC.Blazor.Data
         /// </summary>
         public string DeleteSP { get; set; }
 
+        public string RecordName { get; set; }
+
         /// <summary>
         /// List of all the Properties with the SPParameter Attribute
         /// </summary>

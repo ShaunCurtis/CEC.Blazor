@@ -14,8 +14,12 @@ namespace CEC.Weather.Data
     [DbAccess(CreateSP = "sp_Create_WeatherForecast", UpdateSP ="sp_Update_WeatherForecast", DeleteSP ="sp_Delete_WeatherForecast") ]
     public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
     {
+
+        [NotMapped]
+        public int WeatherForecastID { get => this.ID; }
+
         [SPParameter(IsID = true, DataType = SqlDbType.Int)]
-        public int WeatherForecastID { get; set; } = -1;
+        public int ID { get; set; } = -1;
 
         [SPParameter(DataType = SqlDbType.SmallDateTime)]
         public DateTime Date { get; set; } = DateTime.Now.Date;
@@ -49,6 +53,8 @@ namespace CEC.Weather.Data
         [SPParameter(DataType = SqlDbType.VarChar)]
         public string Detail { get; set; } = string.Empty;
 
+        public string DisplayName { get; set; }
+
         [NotMapped]
         public decimal TemperatureF => decimal.Round(32 + (TemperatureC / 0.5556M), 2);
 
@@ -58,13 +64,7 @@ namespace CEC.Weather.Data
         [NotMapped]
         public WeatherOutlook Outlook { get; set; } = WeatherOutlook.Sunny;
 
-        [NotMapped]
-        public int ID => this.WeatherForecastID;
-
-        [NotMapped]
-        public string DisplayName => $"Forecast for {this.Date.AsShortDate()}";
-
-        public void SetNew() => this.WeatherForecastID = 0;
+        public void SetNew() => this.ID = 0;
 
         public DbWeatherForecast ShadowCopy()
         {

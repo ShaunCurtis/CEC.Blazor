@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CEC.Blazor.Services
 {
     public interface IControllerService<T, TContext>
-        where T : IDbRecord<T>, new()
+        where T : class, IDbRecord<T>, new()
         where TContext : DbContext
     {
         /// <summary>

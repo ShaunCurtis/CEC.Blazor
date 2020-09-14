@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CEC.Blazor.Services
 {
     public abstract class BaseDataService<TRecord, TContext>: IDataService<TRecord, TContext>
-        where TRecord : IDbRecord<TRecord>, new()
+        where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
     {
         /// <summary>

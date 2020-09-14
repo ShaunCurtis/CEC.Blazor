@@ -40,7 +40,7 @@ namespace CEC.Weather.Services
                 var temperatureC = rng.Next(-5, 35);
                 var rec = new DbWeatherForecast()
                 {
-                    WeatherForecastID = i,
+                    ID = i,
                     Date = DateTime.Now.AddDays(-(recordcount - i)),
                     TemperatureC = temperatureC,
                     Summary = (WeatherSummary)rng.Next(11),
@@ -60,7 +60,7 @@ namespace CEC.Weather.Services
         /// <returns></returns>
         public Task<DbWeatherForecast> GetRecordAsync(int id)
         {
-            return Task.FromResult(this.Records.FirstOrDefault(item => item.WeatherForecastID == id));
+            return Task.FromResult(this.Records.FirstOrDefault(item => item.ID == id));
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace CEC.Weather.Services
         /// <returns></returns>
         public async Task<DbTaskResult> UpdateRecordAsync(DbWeatherForecast record)
         {
-            var rec = await GetRecordAsync(record.WeatherForecastID);
+            var rec = await GetRecordAsync(record.ID);
             if (rec != null) rec = record;
             var result = new DbTaskResult() { IsOK = rec != null, NewID = 0 };
             result.Message = rec != null ? "Record Updated" : "Record could not be found";
@@ -96,9 +96,9 @@ namespace CEC.Weather.Services
         /// <returns></returns>
         public Task<DbTaskResult> CreateRecordAsync(DbWeatherForecast record)
         {
-            record.WeatherForecastID = this.Records.Max(item => item.WeatherForecastID) + 1;
+            record.ID = this.Records.Max(item => item.ID) + 1;
             this.Records.Add(record);
-            var result = new DbTaskResult() { IsOK = true, NewID = record.WeatherForecastID, Message = "Record Added", Type = MessageType.Success };
+            var result = new DbTaskResult() { IsOK = true, NewID = record.ID, Message = "Record Added", Type = MessageType.Success };
             return Task.FromResult(result);
         }
 

@@ -13,7 +13,7 @@ namespace CEC.Blazor.Data
 
         public string DeleteSP;
 
-        public string ListView;
+        public string RecordName;
 
     }
 }

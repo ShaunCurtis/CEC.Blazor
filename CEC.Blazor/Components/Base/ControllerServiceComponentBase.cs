@@ -10,7 +10,7 @@ namespace CEC.Blazor.Components.Base
 {
     public class ControllerServiceComponentBase<T, TContext> : 
         ApplicationComponentBase 
-        where T : IDbRecord<T>, new()
+        where T : class, IDbRecord<T>, new()
         where TContext : DbContext
     {
 

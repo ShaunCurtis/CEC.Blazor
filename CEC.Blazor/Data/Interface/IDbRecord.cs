@@ -5,7 +5,7 @@ namespace CEC.Blazor.Data
     /// <summary>
     /// Interface for the Paging Component
     /// </summary>
-    public interface IDbRecord<T>
+    public interface IDbRecord<TRecord>
     {
         /// <summary>
         /// ID to ensure we have a unique key
@@ -19,10 +19,15 @@ namespace CEC.Blazor.Data
         public string DisplayName { get; }
 
         /// <summary>
+        /// Property to get the default RecordName from the Class Name
+        /// </summary>
+        public static string RecordName => typeof(TRecord).Name.Replace("Db", "");
+
+        /// <summary>
         /// Creates a deep copy of the object
         /// </summary>
         /// <returns></returns>
-        public T ShadowCopy();
+        public TRecord ShadowCopy();
 
         /// <summary>
         /// Set the record ID to 0 to represent a new record

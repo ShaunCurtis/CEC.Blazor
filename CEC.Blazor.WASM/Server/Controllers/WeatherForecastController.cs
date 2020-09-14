@@ -14,7 +14,6 @@ namespace CEC.Blazor.WASM.Server.Controllers
     [ApiController]
     public class WeatherForecastController : ControllerBase
     {
-
         protected IWeatherForecastDataService DataService { get; set; }
 
         private readonly ILogger<WeatherForecastController> logger;

@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{29
 		AsyncProgramming.md = AsyncProgramming.md
 		Blazor Components.html = Blazor Components.html
 		Blazor Components.md = Blazor Components.md
-		Boilerplating a Database Application in Blazor - Part 1.md = Boilerplating a Database Application in Blazor - Part 1.md
-		Boilerplating a Database Application in Blazor - Part 2.md = Boilerplating a Database Application in Blazor - Part 2.md
-		Boilerplating a Database Application in Blazor - Part 3.md = Boilerplating a Database Application in Blazor - Part 3.md
 		Building a Blazor Project - Part 1.md = Building a Blazor Project - Part 1.md
 		Building a Blazor Project - Part 3.md = Building a Blazor Project - Part 3.md
+		Building a Database Application in Blazor - Part 1.md = Building a Database Application in Blazor - Part 1.md
+		Building a Database Application in Blazor - Part 2.md = Building a Database Application in Blazor - Part 2.md
+		Building a Database Application in Blazor - Part 3.md = Building a Database Application in Blazor - Part 3.md
 		Building Blazor UI Components.md = Building Blazor UI Components.md
 		CodeProject.css = CodeProject.css
 	EndProjectSection

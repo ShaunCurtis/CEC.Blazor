@@ -11,7 +11,7 @@ namespace CEC.Blazor.Services
     public class BaseWASMDataService<TRecord, TContext> : 
         BaseDataService<TRecord, TContext>, 
         IDataService<TRecord, TContext>
-        where TRecord : IDbRecord<TRecord>, new()
+        where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
     {
  

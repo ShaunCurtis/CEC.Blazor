@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class EditRecordComponentBase<T, TContext> : 
-        RecordComponentBase<T, TContext>, 
+    public class EditRecordComponentBase<TRecord, TContext> : 
+        RecordComponentBase<TRecord, TContext>, 
         IRecordRoutingComponent 
-        where T : IDbRecord<T>, new()
+        where TRecord : class, IDbRecord<TRecord>, new()
        where TContext : DbContext
     {
         /// <summary>

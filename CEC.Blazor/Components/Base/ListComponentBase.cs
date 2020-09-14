@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class ListComponentBase<T, TContext> : 
-        ControllerServiceComponentBase<T, TContext> 
-        where T : IDbRecord<T>, new()
+    public class ListComponentBase<TRecord, TContext> : 
+        ControllerServiceComponentBase<TRecord, TContext> 
+        where TRecord : class, IDbRecord<TRecord>, new()
          where TContext : DbContext
     {
 
         /// <summary>
         /// Paging Interface giving access to the specific service that sorts the dataset into pages and tracks the page being displayed
         /// </summary>
-        public IControllerPagingService<T> Paging => this.Service != null ? (IControllerPagingService<T>)this.Service : null;
+        public IControllerPagingService<TRecord> Paging => this.Service != null ? (IControllerPagingService<TRecord>)this.Service : null;
 
         /// <summary>
         /// constructed Value for the List Title based on the RecordConfiguration

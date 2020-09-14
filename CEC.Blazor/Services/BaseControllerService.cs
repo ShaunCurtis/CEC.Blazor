@@ -14,7 +14,7 @@ namespace CEC.Blazor.Services
         IDisposable, 
         IControllerPagingService<TRecord>, 
         IControllerService<TRecord, TContext> 
-        where TRecord : IDbRecord<TRecord>, new()
+        where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
 
     {
