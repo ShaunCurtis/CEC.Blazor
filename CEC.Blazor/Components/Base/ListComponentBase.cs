@@ -1,11 +1,15 @@
 ﻿using CEC.Blazor.Data;
 using CEC.Blazor.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class ListComponentBase<T> : ControllerServiceComponentBase<T> where T : IDbRecord<T>, new()
+    public class ListComponentBase<T, TContext> : 
+        ControllerServiceComponentBase<T, TContext> 
+        where T : IDbRecord<T>, new()
+         where TContext : DbContext
     {
 
         /// <summary>

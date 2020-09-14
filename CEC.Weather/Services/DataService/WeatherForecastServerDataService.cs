@@ -11,29 +11,30 @@ using System.Threading.Tasks;
 
 namespace CEC.Weather.Services
 {
-    public class WeatherForecastServerDataService : BaseServerDataService<DbWeatherForecast>, IWeatherForecastDataService
+    public class WeatherForecastServerDataService : BaseServerDataService<DbWeatherForecast, WeatherForecastDbContext>, IWeatherForecastDataService
     {
-
+ 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<DbWeatherForecast> GetRecordAsync(int id) => await this.GetContext().WeatherForecasts.FirstOrDefaultAsync(item => item.WeatherForecastID == id);
+        public async Task<DbWeatherForecast> GetRecordAsync(int id) => await this.DBContext.CreateDbContext().WeatherForecasts.FirstOrDefaultAsync(item => item.WeatherForecastID == id);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<List<DbWeatherForecast>> GetRecordListAsync() => await this.GetContext().WeatherForecasts.ToListAsync();
+        public async Task<List<DbWeatherForecast>> GetRecordListAsync() => await this.DBContext.CreateDbContext().WeatherForecasts.ToListAsync();
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<int> GetRecordListCountAsync() => await this.GetContext().WeatherForecasts.CountAsync();
+        public async Task<int> GetRecordListCountAsync() => await this.DBContext.CreateDbContext().WeatherForecasts.CountAsync();
 
-        public WeatherForecastServerDataService(IConfiguration configuration) : base(configuration) { }
-
+        public WeatherForecastServerDataService(IConfiguration configuration, IDbContextFactory<WeatherForecastDbContext> dbcontext) : base(configuration) {
+            this.DBContext = dbcontext;
+        }
     }
 }

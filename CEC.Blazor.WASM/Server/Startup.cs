@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CEC.Weather.Services;
 using CEC.Blazor.WASM.Server.Extensions;
+using Microsoft.EntityFrameworkCore;
+using CEC.Blazor.Extensions;
+using CEC.Weather.Data;
+
 
 namespace CEC.Blazor.WASM.Server
 {
@@ -24,7 +27,7 @@ namespace CEC.Blazor.WASM.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddApplicationServices();
+            services.AddApplicationServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

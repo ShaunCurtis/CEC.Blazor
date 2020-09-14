@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 
 namespace CEC.Weather.Services
 {
-    public class WeatherForecastDummyDataService : BaseDataService<DbWeatherForecast>, IDataService<DbWeatherForecast>
+    public class WeatherForecastDummyDataService : 
+        BaseDataService<DbWeatherForecast, WeatherForecastDbContext>, 
+        IDataService<DbWeatherForecast, WeatherForecastDbContext>
     {
 
         /// <summary>

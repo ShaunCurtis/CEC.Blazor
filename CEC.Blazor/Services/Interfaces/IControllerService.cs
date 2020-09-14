@@ -1,6 +1,7 @@
 ﻿using CEC.Blazor.Components;
 using CEC.Blazor.Data;
 using CEC.Blazor.Utilities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,9 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
 {
-    public interface IControllerService<T> where T : IDbRecord<T>, new()
+    public interface IControllerService<T, TContext>
+        where T : IDbRecord<T>, new()
+        where TContext : DbContext
     {
         /// <summary>
         /// Unique ID for the Service
@@ -16,7 +19,7 @@ namespace CEC.Blazor.Services
         /// </summary>
         public Guid ID { get; set; }
 
-        public IDataService<T> Service { get; set; }
+        public IDataService<T, TContext> Service { get; set; }
 
         /// <summary>
         /// Record Configuration Object - provides name and routing information for the DB Model Class
@@ -119,7 +122,8 @@ namespace CEC.Blazor.Services
         /// Method to Update or Add the Database Record
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> SaveRecordAsync() {
+        public async Task<bool> SaveRecordAsync()
+        {
             if (this.Record.ID > 0) return await UpdateRecordAsync();
             else return await AddRecordAsync();
         }

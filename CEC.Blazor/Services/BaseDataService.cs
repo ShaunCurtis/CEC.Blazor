@@ -2,15 +2,20 @@ using Microsoft.Extensions.Configuration;
 using CEC.Blazor.Data;
 using CEC.Blazor.Services;
 using System.Net.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace CEC.Blazor.Services
 {
-    public abstract class BaseDataService<TRecord>: IDataService<TRecord> where TRecord : new()
+    public abstract class BaseDataService<TRecord, TContext>: IDataService<TRecord, TContext>
+        where TRecord : IDbRecord<TRecord>, new()
+        where TContext : DbContext
     {
         /// <summary>
         /// Access to the HttpClient
         /// </summary>
-        public HttpClient HttpClient { get; set; }
+        public HttpClient HttpClient { get; set; } = null;
+
+        public virtual IDbContextFactory<TContext> DBContext { get; set; } = null;
 
         /// <summary>
         /// Access to the Application Configuration data
@@ -23,7 +28,6 @@ namespace CEC.Blazor.Services
         public virtual RecordConfigurationData RecordConfiguration { get; set; } = new RecordConfigurationData();
 
         public BaseDataService(IConfiguration configuration) => this.AppConfiguration = configuration;
-
 
     }
 }

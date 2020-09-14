@@ -1,6 +1,7 @@
 ﻿using CEC.Blazor.Components;
 using CEC.Blazor.Data;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,13 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
 {
-    public abstract class BaseControllerService<T> : IDisposable, IControllerPagingService<T>, IControllerService<T> where T : IDbRecord<T>, new()
+    public abstract class BaseControllerService<TRecord, TContext> : 
+        IDisposable, 
+        IControllerPagingService<TRecord>, 
+        IControllerService<TRecord, TContext> 
+        where TRecord : IDbRecord<TRecord>, new()
+        where TContext : DbContext
+
     {
         #region Properties
 
@@ -22,7 +29,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Corresponding Data Service for Type T
         /// </summary>
-        public IDataService<T> Service { get; set; }
+        public IDataService<TRecord, TContext> Service { get; set; }
 
         /// <summary>
         /// Access to the Application Configuration data
@@ -49,11 +56,11 @@ namespace CEC.Blazor.Services
         /// The Current Record
         /// Logic ensures a record always exists and the Shadow copy is up to date
         /// </summary>
-        public T Record
+        public TRecord Record
         {
             get
             {
-                this._Record ??= new T();
+                this._Record ??= new TRecord();
                 return this._Record;
             }
 
@@ -63,19 +70,19 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// The actual Current Record
         /// </summary>
-        protected T _Record { get; private set; }
+        protected TRecord _Record { get; private set; }
 
         /// <summary>
         /// Shadow Copy of the Current Record
         /// Should always be an unaltered copy of what's in the database
         /// Only used by Editors
         /// </summary>
-        public T ShadowRecord { set; get; } = new T();
+        public TRecord ShadowRecord { set; get; } = new TRecord();
 
         /// <summary>
         /// Public Current List of Records used for Listing Operations
         /// </summary>
-        public List<T> Records
+        public List<TRecord> Records
         {
             get => this._Records;
             set => this._Records = value;
@@ -84,7 +91,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// The Actual Current List of Records
         /// </summary>
-        public List<T> _Records { get; private set; }
+        public List<TRecord> _Records { get; private set; }
 
         /// <summary>
         /// Property to expose the Record ID
@@ -177,9 +184,9 @@ namespace CEC.Blazor.Services
         public async virtual Task Reset()
         {
             this.FilterList = new FilterList();
-            this.Record = new T();
-            this.ShadowRecord = new T();
-            this.Records = new List<T>();
+            this.Record = new TRecord();
+            this.ShadowRecord = new TRecord();
+            this.Records = new List<TRecord>();
             this.PagedRecords = null;
             this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.SetClean();
@@ -202,7 +209,7 @@ namespace CEC.Blazor.Services
         /// <param name="e"></param>
         public async void ResetList(object sender, EventArgs e)
         {
-            Records = new List<T>();
+            Records = new List<TRecord>();
             this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.TriggerListChangedEvent(sender);
         }
@@ -233,8 +240,8 @@ namespace CEC.Blazor.Services
 
         public virtual Task<bool> GetNewRecordAsync()
         {
-            this.Record = new T();
-            this.ShadowRecord = new T();
+            this.Record = new TRecord();
+            this.ShadowRecord = new TRecord();
             return Task.FromResult(true);
         }
 
@@ -262,11 +269,11 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="paging"></param>
         /// <returns></returns>
-        public async virtual Task<List<T>> GetDataPageAsync()
+        public async virtual Task<List<TRecord>> GetDataPageAsync()
         {
             await this.GetFilteredListAsync();
             if (this.PageStartRecord < this.Records.Count) return this.Records.GetRange(this.PageStartRecord, this.PageGetSize);
-            return new List<T>();
+            return new List<TRecord>();
         }
 
         /// <summary>
@@ -274,7 +281,7 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <param name="paging"></param>
         /// <returns></returns>
-        public async virtual Task<List<T>> GetDataPageWithSortingAsync()
+        public async virtual Task<List<TRecord>> GetDataPageWithSortingAsync()
         {
             await this.GetFilteredListAsync();
             if (this.PageStartRecord > this.Records.Count) this.CurrentPage = 1;
@@ -319,11 +326,11 @@ namespace CEC.Blazor.Services
                 {
                     if (id == 0)
                     {
-                        this.Record = new T();
+                        this.Record = new TRecord();
                         this.Record.SetNew();
                     }
                     else this.Record = await this.Service.GetRecordAsync(id ?? 0);
-                    this.Record ??= new T();
+                    this.Record ??= new TRecord();
                     this.ShadowRecord = this.Record.ShadowCopy();
                     if (!this.IsRecords) this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
                     this.SetClean();
@@ -391,7 +398,7 @@ namespace CEC.Blazor.Services
             // if requested adds a default service function to the delegate
             if (withDelegate)
             {
-                this.PageLoaderAsync = new IControllerPagingService<T>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
+                this.PageLoaderAsync = new IControllerPagingService<TRecord>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
                 // loads the paging object
                 await this.LoadAsync();
                 this.TriggerListChangedEvent(this);
@@ -416,7 +423,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// List of the records to display
         /// </summary>
-        public List<T> PagedRecords { get; set; }
+        public List<TRecord> PagedRecords { get; set; }
 
         /// <summary>
         /// current page being Displayed
@@ -521,7 +528,7 @@ namespace CEC.Blazor.Services
         /// Delegate for the page loaders
         /// Methods need to conform to the pattern Method(PaginationData<T> param)
         /// </summary>
-        public IControllerPagingService<T>.PageLoaderDelegateAsync PageLoaderAsync { get; set; }
+        public IControllerPagingService<TRecord>.PageLoaderDelegateAsync PageLoaderAsync { get; set; }
 
         /// <summary>
         /// Moves forward or backwards one block

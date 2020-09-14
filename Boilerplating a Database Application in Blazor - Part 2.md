@@ -1,30 +1,37 @@
 # Boilerplating a Database Application in Blazor 
 ## Part 2 - Services - Building the CRUD Data Layers
 
-This article is the second in a series on Building Blazor Projects: it describes methodologies for boilerplating the data and business logic layers.
+This article is the second in a series on Building Blazor Projects: it describes techniques and methodologies for boilerplating the data and business logic layers.
 
-There's a [GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor)
+There's a [GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor) for the libraries and sample projects.
 
 ### Services
 
-Blazor is built around DI [Dependency Injection] and IOC [Inversion of Control].  If you don't understand these concepts, you need to do a little backgound reading before diving into Blazor.   The IOC [Inversion of Control] container in Blazor is Services, and is configured in *startup.cs* in Server:
+Blazor is built around DI [Dependency Injection] and IOC [Inversion of Control].  If your not familiar with these concepts, you should do a little backgound reading before diving into Blazor.
+
+Blazor Singleton and Transient services are relatively straight forward.  Scoped a little more complicated.
+
+1. A scoped service object exists for the lifetime of a client application session - note client and not server.  Any resets of the application, such as F5 or navigation away from the application, resets the application.  A duplicated tab in a browser creates a new application.
+2. A scoped service can be "scoped" in code.  This is most commonly done in a UI conponent.  The *OwningComponentBase* component class has functionality to restrict the life of a scoped service to the lifetime of the component. This will be discussed in further detail n the next article. 
+
+Services is the Blazor IOC [Inversion of Control] container.  In Server mode it's configured in *startup.cs*:
 
 ```c#
-// startup.cs
+// startup.cs for CEC.Blazor.Server
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddRazorPages();
     services.AddServerSideBlazor();
-    // the Services for the CEC.Blazor Library
+    // the Services for the CEC.Blazor .
     services.AddCECBlazor();
     // the Services for the CEC.Routing Library
     services.AddCECRouting();
     // the local application Services defined in ServiceCollectionExtensions.cs
-    services.AddApplicationServices();
+    services.AddApplicationServices(Configurtion);
 }
 
 // ServiceCollectionExtensions.cs
-public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
 {
     // Singleton service for the Server Side version of WeatherForecast Data Service 
     services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService>();
@@ -32,12 +39,17 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
     services.AddScoped<WeatherForecastControllerService>();
     // Transient service for the Fluent Validator for the WeatherForecast record
     services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
+    // Factory that builds the specific DBContext 
+    var dbContext = configuration.GetValue<string>("Configuration:DBContext");
+    services.AddDbContextFactory<WeatherForecastDbContext>(options => options.UseSqlServer(dbContext), ServiceLifetime.Singleton);
     return services;
 }
 ```
+
  and *program.cs* in WASM:
+
 ```c#
-// program.cs
+// program.cs for CEC.Blazor.WASM.Client
 public static async Task Main(string[] args)
 {
     .....
@@ -64,37 +76,28 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
     return services;
 }
 ```
-
-
-
-The article uses a demonstration solution, with code split between a library where (almost) all the reusable classes reside, and the project where project specific code resides.  It relies heavily on inheritance.  The developement process and code refactoring should always seek to migrate code downwards through the inheritance tree, and from specific (project) code to generic (library) code.  While this may seem like stating the obvious - yes "we" always do it - it's amazing how often what we preach is not what we implement.  I'm sure people will point out code in the demo project where I'm as guilty as everyone else. 
-
+Points:
+1. There's an *IServiceCollection* extension method for each project/library to encapsulate the specific services needed by each project.
+2. Only the data layer service is different.  The Server version, used by both the Blazor Server and the WASM API Server, contains the code that interfaces with the database and Entitiy Framework, and is a Singleton.  You only need one.  The Client version needs access to *HttpClient* which is a scoped service and is therefore itself scoped.
+3. There's a Factory coded process to build the specific DBContext for the application.  With this, the core data service code can be abstracted to the base library.
 
 ### The Entity Framework Tier
 
-I use Entity Framework [EF] for database access. But, being old school (the application gets nowhere near my tables) I implement CUD [CRUD without the Read] through stored procedures, and R [Read access] through views.  My data tier has two layers - the EF Database Context and a Data Service.  In Blazor both of these are implemented as singleton services - all user requests go through the same objects.
+The solution uses a combination of Entity Framework [EF] and normal database access. Being old school (the application gets nowhere near my tables) I implement CUD [CRUD without the Read] through stored procedures, and R [Read access] through views.  My data tier has two layers - the EF Database Context and a Data Service.
 
-The Entity Framework database account has access limited to Select on the Views and Execute on the Stored Procedures.
+The database account ued by Entity Framework database has access limited to select on Views and execute on Stored Procedures.
 
-The demo application can be run with or without a database. All EF code is implemented in the project rather the the library - it's project specific.
+The demo application can be run with or without a full database connection - there's a "Dummy database" server Data Service.
+
+All EF code is implemented in *CEC.Weather* the shared project specific library.
 
 #### WeatherForecastDBContext
 
-The class constructor looks like this:
+The DBContext has a DB DataSet per record type.  Each DataSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application, being very simple, has only have one record type.
+
+The class looks like this:
 ```c#
-protected WeatherForecastDbContext GetContext()
-{
-    var optionsBuilder = new DbContextOptionsBuilder<WeatherForecastDbContext>();
-
-    optionsBuilder.UseSqlServer(AppConfiguration.GetConnectionString("WeatherForecastConnection"));
-    return new WeatherForecastDbContext(optionsBuilder.Options);
-}
-
-```
-
-The DBContext has a DB DataSet for each record.  Each DB DataSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application is very simple as it only have one record type.
-
-```c#
+// CEC.Weather/Data
 public class WeatherForecastDbContext : DbContext
 {
     public WeatherForecastDbContext(DbContextOptions<WeatherForecastDbContext> options) : base(options) { }
@@ -112,6 +115,144 @@ public class WeatherForecastDbContext : DbContext
     }
 }
 ```
+
+Core Data Service functionality is defined in the *IDataService* interface.
+
+```c#
+// CEC.Blazor/Services/Interfaces
+ public interface IDataService<TRecord, TContext> 
+        where TRecord : IDbRecord<TRecord>, new() 
+        where TContext : DbContext
+     {
+        /// Used by the WASM client, otherwise set to null
+        public HttpClient HttpClient { get; set; }
+
+        /// Access to the DBContext using the IDbContextFactory interfce 
+       public IDbContextFactory<TContext> DBContext { get; set; }
+
+        /// Access to the application configuration in Server
+        public IConfiguration AppConfiguration { get; set; }
+
+        /// Record Configuration object that contains routing and naming information about the specific record type
+        public RecordConfigurationData RecordConfiguration { get; set; }
+
+        /// Method to get the full Record List
+        public Task<List<TRecord>> GetRecordListAsync() => Task.FromResult(new List<TRecord>());
+
+        /// Method to get a filtered Record List using a IFilterLit object
+        public Task<List<TRecord>> GetFilteredRecordListAsync(IFilterList filterList) => Task.FromResult(new List<TRecord>());
+
+        /// Method to get a single Record
+        public Task<TRecord> GetRecordAsync(int id) => Task.FromResult(new TRecord());
+
+        /// Method to get the current record count
+        public Task<int> GetRecordListCountAsync() => Task.FromResult(0);
+
+        /// Method to update a record
+        public Task<DbTaskResult> UpdateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+
+        /// method to create and add a record
+        public Task<DbTaskResult> CreateRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+
+        /// Method to delete a record
+        public Task<DbTaskResult> DeleteRecordAsync(TRecord record) => Task.FromResult(new DbTaskResult() { IsOK = false, Type = MessageType.NotImplemented, Message = "Method not implemented" });
+
+        /// Method to build the a list of SqlParameters for a CUD Stored Procedure.  Uses custom atrribute data.
+        public List<SqlParameter> GetSQLParameters(TRecord item, bool withid = false) => new List<SqlParameter>();
+    }
+```
+
+*BaseDataService* provides a base class implementing the Interface
+
+```c#
+// CEC.Blazor/Services/Interfaces
+public abstract class BaseDataService<TRecord>: IDataService<TRecord> where TRecord : IDbRecord<TRecord>, new()
+{
+    public HttpClient HttpClient { get; set; } = null;
+
+    public virtual IDbContextFactory<TContext> DBContext { get; set; } = null;
+
+    public IConfiguration AppConfiguration { get; set; }
+
+    public virtual RecordConfigurationData RecordConfiguration { get; set; } = new RecordConfigurationData();
+
+    public BaseDataService(IConfiguration configuration) => this.AppConfiguration = configuration;
+    }
+```
+**** BaseServerDataService
+
+See the project code for the full class.
+
+The *BaseServerDataService* class implements boilerplate functionality for building out and executing the CUD Stored Procedures.
+1. Async Methods for Create, Update and Delete.
+2. Methods to extract the Stored Procedure parameters fro the model data class
+3. Methods to build and execute the Stored Procedures.
+
+Read and list methods are model specific, so implemented in the CEC.Weather library. 
+
+Model classes use two custom attributes for Stored Procedure markup:
+1. *DbAccess* - class level to define the Stored Procedure names.
+2. *SPParameter* - Property specific.  Label all properties used in the Stored Procedures.
+
+A short section of the DbWeatherForecast model class is shown below. 
+
+```c#
+[DbAccess(CreateSP = "sp_Create_WeatherForecast", UpdateSP ="sp_Update_WeatherForecast", DeleteSP ="sp_Delete_WeatherForecast") ]
+public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
+{
+    [SPParameter(IsID = true, DataType = SqlDbType.Int)]
+    public int WeatherForecastID { get; set; } = -1;
+
+    [SPParameter(DataType = SqlDbType.SmallDateTime)]
+    public DateTime Date { get; set; } = DateTime.Now.Date;
+
+    ......
+}
+
+```
+Stored Procedures are run by calling the *ExecStoredProcAsync()* extension method on the *DBContext*.  The method is shown below.  It uses the EF DBContext to get a normal ADO Database Command Object, and then executes the Stored Procedure with a parameter set built using the custom attributes from the Model class.
+
+```c#
+// CEC.Blazor/Extensions/DBContextExtensions
+public static async Task<bool> ExecStoredProcAsync(this DbContext context, string storedProcName, List<SqlParameter> parameters)
+{
+    var result = false;
+
+    var cmd = context.Database.GetDbConnection().CreateCommand();
+    cmd.CommandText = storedProcName;
+    cmd.CommandType = CommandType.StoredProcedure;
+    parameters.ForEach(item => cmd.Parameters.Add(item));
+    using (cmd)
+    {
+        if (cmd.Connection.State == ConnectionState.Closed) cmd.Connection.Open();
+        try
+        {
+            await cmd.ExecuteNonQueryAsync();
+        }
+        catch {}
+        finally
+        {
+            cmd.Connection.Close();
+            result = true;
+        }
+    }
+    return result;
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 The Stored Procedure base method is in the DBContext and uses *ExecuteSqlRawAsync* to run all the stored procedures.  Note that Entity Framework for DotNet Core doesn't support many of the features in the DotNet version, so it's back to basics.
 

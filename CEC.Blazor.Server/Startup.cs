@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using CEC.Routing;
 using CEC.Blazor.Server.Extensions;
+using CEC.Blazor.Extensions;
+using CEC.Weather.Data;
 
 namespace CEC.Blazor.Server
 {
@@ -28,7 +31,7 @@ namespace CEC.Blazor.Server
             // the Services for the CEC.Routing Library
             services.AddCECRouting();
             // the local application Services defined in ServiceCollectionExtensions.cs
-            services.AddApplicationServices();
+            services.AddApplicationServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

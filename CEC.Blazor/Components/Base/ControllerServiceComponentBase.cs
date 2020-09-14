@@ -4,17 +4,21 @@ using Microsoft.AspNetCore.Components;
 using CEC.Blazor.Services;
 using CEC.Blazor.Data;
 using CEC.Blazor.Components.UIControls;
+using Microsoft.EntityFrameworkCore;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class ControllerServiceComponentBase<T> : ApplicationComponentBase where T : IDbRecord<T>, new()
+    public class ControllerServiceComponentBase<T, TContext> : 
+        ApplicationComponentBase 
+        where T : IDbRecord<T>, new()
+        where TContext : DbContext
     {
 
         /// <summary>
         /// Service with IDataRecordService Interface that corresponds to Type T
         /// Normally set as the first line in the Page OnInitialized event.
         /// </summary>
-        public IControllerService<T> Service { get; set; }
+        public IControllerService<T, TContext> Service { get; set; }
 
         /// <summary>
         /// Property for the ID of the record to retrieve.

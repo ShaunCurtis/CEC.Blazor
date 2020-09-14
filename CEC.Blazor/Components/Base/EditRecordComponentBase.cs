@@ -1,15 +1,18 @@
 ﻿using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Data;
 using CEC.Routing.Components;
-using CEC.Routing.Services;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Components.Base
 {
-    public class EditRecordComponentBase<T> : RecordComponentBase<T>, IRecordRoutingComponent where T : IDbRecord<T>, new()
+    public class EditRecordComponentBase<T, TContext> : 
+        RecordComponentBase<T, TContext>, 
+        IRecordRoutingComponent 
+        where T : IDbRecord<T>, new()
+       where TContext : DbContext
     {
         /// <summary>
         /// This Page URL/route

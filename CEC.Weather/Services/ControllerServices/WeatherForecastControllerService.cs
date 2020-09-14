@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace CEC.Weather.Services
 {
-    public class WeatherForecastControllerService : BaseControllerService<DbWeatherForecast>, IControllerService<DbWeatherForecast>
+    public class WeatherForecastControllerService : BaseControllerService<DbWeatherForecast, WeatherForecastDbContext>, IControllerService<DbWeatherForecast, WeatherForecastDbContext>
     {
 
         /// <summary>

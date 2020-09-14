@@ -9,9 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CEC.Blazor\CEC.Blazor.csproj" />
     <ProjectReference Include="..\..\CEC.Weather\CEC.Weather.csproj" />
     <ProjectReference Include="..\Client\CEC.Blazor.WASM.Client.csproj" />
-    <ProjectReference Include="..\Shared\CEC.Blazor.Shared.csproj" />
   </ItemGroup>
 
 

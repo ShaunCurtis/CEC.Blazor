@@ -6,7 +6,7 @@
 @using CEC.Blazor.Extensions
 @using CEC.FormControls.Components.FormControls
 
-@inherits ListComponentBase<DbWeatherForecast>
+@inherits ListComponentBase<DbWeatherForecast, WeatherForecastDbContext>
 
 <UIWrapper UIOptions="@this.UIOptions" RecordConfiguration="@this.Service.RecordConfiguration" OnView="@OnView" OnEdit="@OnEdit">
 

@@ -2,6 +2,7 @@
 using CEC.Blazor.Data;
 using CEC.Blazor.Utilities;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -9,10 +10,13 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Services
 {
-    public interface IDataService<TRecord> where TRecord : new()
+    public interface IDataService<TRecord, TContext> 
+        where TRecord : IDbRecord<TRecord>, new() 
+        where TContext : DbContext
     {
-
         public HttpClient HttpClient { get; set; }
+
+        public IDbContextFactory<TContext> DBContext { get; set; }
 
         public IConfiguration AppConfiguration { get; set; }
 

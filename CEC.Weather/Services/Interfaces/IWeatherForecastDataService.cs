@@ -6,7 +6,7 @@ using System;
 
 namespace CEC.Weather.Services
 {
-    public interface IWeatherForecastDataService : IDataService<DbWeatherForecast>
+    public interface IWeatherForecastDataService : IDataService<DbWeatherForecast, WeatherForecastDbContext>
     {
 
         /// <summary>
