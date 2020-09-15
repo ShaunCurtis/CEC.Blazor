@@ -1,41 +1,49 @@
 ﻿# Building a Database Application in Blazor 
 ## Part 1 - Project Structure and Framework
 
-This set of articles looks at how to build and structure a real Database Application in Blazor.  There are 4 articles:
+This set of articles looks at how to build and structure a real Database Application in Blazor.  There are 5 articles:
 
 1. Project Structure and Framework.
 2. Services - Building the CRUD Data Layers.
-3. Routed View Components - Building the CRUD Presentation Layer.
-4. UI Components.
+3. View Components - Building the CRUD Presentation Layer.
+4. UI Components - Building HTML/CSS Controls.
+5. A walk through detailing how to add weather stations and weather station data to the application.
+
+They document my current framework for developing Blazor Applications.
 
 They are not:
-1. A definition of Best Practice - I'm not in that league!
-2. A finished product.
+1. An attempt to define best practice.
+2. The finished product.
 
-It really a state of play on the frameworks and methodologies I've developed writing Blazor Applications.  Use as much or as little of it as you like, and please offer suggestions to improve it.  I do make a few recommendations, principly to try and break old routines.  For example, don't call a routed component a page.  It's not, call it a page and you subconciously attribute other web page features to it that simply don't apply.    I call these **Routed Views** after the component that displays them - *RouteView*.
+Use as much or as little as you like, and please offer suggestions.
 
-There's a [GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor)
+I do make a few suggestions, principly to steer those new to Blazor away from dark holes.  As an example, I recommend parking the term Page.  A routed component isn't a page.  Label it a page, even subconsciously, and it will gain web page attributes that simply don't apply.    I use the term **Views** after the component that displays them - *RouteView*.
 
-This first section walks runs through two projects on the GitHub repository - a Blazor Server and WASM/Backend API project.
+This first section walks runs through two projects on the GitHub repository - a Blazor Server and WASM/Backend API project - explaining the structure.
 
+### Repository and Database
+
+[CEC.Blazor GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor)
+
+There's a SQL script in /SQL in the repository for building the database.
 
 ### Solution Structure
 
-I use Visual Studio, so the Github repository consists of a solution and a set of logical projects.  These are:
+I use Visual Studio, so the Github repository consists of a solution with five projects.  These are:
 
-1. CEC.Blazor - the core library containing everything that's boilerplated and reusable across Server and WASM projects.
-2. CEC.Weather - this is the library shared by both the WeatherForecast Server and WASM projests.  Everything that can be shared, but is project specific, lives in here.  Examples are the EF DB Context, Model classes, model specific CRUD components, Bootstrap SCSS, ...
-3. CEC.Blazor.Server - the WeatherForecast Server project. The Routed Components with supporting code
+1. CEC.Blazor - the core library containing everything that can be boilerplated and reused across any project.
+2. CEC.Weather - this is the library shared by both the Server and WASM projests.  Everything that can be shared, but is project specific.  Examples are the EF DB Context, Model classes, model specific CRUD components, Bootstrap SCSS, ...
+3. CEC.Blazor.Server - the Server project. The Routed Components with supporting code
 4. CEC.Blazor.WASM.Server - the WASM backend server project.  The API Controllers with supporting code.
 5. CEC.Blazor.WASM.Client - the WASM Client project.  The Routed Components with supporting code.
 
-A key point to note here is that the actual projects are relatively small.  Most of the code is generic boilerplate code in the libraries.  The rest of this article walks through the Server and WASM sites.
+Most code is generic boilerplate stuff in the libraries. The actual projects are relatively small.
 
 ### CEC.Blazor.WASM.Client Project
 
-![Project Files](images/CEC.Blazor.WASM.client.png)
+![Project Files](https://github.com/ShaunCurtis/CEC-Publish/blob/master/Images/CEC.Blazor.WASM.Client.png?raw=true)
 
-#### Routes (Pages) 
+#### Routes (Views) 
 
 The Pages directory is history. There's only one web page on the site - the index.html page in *wwwroot*.  Routed Views aren't pages, so don't refer to them as such!
 
@@ -64,25 +72,31 @@ The Routes directory contains all the Routed Views.  A typical routed view looks
 
 #### CSS
 
-CSS is shared so is in *CEC.Weather*.  I use Bootstrap, but like to customize it a little so use SASS.
+CSS is shared so is in *CEC.Weather*.  I use Bootstrap, but like to customize it a little so use SASS.  I have a SASS extension installed in Visual Studio to compile SASS files on the fly.
 
 #### Program.cs
 
-Services for each project/library are specified in IServiceCollection Extensions.  We load the CEC.Blazor, CEC.Routing and the local application services.
+We load the CEC.Blazor, CEC.Routing and the local application services.
 ```c#
 public static async Task Main(string[] args)
 {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
     builder.RootComponents.Add<App>("app");
 
+    // Added here as we don't have access to builder in AddApplicationServices
     builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-    builder.Services.AddApplicationServices();
+    // the Services for the CEC.Blazor Library
     builder.Services.AddCECBlazor();
+    // the Services for the CEC.Routing Library
     builder.Services.AddCECRouting();
+    // the local application Services defined in ServiceCollectionExtensions.cs
+    builder.Services.AddApplicationServices();
 
     await builder.Build().RunAsync();
 }
 ```
+Services for each project/library are specified in *IServiceCollection* Extensions.
+
 #### ServiceCollectionExtensions.cs
 
 The site specific services loaded are the controller service *WeatherForecastControllerService* and the data service as an *IWeatherForecastDataService* interface loading  *WeatherForecastWASMDataService**.  The final transient service is the Fluent Validator for the Edit form.
@@ -92,9 +106,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<BrowserService>();
-        services.AddScoped<WeatherForecastControllerService>();
+        // Scoped service for the WASM Client version of WeatherForecast Data Service 
         services.AddScoped<IWeatherForecastDataService, WeatherForecastWASMDataService>();
+        // Scoped service for the WeatherForecast Controller Service
+        services.AddScoped<WeatherForecastControllerService>();
+        // Transient service for the Fluent Validator for the WeatherForecast record
         services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
         return services;
     }
@@ -102,7 +118,7 @@ public static class ServiceCollectionExtensions
 ```
 #### Index.html
 
-*Index.html* is lightly modified to 
+*Index.html* is lightly modified. 
 ```html
 <!DOCTYPE html>
 <html>
@@ -136,23 +152,18 @@ public static class ServiceCollectionExtensions
 
 </html>
 ```
-Points to note:
 
 1. The stylesheets are referenced by *_content/projectname*.  This is where linked projects/installed library *wwwroot* directories are anchored.
 2. The scripts are referenced in the same way.
 3. The *app* tag contains a startup HTML block that displays while the project is loading.
 
-![App Start Screen](images/WASM-Start-Screen.png)
+![App Start Screen](https://github.com/ShaunCurtis/CEC-Publish/blob/master/Images/WASM-Start-Screen.png?raw=true)
 
-### CEC.Blazor.WASM.Client Project
+### CEC.Blazor.WASM.Server Project
 
-![Project Files](images/CEC.Blazor.WASM.Server.png)
+![Project Files](https://github.com/ShaunCurtis/CEC-Publish/blob/master/Images/CEC.Blazor.WASM.Server.png?raw=true)
 
 The only files the server project contains, other than error handling for anyone trying to navigate to the site, are the WeatherForecast Controller and the startup/program files.
-
-#### WeatherForecastController.cs
-
-This is a standard API type controller.  It uses the registered *IWeatherForecastDataService* as it's data layer making async calls through the interface.
 
 #### WeatherForecastController.cs
 
@@ -219,9 +230,9 @@ public static class ServiceCollectionExtensions
 
 ### CEC.Blazor.Server Project
 
-![Project Files](images/CEC.Blazor.Server.png)
+![Project Files](https://github.com/ShaunCurtis/CEC-Publish/blob/master/Images/CEC.Blazor.Server.png?raw=true)
 
-This project is very similar to *CEC.Blazor.WASM.Client*.  Before I highlight the differences, look at what is the same.
+This project is very similar to *CEC.Blazor.WASM.Client*.
 
 All the *Route* files are the same.  We can't "Share" them in *CEC.Weather* as they must exist in the project for the Router to recognise them as a route, and load them.  To "share" the files we would need to write a different router, that read the routes from a different source.
 
@@ -300,7 +311,7 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
 ```
 
 ### Wrap Up
-That wraps up this section.  It's a bit of an overview, with the details to come later.  Hopefully it demonstrates the level of abstraction you can achieve with Blazor projects.  The next section looks in detail at Sevices and implementing the data layers.
+That wraps up this section.  It's a bit of an overview, with the details to come later.  Hopefully it demonstrates the level of abstraction you can achieve with Blazor projects.  The next section looks in detail at Services and implementing the data layers.
 
 Some key points to note:
 1. The differences in code between a Blazor Server and a Blazor WASM project are very minor.

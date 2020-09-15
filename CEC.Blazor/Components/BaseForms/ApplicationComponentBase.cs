@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using CEC.Blazor.Services;
-using CEC.Blazor.Data;
 using CEC.Routing.Services;
 using System.Linq;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
 
-namespace CEC.Blazor.Components.Base
+namespace CEC.Blazor.Components.BaseForms
 {
     public class ApplicationComponentBase : OwningComponentBase, IGuidComponent, IDisposable
     {
@@ -152,19 +151,19 @@ namespace CEC.Blazor.Components.Base
             switch (e.ExitType)
             {
                 case PageExitType.ExitToList:
-                    this.NavManager.NavigateTo(string.Format("/{0}/", e.RecordName));
+                    this.NavManager.NavigateTo($"/{e.RecordName}/");
                     break;
                 case PageExitType.ExitToView:
-                    this.NavManager.NavigateTo(string.Format("/{0}/View?id={1}", e.RecordName, e.ID));
+                    this.NavManager.NavigateTo($"/{e.RecordName}/View?id={e.ID}");
                     break;
                 case PageExitType.ExitToEditor:
-                    this.NavManager.NavigateTo(string.Format("/{0}/Edit?id={1}", e.RecordName, e.ID));
+                    this.NavManager.NavigateTo($"/{e.RecordName}/Edit?id={e.ID}");
                     break;
                 case PageExitType.SwitchToEditor:
-                    this.NavManager.NavigateTo(string.Format("/{0}/Edit/?id={1}", e.RecordName, e.ID));
+                    this.NavManager.NavigateTo($"/{e.RecordName}/Edit?id={e.ID}");
                     break;
                 case PageExitType.ExitToNew:
-                    this.NavManager.NavigateTo(string.Format("/{0}/New?qid={1}", e.RecordName, e.ID));
+                    this.NavManager.NavigateTo($"/{e.RecordName}/New?qid={e.ID}");
                     break;
                 case PageExitType.ExitToLast:
                     if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);

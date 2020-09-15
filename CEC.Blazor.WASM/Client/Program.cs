@@ -1,13 +1,8 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using CEC.Weather.Services;
 using CEC.Routing;
 using CEC.Blazor.WASM.Client.Extensions;
 
@@ -20,7 +15,7 @@ namespace CEC.Blazor.WASM.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            // Added here as we don't have access to buildler in AddApplicationServices
+            // Added here as we don't have access to builder in AddApplicationServices
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // the Services for the CEC.Blazor Library
             builder.Services.AddCECBlazor();

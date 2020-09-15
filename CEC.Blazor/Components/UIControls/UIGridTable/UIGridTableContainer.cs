@@ -12,6 +12,9 @@ namespace CEC.Blazor.Components.UIControls
 
     public class UIGridTableContainer : UIComponent
     {
+        /// <summary>
+        /// Adjustable Column - css width set to max
+        /// </summary>
         [Parameter]
         public int MaxColumn { get; set; } = 1;
 
@@ -22,14 +25,13 @@ namespace CEC.Blazor.Components.UIControls
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             this.ClearDuplicateAttributes();
-            int i = -1;
-            builder.OpenElement(i++, this._Tag);
-            builder.AddMultipleAttributes(i++, AdditionalAttributes);
-            builder.AddAttribute(i++, "class", this._Css);
-            builder.OpenComponent<CascadingValue<int>>(i++);
-            builder.AddAttribute(i++, "Name", "MaxColumn");
-            builder.AddAttribute(i++, "Value", this.MaxColumn);
-            if (this.ChildContent != null) builder.AddAttribute(i++, "ChildContent", ChildContent);
+            builder.OpenElement(0, this._Tag);
+            builder.AddMultipleAttributes(1, AdditionalAttributes);
+            builder.AddAttribute(2, "class", this._Css);
+            builder.OpenComponent<CascadingValue<int>>(3);
+            builder.AddAttribute(4, "Name", "MaxColumn");
+            builder.AddAttribute(5, "Value", this.MaxColumn);
+            if (this.ChildContent != null) builder.AddAttribute(6, "ChildContent", ChildContent);
             builder.CloseComponent();
             builder.CloseElement();
         }

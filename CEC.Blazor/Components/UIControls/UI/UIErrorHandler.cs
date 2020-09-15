@@ -38,34 +38,33 @@ namespace CEC.Blazor.Components.UIControls
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             this.ClearDuplicateAttributes();
-            var i = -1;
             if (IsLoading)
             {
-                builder.OpenElement(i++, "div");
-                builder.AddAttribute(i++, "class", this._Css);
-                builder.OpenElement(i++, "button");
-                builder.AddAttribute(i++, "class", "btn btn-primary");
-                builder.AddAttribute(i++, "type", "button");
-                builder.AddAttribute(i++, "disabled", "disabled");
-                builder.OpenElement(i++, "span");
-                builder.AddAttribute(i++, "class", "spinner-border spinner-border-sm pr-2");
-                builder.AddAttribute(i++, "role", "status");
-                builder.AddAttribute(i++, "aria-hidden", "true");
+                builder.OpenElement(1, "div");
+                builder.AddAttribute(2, "class", this._Css);
+                builder.OpenElement(3, "button");
+                builder.AddAttribute(4, "class", "btn btn-primary");
+                builder.AddAttribute(5, "type", "button");
+                builder.AddAttribute(6, "disabled", "disabled");
+                builder.OpenElement(7, "span");
+                builder.AddAttribute(8, "class", "spinner-border spinner-border-sm pr-2");
+                builder.AddAttribute(9, "role", "status");
+                builder.AddAttribute(10, "aria-hidden", "true");
                 builder.CloseElement();
-                builder.AddContent(i++, "  Loading...");
+                builder.AddContent(11, "  Loading...");
                 builder.CloseElement();
                 builder.CloseElement();
             }
             else if (IsError)
             {
-                builder.OpenElement(i++, "div");
-                builder.OpenElement(i++, "span");
-                builder.AddAttribute(i++, "class", this._Css);
-                builder.AddContent(i++, ErrorMessage);
+                builder.OpenElement(1, "div");
+                builder.OpenElement(2, "span");
+                builder.AddAttribute(3, "class", this._Css);
+                builder.AddContent(4, ErrorMessage);
                 builder.CloseElement();
                 builder.CloseElement();
             }
-            else builder.AddContent(i++, ChildContent);
+            else builder.AddContent(1, ChildContent);
         }
 
     }

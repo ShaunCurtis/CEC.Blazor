@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components.Base
+namespace CEC.Blazor.Components.BaseForms
 {
     public class ListComponentBase<TRecord, TContext> : 
         ControllerServiceComponentBase<TRecord, TContext> 

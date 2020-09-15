@@ -79,21 +79,22 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
 }
 ```
 Points:
-1. There's an *IServiceCollection* extension method for each project/library to encapsulate the specific services needed by each project.
-2. Only the data layer service is different.  The Server version, used by both the Blazor Server and the WASM API Server, interfaces with the database and Entitiy Framework, and is a Singleton.  You only need one.  The Client version uses *HttpClient* (which is a scoped service) to make calls to the API and is therefore itself scoped.
+1. There's an *IServiceCollection* extension method for each project/library to encapsulate the specific services needed for the project.
+2. Only the data layer service is different.  The Server version, used by both the Blazor Server and the WASM API Server, interfaces with the database and Entitiy Framework.  It's scoped as a Singleton - as we are running async, DbContexts are created and closed per query.  The Client version uses *HttpClient* (which is a scoped service) to make calls to the API and is therefore itself scoped.
 3. A code factory is used to build the specific DBContext, and provide the necessary level of abstraction for boilerplating the core data service code in the base library.
 
 ### Generics
 
 The boilerplate library code relies heavily on Generics.  The two generic entities used are:
 1. *TRecord* - this represents a model record class.  It must implement *IDbRecord*, a vanilla *new()* and be a class.
-2. *TContext* - this is the database context and must be or inherit from the *DbContext* class.
+2. *TContext* - this is the database context and must inherit from the *DbContext* class.
 
 Class declarations look like this:
 
 ```c#
 // CEC.Blazor/Services/BaseDataClass.cs
-public abstract class BaseDataService<TRecord, TContext>: IDataService<TRecord, TContext>
+public abstract class BaseDataService<TRecord, TContext>: 
+    IDataService<TRecord, TContext>
     where TRecord : class, IDbRecord<TRecord>, new()
     where TContext : DbContext
 {......}
@@ -101,17 +102,17 @@ public abstract class BaseDataService<TRecord, TContext>: IDataService<TRecord, 
 
 ### The Entity Framework Tier
 
-The solution uses a combination of Entity Framework [EF] and normal database access. Being old school (the application gets nowhere near the data tables). I implement CUD [CRUD without the Read] through stored procedures, and R [Read access] through views.  My data tier has two layers - the EF Database Context and a Data Service.
+The solution uses a combination of Entity Framework [EF] and normal database access. Being old school (the application gets nowhere near the data tables). I implement CUD [CRUD without the Read] through stored procedures, and R [Read access] and List through views.  The data tier has two layers - the EF Database Context and a Data Service.
 
 The database account ued by Entity Framework database has access limited to select on Views and execute on Stored Procedures.
 
 The demo application can be run with or without a full database connection - there's a "Dummy database" server Data Service.
 
-All EF code is implemented in *CEC.Weather* the shared project specific library.
+All EF code is implemented in *CEC.Weather*, the shared project specific library.
 
 #### WeatherForecastDBContext
 
-The DBContext has a DB DataSet per record type.  Each DataSet is linked to a view in *OnModelCreating()*.  The WeatherForecast application, being very simple, has one record type.
+The *DbContext* has a *DbSet* per record type.  Each *DbSet* is linked to a view in *OnModelCreating()*.  The WeatherForecast application has one record type.
 
 The class looks like this:
 ```c#
@@ -137,7 +138,7 @@ public class WeatherForecastDbContext : DbContext
 
 #### IDbRecord
 
-*IDbRecord* defines a common interface for all database records.  
+*IDbRecord* defines the common interface for all database records.  
 ```c#
 // CEC.Blazor/Data/Interfaces/IDbRecord.cs
 public interface IDbRecord<T>
@@ -151,7 +152,7 @@ public interface IDbRecord<T>
 ```
 IDbRecord ensures:
 * An Id/Value pair for Select dropdowns.
-* A name to use in the title area of any control when displaying the record.
+* A default name to use in the title area of any control when displaying the record.
 * A deep copy of the record when needed during editing.
 
 #### IDataService
@@ -204,7 +205,7 @@ Core Data Service functionality is defined in the *IDataService* interface.
 
 #### BaseDataService
 
-*BaseDataService* provides a base class implementing the Interface
+*BaseDataService* implements the Interface
 
 ```c#
 // CEC.Blazor/Services/Interfaces
@@ -230,7 +231,7 @@ public abstract class BaseDataService<TRecord>: IDataService<TRecord> where TRec
 
 See the [project code](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseServerDataService.cs) for the full class - it's rather long.
 
-The service implements boilerplate functionality:
+The service implements boilerplate code:
 1. Implement the *IDataService* interface CRUD methods.
 1. Async Methods to build out the Create, Update and Delete Stored Procedures.
 2. Async Methods to get lists and individual records using EF DbSets. 
@@ -243,7 +244,7 @@ The code relies on either:
   * *DbAccess* - class level attribute to define the Stored Procedure names.
   * *SPParameter* - Property specific attribute to mark all properties used in the Stored Procedures.
 
-A short section of the DbWeatherForecast model class is shown below. 
+A short section of the DbWeatherForecast model class is shown below decorated with the custom attributes. 
 
 ```c#
 [DbAccess(CreateSP = "sp_Create_WeatherForecast", UpdateSP ="sp_Update_WeatherForecast", DeleteSP ="sp_Delete_WeatherForecast") ]
@@ -257,7 +258,7 @@ public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
     ......
 }
 ```
-The data operations on EF are implemented as extension methods on *DBContext*.
+Data operations on EF are implemented as extension methods on *DBContext*.
 
 Stored Procedures are run by calling *ExecStoredProcAsync()*.  The method is shown below.  It uses the EF DBContext to get a normal ADO Database Command Object, and then executes the Stored Procedure with a parameter set built using the custom attributes from the Model class. 
 
@@ -294,7 +295,7 @@ Using Create as an example.
 // CEC.Blazor/Services/DBServerDataService.cs
 public async Task<DbTaskResult> CreateRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Create);
 ```
-
+See the comments for information
 ```c#
 // CEC.Blazor/Services/DBServerDataService.cs
 protected async Task<DbTaskResult> RunStoredProcedure(TRecord record, SPType spType)
@@ -337,7 +338,7 @@ protected async Task<DbTaskResult> RunStoredProcedure(TRecord record, SPType spT
 ```
 You can dig into the detail of *GetSqlParameters* in the [GitHub Code File](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseServerDataService.cs).
 
-The Read and List methods get the name of the DbSet through reflection and use EF methodology and the *IDbRecord* interface to get the data.
+The Read and List methods get the DbSet name through reflection, and use EF methodology and the *IDbRecord* interface to get the data.
 
 ```c#
 // CEC.Blazor/Extensions/DBContextExtensions
@@ -371,7 +372,7 @@ public async static Task<TRecord> GetRecordAsync<TRecord>(this DbContext context
 
 See the [project code](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseWASMDataService.cs) for the full class.
 
-The client version of the class is relatively simple, using the *HttpClient* to make API calls to the server.  Again we rely on naming conventions for boilerplating.
+The client version of the class is relatively simple, using the *HttpClient* to make API calls to the server.  Again we rely on naming conventions for boilerplating to work.
 
 Using Create as an example.
 
@@ -385,11 +386,11 @@ public async Task<DbTaskResult> CreateRecordAsync(TRecord record)
 }
 ```
 
-We'll look at the Server Side Controller layer shortly.
+We'll look at the Server Side Controller shortly.
 
 ### Project Specific Implementation
 
-For abstraction purposes we define a common data service interface, specifying the generics:
+For abstraction purposes we define a common data service interface.  This implements no new functionality, just specifies the generics.
 ```c#
 // CEC.Weather/Services/Interfaces/IWeatherForecastDataService.cs
 public interface IWeatherForecastDataService : 
@@ -447,7 +448,7 @@ The main functionality implemented is:
 5. Events triggered on record and record set changes.  Used by the UI to control page refreshes.
 7. Methods to reset the Controller during routing to a new page that uses the same scoped instance of the controller.
 
-All code needed for the above functionality is boiler plated in the base class.  Implementing specific record based controllers is a simple task with minimal coding.
+All code needed for the above functionality is boilerplated in the base class.  Implementing specific record based controllers is a simple task with minimal coding.
 
 #### WeatherForecastControllerService
 
@@ -522,11 +523,11 @@ public class WeatherForecastController : ControllerBase
 ```
 
 ### Wrap Up
-This article demonstrates how to abstract the data and controller tiers in a project and build them into a reuseable library.
+This article demonstrates how to abstract the data and controller tier code into a reuseable library.
 
 Some key points to note:
 1. Aysnc code is used wherever possible.  The data access functions are all async.
-2. The use of generics to make much of the boilerplating possible.  Whilst generics do create complexity, they are well worth the effort.
+2. Generics make much of the boilerplating possible.  They create complexity, but are worth the effort.
 3. The use of Interfaces for Dependancy Injection and UI boilerplating.
 
 The next section looks at the Presentation Layer / UI framework.

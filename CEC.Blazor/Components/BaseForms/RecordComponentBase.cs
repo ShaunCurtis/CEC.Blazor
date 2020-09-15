@@ -1,10 +1,9 @@
-﻿using CEC.Blazor.Components.UIControls;
-using CEC.Blazor.Data;
+﻿using CEC.Blazor.Data;
 using CEC.Blazor.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
-namespace CEC.Blazor.Components.Base
+namespace CEC.Blazor.Components.BaseForms
 {
     public class RecordComponentBase<TRecord, TContext> : 
         ControllerServiceComponentBase<TRecord, TContext> 

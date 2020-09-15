@@ -1,7 +1,5 @@
-﻿
-using CEC.Blazor.Components.UIControls;
+﻿using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Data;
-using CEC.Blazor.Utilities;
 
 namespace CEC.Blazor.Components
 {

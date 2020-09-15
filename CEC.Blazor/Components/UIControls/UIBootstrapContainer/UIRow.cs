@@ -7,7 +7,7 @@ namespace CEC.Blazor.Components.UIControls
     /// UI Rendering Wrapper to build a Bootstrap Row
     /// </summary>
 
-    public class UIRow : UIBase
+    public class UIRow : UIBootstrapBase
     {
         protected override string _BaseCss => "row";
     }

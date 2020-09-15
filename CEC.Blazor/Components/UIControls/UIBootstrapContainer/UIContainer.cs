@@ -5,7 +5,7 @@ namespace CEC.Blazor.Components.UIControls
     /// UI Rendering Wrapper to build a Bootstrap Container
     /// </summary>
 
-    public class UIContainer : UIBase
+    public class UIContainer : UIBootstrapBase
     {
         protected override string _BaseCss => "container-fluid";
     }

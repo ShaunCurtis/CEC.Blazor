@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using CEC.Blazor.Services;
 using CEC.Blazor.Data;
 using CEC.Blazor.Components.UIControls;
 using Microsoft.EntityFrameworkCore;
 
-namespace CEC.Blazor.Components.Base
+namespace CEC.Blazor.Components.BaseForms
 {
     public class ControllerServiceComponentBase<T, TContext> : 
         ApplicationComponentBase 

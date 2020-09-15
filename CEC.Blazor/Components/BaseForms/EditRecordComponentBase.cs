@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components.Base
+namespace CEC.Blazor.Components.BaseForms
 {
     public class EditRecordComponentBase<TRecord, TContext> : 
         RecordComponentBase<TRecord, TContext>, 
@@ -87,6 +87,9 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected async override Task OnInitializedAsync()
         {
+            // Try to get the ID from either the cascaded value or a Modal passed in value
+            if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
+            // Resets the record to blank 
             await this.Service.ResetRecordAsync();
             await base.OnInitializedAsync();
         }
@@ -103,8 +106,9 @@ namespace CEC.Blazor.Components.Base
 
             // Get the actual page Url from the Navigation Manager
             this.RouteUrl = this.NavManager.Uri;
-            // Set up the router service
+            // Set up this page as the active page in the router service
             this.RouterSessionService.ActiveComponent = this;
+            // Wires up the router NavigationCancelled event
             this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;
         }
 
@@ -113,6 +117,7 @@ namespace CEC.Blazor.Components.Base
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
+                // Wires up the SameComponentNavigation Event - i.e. we potentially have a new record to load in thwe same View 
                 this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
             }
         }
@@ -124,9 +129,12 @@ namespace CEC.Blazor.Components.Base
         /// <param name="e"></param>
         protected virtual void OnNavigationCancelled(object sender, EventArgs e)
         {
+            // Set the boolean properties
             this.NavigationCancelled = true;
             this.ShowExitConfirmation = true;
+            // Set up the alert
             this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Bootstrap.ColourCode.danger);
+            // Trigger a component State update - buttons and alert need to be sorted
             InvokeAsync(this.StateHasChanged);
         }
 
@@ -138,9 +146,12 @@ namespace CEC.Blazor.Components.Base
         {
             if (this.EditContext != null)
             {
+                // Sort the Service Edit State
                 this.Service.SetClean(!isdirty);
+                // Set the boolean properties
                 this.ShowExitConfirmation = false;
                 this.NavigationCancelled = false;
+                // Sort the component state based on the edit state
                 if (this.IsClean)
                 {
                     this.AlertMessage.ClearAlert();
@@ -151,14 +162,9 @@ namespace CEC.Blazor.Components.Base
                     this.AlertMessage.SetAlert("The Record isn't Saved", Bootstrap.ColourCode.warning);
                     this.RouterSessionService.SetPageExitCheck(true);
                 }
-                this.UpdateUI();
+                // Trigger a component State update - buttons and alert need to be sorted
                 InvokeAsync(this.StateHasChanged);
             }
-        }
-
-        protected virtual Task UpdateUI()
-        {
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -166,11 +172,15 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected void Cancel()
         {
+            // Set the boolean properties
             this.ShowExitConfirmation = false;
             this.NavigationCancelled = false;
+            // Sort the Router session state
             this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+            // Sort the component state based on the edit state
             if (this.IsClean) this.AlertMessage.ClearAlert();
             else this.AlertMessage.SetAlert($"{this.Service.RecordConfiguration.RecordDescription} Changed", Bootstrap.ColourCode.warning);
+            // Trigger a component State update - buttons and alert need to be sorted
             this.UpdateState();
         }
 
@@ -180,18 +190,23 @@ namespace CEC.Blazor.Components.Base
         protected virtual async Task<bool> Save()
         {
             var ok = false;
+            // Validate the EditContext
             if (this.EditContext.Validate())
             {
+                // Save the Record
                 ok = await this.Service.SaveRecordAsync();
                 if (ok)
                 {
                     // Set the EditContext State
                     this.EditContext.MarkAsUnmodified();
+                    // Set the boolean properties
                     this.ShowExitConfirmation = false;
+                    // Sort the Router session state
                     this.RouterSessionService.NavigationCancelledUrl = string.Empty;
                 }
                 // Set the alert message to the return result
                 this.AlertMessage.SetAlert(this.Service.TaskResult);
+                // Trigger a component State update - buttons and alert need to be sorted
                 this.UpdateState();
             }
             else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Bootstrap.ColourCode.danger);
@@ -211,6 +226,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected virtual void Exit()
         {
+            // Check if we are free to exit ot need confirmation
             if (this.IsClean) ConfirmExit();
             else this.ShowExitConfirmation = true;
         }
@@ -222,9 +238,11 @@ namespace CEC.Blazor.Components.Base
         {
             // To escape a dirty component set IsClean manually and navigate.
             this.Service.SetClean();
+            // Sort the Router session state
             this.RouterSessionService.NavigationCancelledUrl = string.Empty;
             //turn off page exit checking
             this.RouterSessionService.SetPageExitCheck(false);
+            // Sort the exit strategy
             if (this.IsModal) ModalExit();
             else
             {
