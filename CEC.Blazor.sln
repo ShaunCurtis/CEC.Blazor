@@ -7,30 +7,26 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor", "CEC.Blazor\CE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.Server", "CEC.Blazor.Server\CEC.Blazor.Server.csproj", "{4BCFDC54-5E15-4D51-8E0F-1A837001263C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Articles", "Articles", "{295A9984-5DBE-427B-815F-7FB8735DC716}"
-	ProjectSection(SolutionItems) = preProject
-		AsyncProgramming.md = AsyncProgramming.md
-		Blazor Components.html = Blazor Components.html
-		Blazor Components.md = Blazor Components.md
-		Building a Database Application in Blazor - Part 1.md = Building a Database Application in Blazor - Part 1.md
-		Building a Database Application in Blazor - Part 2.md = Building a Database Application in Blazor - Part 2.md
-		Building a Database Application in Blazor - Part 3.md = Building a Database Application in Blazor - Part 3.md
-		Building a Database Application in Blazor - Part 4.md = Building a Database Application in Blazor - Part 4.md
-		CodeProject.css = CodeProject.css
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.WASM.Server", "CEC.Blazor.WASM\Server\CEC.Blazor.WASM.Server.csproj", "{C4055B7D-89F2-4F99-BCAD-72C0F4269525}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.WASM.Client", "CEC.Blazor.WASM\Client\CEC.Blazor.WASM.Client.csproj", "{87E2687A-C561-42A2-BC02-B1CF0949DCEE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Weather", "CEC.Weather\CEC.Weather.csproj", "{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ACEE5B1D-2CDF-4EBD-8D15-5AB9813903A2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Released Articles", "Released Articles", "{64CAF2C4-8B4B-4D5B-93AF-1C34A0103AB4}"
 	ProjectSection(SolutionItems) = preProject
-		Images\CEC.Blazor.Server.png = Images\CEC.Blazor.Server.png
-		Images\CEC.Blazor.WASM.Client.png = Images\CEC.Blazor.WASM.Client.png
-		Images\CEC.Blazor.WASM.Server.png = Images\CEC.Blazor.WASM.Server.png
-		Images\WASM-Start-Screen.png = Images\WASM-Start-Screen.png
+		Released Articles\AsyncProgramming.md = Released Articles\AsyncProgramming.md
+		Released Articles\Blazor Components.html = Released Articles\Blazor Components.html
+		Released Articles\Blazor Components.md = Released Articles\Blazor Components.md
+		Released Articles\Building a Database Application in Blazor - Part 1.md = Released Articles\Building a Database Application in Blazor - Part 1.md
+		Released Articles\Building a Database Application in Blazor - Part 2.md = Released Articles\Building a Database Application in Blazor - Part 2.md
+		Released Articles\CodeProject.css = Released Articles\CodeProject.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "In Process Articles", "In Process Articles", "{955C1E4D-58A1-475D-8266-5B63F2B42F7F}"
+	ProjectSection(SolutionItems) = preProject
+		In Process Articles\Building a Database Application in Blazor - Part 3.md = In Process Articles\Building a Database Application in Blazor - Part 3.md
+		In Process Articles\Building a Database Application in Blazor - Part 4.md = In Process Articles\Building a Database Application in Blazor - Part 4.md
 	EndProjectSection
 EndProject
 Global
@@ -62,9 +58,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{ACEE5B1D-2CDF-4EBD-8D15-5AB9813903A2} = {295A9984-5DBE-427B-815F-7FB8735DC716}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4D6C222-7639-42B0-80BD-27D9CDC0FB41}
