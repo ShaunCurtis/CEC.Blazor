@@ -36,18 +36,19 @@ All common code resides in *ControllerServiceComponent*, specific code in the in
 
 ### Implementing CRUD Pages
 
-#### Viewing a Record
+#### The View
 
-We'll use record viewing for a walkthrough of the code.  The routed view is simple.  We separate out the actual view component from the routed view so we can use the component in other pages such as the modal dialog viewer.
+The routed view is simple.  We separate out the actual view component from the routed view so we can use the component in other pages such as the modal dialog viewer.
 
 ```html
-@page "/WeatherForecast/View"
-
-@namespace CEC.Blazor.Server.Pages
+CEC.Blazor.WASM.Client/Routes/WeatherForecastEditorView.razor
+@page "/WeatherForecast/New"
+@page "/WeatherForecast/Edit"
 
 @inherits ApplicationComponentBase
 
-<WeatherViewer></WeatherViewer>
+@namespace CEC.Blazor.WASM.Client.Routes
+
 ```
 
 *WeatherViewer* contains only code specific to displaying the WeatherForecast record.  We'll look at the associated razor page in the next article 
