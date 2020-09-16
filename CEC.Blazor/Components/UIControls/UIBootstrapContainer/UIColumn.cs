@@ -6,7 +6,7 @@ namespace CEC.Blazor.Components.UIControls
     /// UI Rendering Wrapper to build a Bootstrap Column
     /// </summary>
 
-    public class UIColumn : UIBootstrapBase
+    public class UIColumn : UIBase
     {
         [Parameter]
         public int Columns { get; set; } = 1;

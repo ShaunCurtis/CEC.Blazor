@@ -38,72 +38,341 @@ All common code resides in *ControllerServiceComponent*, specific code in the in
 
 #### The View
 
-The routed view is simple.  We separate out the actual view component from the routed view so we can use the component in other pages such as the modal dialog viewer.
+The routed view is a very simple component.  We separate out the actual view component from the routed view so we can use the component in other pages such as the modal dialog viewer.
 
-```html
-CEC.Blazor.WASM.Client/Routes/WeatherForecastEditorView.razor
+```c#
+// CEC.Blazor.WASM.Client/Routes/WeatherForecastEditorView.razor
 @page "/WeatherForecast/New"
 @page "/WeatherForecast/Edit"
-
 @inherits ApplicationComponentBase
-
 @namespace CEC.Blazor.WASM.Client.Routes
 
+<WeatherEditorForm></WeatherEditorForm>
 ```
 
-*WeatherViewer* contains only code specific to displaying the WeatherForecast record.  We'll look at the associated razor page in the next article 
+#### The Form
+
+Again a relatively simple component.  We'll look at the associated razor page below. 
 
 ```C#
-public partial class WeatherViewer : RecordComponentBase<DbWeatherForecast>
+// CEC.Weather/Components/Forms/WeatherForecastEditorForm.razor
+public partial class WeatherEditorForm : EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
 {
     [Inject]
-    private WeatherForecastControllerService ControllerService { get; set; }
+    public WeatherForecastControllerService ControllerService { get; set; }
 
-    public override string PageTitle => $"Weather Forecast Viewer {this.Service?.Record?.Date.AsShortDate() ?? string.Empty}".Trim();
+    private string CardCSS => this.IsModal ? "m-0" : "";
 
     protected async override Task OnInitializedAsync()
     {
+        // Assign the correct controller service
         this.Service = this.ControllerService;
         await base.OnInitializedAsync();
     }
-
-    protected void NextRecord(int increment) => this.NavManager.NavigateTo($"/WeatherForecast/View?id={this._ID + increment}");
-
 }
 ```
 
-This:
-1. Gets the specific ControllerService through DI and assigns it to the Service [IService].
-2. Sets the Page Title.
-3. Has an event handler to handle navigating between records.  This is purely for demo purposes - responding to Intra Page Routing.
+This gets and assigns the specific ControllerService through DI to the Service Property [IContollerService].
 
-#### A detailed look at the Events and Initialization Methods
+The Razor Markup below is an abbreviated version of the Weather Editor Razor file.  This makes extensive use of UIControls which will be discussed in detail in the next article.  The comments provide explanation. 
+```C#
+// CEC.Weather/Components/Forms/WeatherForecastEditorForm.razor.cs
+// UI Card is a Bootstrap Card
+<UICard IsCollapsible="false">
+    <Header>
+        @this.PageTitle
+    </Header>
+    <Body>
+        // Cascades the Event Handler in the form for RecordChanged.  Picked up by each FormControl and fired when a value changes in the FormControl
+        <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
+            // Error handler - only renders it's content when the record exists and is loaded
+            <UIErrorHandler IsError="@this.IsError" IsLoading="this.IsDataLoading" ErrorMessage="@this.RecordErrorMessage">
+                <UIContainer>
+                    // Standard Blazor EditForm control
+                    <EditForm EditContext="this.EditContext">
+                        // Fluent ValidationValidator for the form
+                        <FluentValidationValidator DisableAssemblyScanning="@true" />
+                        .....
+                        // Example data value row with label and edit control
+                        <UIFormRow>
+                            <UILabelColumn Columns="4">
+                                Record Date:
+                            </UILabelColumn>
+                            <UIColumn Columns="4">
+                                // Note the Record Value bind to the record shadow copy to detect changes from the orginal stored value
+                                <FormControlDate class="form-control" @bind-Value="this.Service.Record.Date" RecordValue="this.Service.ShadowRecord.Date"></FormControlDate>
+                            </UIColumn>
+                        </UIFormRow>
+                        ..... // more form rows here
+                    </EditForm>
+                </UIContainer>
+            </UIErrorHandler>
+            // Container for the buttons - not record dependant so outside the error handler to allow navigation if UIErrorHandler is in error.
+            <UIContainer>
+                <UIRow>
+                    <UIColumn Columns="7">
+                        // Bootstrap alert to display any messages
+                        <UIAlert Alert="this.AlertMessage" SizeCode="Bootstrap.SizeCode.sm"></UIAlert>
+                    </UIColumn>
+                    <UIButtonColumn Columns="5">
+                        ....
+                        // UIButton is a Bootstrap button.  Show controls whether it's displayed.
+                        // For example Save is displayed when the Service Record is Dirty and the record has loaded. 
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.Save" ColourCode="Bootstrap.ColourCode.save">Save</UIButton>
+                        <UIButton Show="this.ShowExitConfirmation && this.IsLoaded" ClickEvent="this.ConfirmExit" ColourCode="Bootstrap.ColourCode.danger_exit">Exit Without Saving</UIButton>
+                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))" ColourCode="Bootstrap.ColourCode.nav">Exit To List</UIButton>
+                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="this.Exit" ColourCode="Bootstrap.ColourCode.nav">Exit</UIButton>
+                    </UIButtonColumn>
+                </UIRow>
+            </UIContainer>
+        </CascadingValue>
+    </Body>
+</UICard>
+```
+#### EditComponentBase
+
+The *EditComponentBase* component contains the main editor code.
 
 ##### OnInitializedAsync
 
-*OnInitializedAsync* is implemented from top down (code is executed then the base method called).
+The code block below shows the three OnInitializedAsync methods in the class hierarchy.
 
-WeatherViewer (code above) runs *OnInitializedAsync*.  This sets up the Service (IControllerService) and then calls down the inheritance hierarchy through *base.OnInitializedAsync()*.
+*OnInitializedAsync* is implemented from top down (local code is run before calling the base method).
 
-*RecordComponentBase* resets the record and then calls down the hierarchy.
-
-```C#
+```c#
+// CEC.Blazor/Components/BaseForms/EditComponentBase.cs
 protected async override Task OnInitializedAsync()
 {
+    // Try to get the ID from either the cascaded value or a Modal passed in value
+    if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
+    // The base OnInitializedAsync is always called last so we run code from the Top down
+    await base.OnInitializedAsync();
+}
+
+// CEC.Blazor/Components/BaseForms/RecordComponentBase.cs
+protected async override Task OnInitializedAsync()
+{
+    // Resets the record to blank 
     await this.Service.ResetRecordAsync();
     await base.OnInitializedAsync();
 }
-```
 
-*ApplicationComponentBase* gets the user and then calls down again which in this case hits *OwningComponentBase*.
-
-```C#
+// CEC.Blazor/Components/BaseForms/ApplicationComponentBase.cs
 protected async override Task OnInitializedAsync()
 {
+    // Gets the user if we have an AuthenticationState
     if (this.AuthenticationState != null) await this.GetUserAsync();
     await base.OnInitializedAsync();
 }
 ```
+
+##### OnParametersSetAsync
+
+*OnParametersSetAsync* is implemented from bottom up (the base method is called before any local code).
+
+```C#
+// CEC.Blazor/Components/BaseForms/ApplicationComponentBase.cs
+protected async override Task OnParametersSetAsync()
+{
+    await base.OnParametersSetAsync();
+    // Get the record if required - see below for method detail
+    await this.LoadRecordAsync();
+}
+```
+
+##### LoadRecordAsync
+
+The record loading code is broken out of *OnParametersSetAsync* as it is used outside the component lifecycle methods.  It's implemented from bottom up (the base method is called before any local code).
+
+```C#
+// CEC.Blazor/Components/BaseForms/RecordComponentBase.cs
+protected virtual async Task LoadRecordAsync()
+{
+    if (this.IsService)
+    {
+        // Set the Loading flag and call StateNasChanged to force UI changes 
+        // in this case making the UIErrorHandler show the loading spinner 
+        this.IsDataLoading = true;
+        StateHasChanged();
+
+        // Check if we have a query string value in the Route for ID.  If so use it
+        if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > -1 ? querystringid : this._ID;
+
+        // Check if the component is a modal.  If so get the supplied ID
+        else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > -1 ? (int)modalid : this.ID;
+
+        // make this look slow to demo the spinner
+        if (this.DemoLoadDelay > 0) await Task.Delay(this.DemoLoadDelay);
+
+        // Get the current record - this will check if the id is different from the current record and only update if it's changed
+        await this.Service.GetRecordAsync(this._ID, false);
+
+        // Set the error message - it will only be displayed if we have an error
+        this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
+
+        // Set the Loading flag and call statehaschanged to force UI changes 
+        // in this case making the UIErrorHandler show the record or the erro message 
+        this.IsDataLoading = false;
+        StateHasChanged();
+    }
+}
+
+// CEC.Blazor/Components/BaseForms/EditComponentBase.cs
+protected async override Task LoadRecordAsync()
+{
+    await base.LoadRecordAsync();
+
+    //set up the Edit Context
+    this.EditContext = new EditContext(this.Service.Record);
+
+    // Get the actual page Url from the Navigation Manager
+    this.RouteUrl = this.NavManager.Uri;
+    // Set up this page as the active page in the router service
+    this.RouterSessionService.ActiveComponent = this;
+    // Wires up the router NavigationCancelled event
+    this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;
+}
+
+
+
+protected async override Task OnAfterRenderAsync(bool firstRender)
+{
+    await base.OnAfterRenderAsync(firstRender);
+    if (firstRender)
+    {
+        // Wires up the SameComponentNavigation Event - i.e. we potentially have a new record to load in thwe same View 
+        this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
+    }
+}
+
+```
+
+The two annotated event handlers wired up in the Component load events.
+```c#
+/// Event handler for a navigsation cancelled event raised by the router
+protected virtual void OnNavigationCancelled(object sender, EventArgs e)
+{
+    // Set the boolean properties
+    this.NavigationCancelled = true;
+    this.ShowExitConfirmation = true;
+    // Set up the alert
+    this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Bootstrap.ColourCode.danger);
+    // Trigger a component State update - buttons and alert need to be sorted
+    InvokeAsync(this.StateHasChanged);
+}
+
+/// Event handler for the RecordFromControls FieldChanged Event
+protected virtual void RecordFieldChanged(bool isdirty)
+{
+    if (this.EditContext != null)
+    {
+        // Sort the Service Edit State
+        this.Service.SetClean(!isdirty);
+        // Set the boolean properties
+        this.ShowExitConfirmation = false;
+        this.NavigationCancelled = false;
+        // Sort the component state based on the edit state
+        if (this.IsClean)
+        {
+            this.AlertMessage.ClearAlert();
+            this.RouterSessionService.SetPageExitCheck(false);
+        }
+        else
+        {
+            this.AlertMessage.SetAlert("The Record isn't Saved", Bootstrap.ColourCode.warning);
+            this.RouterSessionService.SetPageExitCheck(true);
+        }
+        // Trigger a component State update - buttons and alert need to be sorted
+        InvokeAsync(this.StateHasChanged);
+    }
+}
+```
+
+The two annotated Save Button click events.
+
+```c#
+/// Save Method called from the Button
+protected virtual async Task<bool> Save()
+{
+    var ok = false;
+    // Validate the EditContext
+    if (this.EditContext.Validate())
+    {
+        // Save the Record
+        ok = await this.Service.SaveRecordAsync();
+        if (ok)
+        {
+            // Set the EditContext State
+            this.EditContext.MarkAsUnmodified();
+            // Set the boolean properties
+            this.ShowExitConfirmation = false;
+            // Sort the Router session state
+            this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+        }
+        // Set the alert message to the return result
+        this.AlertMessage.SetAlert(this.Service.TaskResult);
+        // Trigger a component State update - buttons and alert need to be sorted
+        this.UpdateState();
+    }
+    else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Bootstrap.ColourCode.danger);
+    return ok;
+}
+
+/// Save and Exit Method called from the Button
+protected virtual async void SaveAndExit()
+{
+    if (await this.Save()) this.ConfirmExit();
+}
+```
+
+The annotated Exit and cancel button handlers
+```c#
+/// Confirm Exit Method called from the Button
+protected virtual void Exit()
+{
+    // Check if we are free to exit ot need confirmation
+    if (this.IsClean) ConfirmExit();
+    else this.ShowExitConfirmation = true;
+}
+
+/// Confirm Exit Method called from the Button
+protected virtual void ConfirmExit()
+{
+    // To escape a dirty component set IsClean manually and navigate.
+    this.Service.SetClean();
+    // Sort the Router session state
+    this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+    //turn off page exit checking
+    this.RouterSessionService.SetPageExitCheck(false);
+    // Sort the exit strategy
+    if (this.IsModal) ModalExit();
+    else
+    {
+        // Check if we have a Url the user tried to navigate to - default exit to the root
+        if (!string.IsNullOrEmpty(this.RouterSessionService.NavigationCancelledUrl)) this.NavManager.NavigateTo(this.RouterSessionService.NavigationCancelledUrl);
+        else if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);
+        else this.NavManager.NavigateTo("/");
+    }
+}
+
+/// Cancel Method called from the Button
+protected void Cancel()
+{
+    // Set the boolean properties
+    this.ShowExitConfirmation = false;
+    this.NavigationCancelled = false;
+    // Sort the Router session state
+    this.RouterSessionService.NavigationCancelledUrl = string.Empty;
+    // Sort the component state based on the edit state
+    if (this.IsClean) this.AlertMessage.ClearAlert();
+    else this.AlertMessage.SetAlert($"{this.Service.RecordConfiguration.RecordDescription} Changed", Bootstrap.ColourCode.warning);
+    // Trigger a component State update - buttons and alert need to be sorted
+    this.UpdateState();
+}
+```
+
+#### A detailed look at the Events and Initialization Methods
+
 
 ##### OnParametersSetAsync
 
@@ -283,224 +552,6 @@ public partial class WeatherEditor : EditRecordComponentBase<DbWeatherForecast, 
         this.Service = this.ControllerService;
         await base.OnInitializedAsync();
     }
-}
-```
-The Razor Markup is an abbreviated version of the Weather Editor Razor file.  The comments provide explanation. 
-```C#
-// UI Card is a Bootstrap Card
-<UICard IsCollapsible="false">
-    <Header>
-        @this.PageTitle
-    </Header>
-    <Body>
-        // Cascades the Event Handler in the form for RecordChanged.  Picked up by each FormControl and fired when a value changes in the FormControl
-        <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
-            // Error handler - only renders it's content when the record exists and is loaded
-            <UIErrorHandler IsError="@this.IsError" IsLoading="this.IsDataLoading" ErrorMessage="@this.RecordErrorMessage">
-                <UIContainer>
-                    // Standard Blazor EditForm control
-                    <EditForm EditContext="this.EditContext">
-                        // Fluent ValidationValidator for the form
-                        <FluentValidationValidator DisableAssemblyScanning="@true" />
-                        .....
-                        // Example data value row with label and edit control
-                        <UIFormRow>
-                            <UILabelColumn Columns="4">
-                                Record Date:
-                            </UILabelColumn>
-                            <UIColumn Columns="4">
-                                // Note the Record Value bind to the record shadow copy to detect changes from the orginal stored value
-                                <FormControlDate class="form-control" @bind-Value="this.Service.Record.Date" RecordValue="this.Service.ShadowRecord.Date"></FormControlDate>
-                            </UIColumn>
-                        </UIFormRow>
-                        ..... // more form rows here
-                    </EditForm>
-                </UIContainer>
-            </UIErrorHandler>
-            // Container for the buttons - not record dependant so outside the error handler to allow navigation if UIErrorHandler is in error.
-            <UIContainer>
-                <UIRow>
-                    <UIColumn Columns="7">
-                        // Bootstrap alert to display any messages
-                        <UIAlert Alert="this.AlertMessage" SizeCode="Bootstrap.SizeCode.sm"></UIAlert>
-                    </UIColumn>
-                    <UIButtonColumn Columns="5">
-                        ....
-                        // UIButton is a Bootstrap button.  Show controls whether it's displayed.
-                        // For example Save is displayed when the Service Record is Dirty and the record has loaded. 
-                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.Save" ColourCode="Bootstrap.ColourCode.save">Save</UIButton>
-                        <UIButton Show="this.ShowExitConfirmation && this.IsLoaded" ClickEvent="this.ConfirmExit" ColourCode="Bootstrap.ColourCode.danger_exit">Exit Without Saving</UIButton>
-                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))" ColourCode="Bootstrap.ColourCode.nav">Exit To List</UIButton>
-                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="this.Exit" ColourCode="Bootstrap.ColourCode.nav">Exit</UIButton>
-                    </UIButtonColumn>
-                </UIRow>
-            </UIContainer>
-        </CascadingValue>
-    </Body>
-</UICard>
-```
-
-*EditComponentBase* contains the main editor code.  The component Render functions are shown below and annotated.
-
-```c#
-        protected async override Task OnInitializedAsync()
-        {
-            // Try to get the ID from either the cascaded value or a Modal passed in value
-            if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
-            // Resets the record to blank 
-            await this.Service.ResetRecordAsync();
-            await base.OnInitializedAsync();
-        }
-
-        /// Called from the base OnInitializedAsync
-        protected async override Task LoadRecordAsync()
-        {
-            await base.LoadRecordAsync();
-
-            //set up the Edit Context
-            this.EditContext = new EditContext(this.Service.Record);
-
-            // Get the actual page Url from the Navigation Manager
-            this.RouteUrl = this.NavManager.Uri;
-            // Set up this page as the active page in the router service
-            this.RouterSessionService.ActiveComponent = this;
-            // Wires up the router NavigationCancelled event
-            this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;
-        }
-
-        protected async override Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-            if (firstRender)
-            {
-                // Wires up the SameComponentNavigation Event - i.e. we potentially have a new record to load in thwe same View 
-                this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
-            }
-        }
-
-```
-
-The two annotated event handlers wired up in the Component load events.
-```c#
-/// Event handler for a navigsation cancelled event raised by the router
-protected virtual void OnNavigationCancelled(object sender, EventArgs e)
-{
-    // Set the boolean properties
-    this.NavigationCancelled = true;
-    this.ShowExitConfirmation = true;
-    // Set up the alert
-    this.AlertMessage.SetAlert("<b>THIS RECORD ISN'T SAVED</b>. Either <i>Save</i> or <i>Exit Without Saving</i>.", Bootstrap.ColourCode.danger);
-    // Trigger a component State update - buttons and alert need to be sorted
-    InvokeAsync(this.StateHasChanged);
-}
-
-/// Event handler for the RecordFromControls FieldChanged Event
-protected virtual void RecordFieldChanged(bool isdirty)
-{
-    if (this.EditContext != null)
-    {
-        // Sort the Service Edit State
-        this.Service.SetClean(!isdirty);
-        // Set the boolean properties
-        this.ShowExitConfirmation = false;
-        this.NavigationCancelled = false;
-        // Sort the component state based on the edit state
-        if (this.IsClean)
-        {
-            this.AlertMessage.ClearAlert();
-            this.RouterSessionService.SetPageExitCheck(false);
-        }
-        else
-        {
-            this.AlertMessage.SetAlert("The Record isn't Saved", Bootstrap.ColourCode.warning);
-            this.RouterSessionService.SetPageExitCheck(true);
-        }
-        // Trigger a component State update - buttons and alert need to be sorted
-        InvokeAsync(this.StateHasChanged);
-    }
-}
-```
-
-The two annotated Save Button click events.
-
-```c#
-/// Save Method called from the Button
-protected virtual async Task<bool> Save()
-{
-    var ok = false;
-    // Validate the EditContext
-    if (this.EditContext.Validate())
-    {
-        // Save the Record
-        ok = await this.Service.SaveRecordAsync();
-        if (ok)
-        {
-            // Set the EditContext State
-            this.EditContext.MarkAsUnmodified();
-            // Set the boolean properties
-            this.ShowExitConfirmation = false;
-            // Sort the Router session state
-            this.RouterSessionService.NavigationCancelledUrl = string.Empty;
-        }
-        // Set the alert message to the return result
-        this.AlertMessage.SetAlert(this.Service.TaskResult);
-        // Trigger a component State update - buttons and alert need to be sorted
-        this.UpdateState();
-    }
-    else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Bootstrap.ColourCode.danger);
-    return ok;
-}
-
-/// Save and Exit Method called from the Button
-protected virtual async void SaveAndExit()
-{
-    if (await this.Save()) this.ConfirmExit();
-}
-```
-
-The annotated Exit and cancel button handlers
-```c#
-/// Confirm Exit Method called from the Button
-protected virtual void Exit()
-{
-    // Check if we are free to exit ot need confirmation
-    if (this.IsClean) ConfirmExit();
-    else this.ShowExitConfirmation = true;
-}
-
-/// Confirm Exit Method called from the Button
-protected virtual void ConfirmExit()
-{
-    // To escape a dirty component set IsClean manually and navigate.
-    this.Service.SetClean();
-    // Sort the Router session state
-    this.RouterSessionService.NavigationCancelledUrl = string.Empty;
-    //turn off page exit checking
-    this.RouterSessionService.SetPageExitCheck(false);
-    // Sort the exit strategy
-    if (this.IsModal) ModalExit();
-    else
-    {
-        // Check if we have a Url the user tried to navigate to - default exit to the root
-        if (!string.IsNullOrEmpty(this.RouterSessionService.NavigationCancelledUrl)) this.NavManager.NavigateTo(this.RouterSessionService.NavigationCancelledUrl);
-        else if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);
-        else this.NavManager.NavigateTo("/");
-    }
-}
-
-/// Cancel Method called from the Button
-protected void Cancel()
-{
-    // Set the boolean properties
-    this.ShowExitConfirmation = false;
-    this.NavigationCancelled = false;
-    // Sort the Router session state
-    this.RouterSessionService.NavigationCancelledUrl = string.Empty;
-    // Sort the component state based on the edit state
-    if (this.IsClean) this.AlertMessage.ClearAlert();
-    else this.AlertMessage.SetAlert($"{this.Service.RecordConfiguration.RecordDescription} Changed", Bootstrap.ColourCode.warning);
-    // Trigger a component State update - buttons and alert need to be sorted
-    this.UpdateState();
 }
 ```
 

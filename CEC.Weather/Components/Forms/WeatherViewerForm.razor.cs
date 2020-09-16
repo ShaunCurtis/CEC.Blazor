@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Weather.Components
 {
-    public partial class WeatherViewer : RecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+    public partial class WeatherViewerForm : RecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
     {
         [Inject]
         private WeatherForecastControllerService ControllerService { get; set; }
@@ -17,6 +17,8 @@ namespace CEC.Weather.Components
         protected async override Task OnInitializedAsync()
         {
             this.Service = this.ControllerService;
+            // Set the delay on the record load as this is a demo project
+            this.DemoLoadDelay = 250;
             await base.OnInitializedAsync();
         }
 

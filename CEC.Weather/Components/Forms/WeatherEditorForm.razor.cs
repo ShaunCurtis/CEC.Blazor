@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Weather.Components
 {
-    public partial class WeatherEditor : EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+    public partial class WeatherEditorForm : EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
     {
         [Inject]
         public WeatherForecastControllerService ControllerService { get; set; }
@@ -17,6 +17,8 @@ namespace CEC.Weather.Components
         {
             // Assign the correct controller service
             this.Service = this.ControllerService;
+            // Set the delay on the record load as this is a demo project
+            this.DemoLoadDelay = 250;
             await base.OnInitializedAsync();
         }
     }

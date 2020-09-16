@@ -82,8 +82,8 @@ namespace CEC.Blazor.Components.BaseForms
                 // Check if the component is a modal.  If so get the supplied ID
                 else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > -1 ? (int)modalid : this.ID;
 
-                // make this look async by adding a load delay
-                await Task.Delay(500);
+                // make this look slow to demo the spinner
+                if (this.DemoLoadDelay > 0) await Task.Delay(this.DemoLoadDelay);
 
                 // Get the current record - this will check if the id is different from the current record and only update if it's changed
                 await this.Service.GetRecordAsync(this._ID, false);

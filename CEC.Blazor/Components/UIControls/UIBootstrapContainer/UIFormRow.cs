@@ -7,7 +7,7 @@ namespace CEC.Blazor.Components.UIControls
     /// UI Rendering Wrapper to build a Bootstrap Form Row
     /// </summary>
 
-    public class UIFormRow : UIBootstrapBase
+    public class UIFormRow : UIBase
     {
         protected override string _BaseCss => $"row form-group";
 

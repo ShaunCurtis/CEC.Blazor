@@ -79,11 +79,15 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         public bool Loading { get; protected set; } = true;
 
-
         /// <summary>
         /// Boolean Property to check if this component is in Modal Mode
         /// </summary>
         public bool IsModal => this.Parent != null;
+
+        /// <summary>
+        /// Property used in demo projects to emulate slow data reads
+        /// </summary>
+        protected int DemoLoadDelay { get; set; } = 0;
 
         /// <summary>
         /// Property holding the current user name

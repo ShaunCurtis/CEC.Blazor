@@ -9,7 +9,7 @@ using CEC.Blazor.Components.Modal;
 
 namespace CEC.Weather.Components
 {
-    public partial class WeatherList : ListComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+    public partial class WeatherListForm : ListComponentBase<DbWeatherForecast, WeatherForecastDbContext>
     {
         /// <summary>
         /// The Injected Controller service for this record
@@ -45,7 +45,7 @@ namespace CEC.Weather.Components
                     HideHeader = true,
                 };
                 modalOptions.Parameters.Add("ID", id);
-                await this._BootstrapModal.Show<WeatherViewer>(modalOptions);
+                await this._BootstrapModal.Show<WeatherViewerForm>(modalOptions);
             }
             else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToView, id, "WeatherForecast"));
         }
@@ -65,7 +65,7 @@ namespace CEC.Weather.Components
                     HideHeader = true
                 };
                 modalOptions.Parameters.Add("ID", id);
-                await this._BootstrapModal.Show<WeatherEditor>(modalOptions);
+                await this._BootstrapModal.Show<WeatherEditorForm>(modalOptions);
             }
             else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, id, "WeatherForecast"));
         }

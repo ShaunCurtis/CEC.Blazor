@@ -88,9 +88,8 @@ namespace CEC.Blazor.Components.BaseForms
         protected async override Task OnInitializedAsync()
         {
             // Try to get the ID from either the cascaded value or a Modal passed in value
-            if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
+            //if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
             // Resets the record to blank 
-            await this.Service.ResetRecordAsync();
             await base.OnInitializedAsync();
         }
 
