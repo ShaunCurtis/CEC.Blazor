@@ -1,13 +1,15 @@
 # Building a Database Appication in Blazor 
 ## Part 3 - CRUD Operations in the UI
 
+## Introduction
+
 Part 2 describes techniques and methodologies for abstracting the data and business logic layers into boilerplate code in a library.  This article does the same with the presentation layer.
 
 ### Sample Project and Code
 
 See the [CEC.Blazor GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor) for the libraries and sample projects.
 
-### The WeatherForecast Application
+### The Base Forms
 
 The CRUD UI is implemented as a set of boilerplate components inheriting from *OwningComponentBase*.  *OwningComponentBase* is used for control over the scope of Scoped Services.  Code is available on the Github site and linked at appropriate places in this article.
 
@@ -36,9 +38,11 @@ All common code resides in *ControllerServiceComponent*, specific code in the in
 
 ### Implementing CRUD Pages
 
+We'll look at the editor in detail to see how the components are structured and edit functionality implemented.
+
 #### The View
 
-The routed view is a very simple component.  We separate out the actual view component from the routed view so we can use the component in other pages such as the modal dialog viewer.
+The routed view is a very simple component.  We separate the actual view component from the routed view.  It's used in other pages such as the modal dialog viewer.
 
 ```c#
 // CEC.Blazor.WASM.Client/Routes/WeatherForecastEditorView.razor
@@ -52,7 +56,7 @@ The routed view is a very simple component.  We separate out the actual view com
 
 #### The Form
 
-Again a relatively simple component.  We'll look at the associated razor page below. 
+Again a relatively simple component programmatically. 
 
 ```C#
 // CEC.Weather/Components/Forms/WeatherForecastEditorForm.razor
@@ -74,7 +78,7 @@ public partial class WeatherEditorForm : EditRecordComponentBase<DbWeatherForeca
 
 This gets and assigns the specific ControllerService through DI to the Service Property [IContollerService].
 
-The Razor Markup below is an abbreviated version of the Weather Editor Razor file.  This makes extensive use of UIControls which will be discussed in detail in the next article.  The comments provide explanation. 
+The Razor Markup below is an abbreviated version of the actual file.  This makes extensive use of UIControls which will be discussed in detail in the next article.  The comments provide explanation. 
 ```C#
 // CEC.Weather/Components/Forms/WeatherForecastEditorForm.razor.cs
 // UI Card is a Bootstrap Card
@@ -129,23 +133,22 @@ The Razor Markup below is an abbreviated version of the Weather Editor Razor fil
     </Body>
 </UICard>
 ```
-#### EditComponentBase
-
-The *EditComponentBase* component contains the main editor code.
+#### Base Form Code
 
 ##### OnInitializedAsync
 
-The code block below shows the three OnInitializedAsync methods in the class hierarchy.
+The code block below shows the two OnInitializedAsync methods in the class hierarchy.
 
 *OnInitializedAsync* is implemented from top down (local code is run before calling the base method).
 
 ```c#
-// CEC.Blazor/Components/BaseForms/EditComponentBase.cs
+// CEC.Weather/Components/Forms/WeatherEditorForm.razor.cs
 protected async override Task OnInitializedAsync()
 {
-    // Try to get the ID from either the cascaded value or a Modal passed in value
-    if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object id)) this.ID = (int)id > -1 ? (int)id : this.ID;
-    // The base OnInitializedAsync is always called last so we run code from the Top down
+    // Assign the correct controller service
+    this.Service = this.ControllerService;
+    // Set the delay on the record load as this is a demo project
+    this.DemoLoadDelay = 250;
     await base.OnInitializedAsync();
 }
 
@@ -182,7 +185,7 @@ protected async override Task OnParametersSetAsync()
 
 ##### LoadRecordAsync
 
-The record loading code is broken out of *OnParametersSetAsync* as it is used outside the component lifecycle methods.  It's implemented from bottom up (the base method is called before any local code).
+The record loading code is broken out of *OnParametersSetAsync* as it's used outside the component lifecycle methods.  It's implemented from bottom up (the base method is called before any local code).
 
 ```C#
 // CEC.Blazor/Components/BaseForms/RecordComponentBase.cs
@@ -211,7 +214,7 @@ protected virtual async Task LoadRecordAsync()
         this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
 
         // Set the Loading flag and call statehaschanged to force UI changes 
-        // in this case making the UIErrorHandler show the record or the erro message 
+        // in this case making the UIErrorHandler show the record or the error message 
         this.IsDataLoading = false;
         StateHasChanged();
     }
@@ -229,27 +232,32 @@ protected async override Task LoadRecordAsync()
     this.RouteUrl = this.NavManager.Uri;
     // Set up this page as the active page in the router service
     this.RouterSessionService.ActiveComponent = this;
-    // Wires up the router NavigationCancelled event
+    // Wire up the router NavigationCancelled event
     this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;
 }
+```
 
+##### OnAfterRenderAsync
 
+*OnAfterRenderAsync* is implemented from bottom up (base is called before any local code is executed).
 
+```C#
+// CEC.Blazor/Components/BaseForms/RecordComponentBase.cs
 protected async override Task OnAfterRenderAsync(bool firstRender)
 {
     await base.OnAfterRenderAsync(firstRender);
-    if (firstRender)
-    {
-        // Wires up the SameComponentNavigation Event - i.e. we potentially have a new record to load in thwe same View 
-        this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
-    }
+    // Wire up the SameComponentNavigation Event - i.e. we potentially have a new record to load in the same View 
+    if (firstRender) this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
 }
-
 ```
 
-The two annotated event handlers wired up in the Component load events.
+##### Event Handlers
+
+There are three event handlers wired up in the Component load events.
+
 ```c#
-/// Event handler for a navigsation cancelled event raised by the router
+// CEC.Blazor/Components/BaseForms/EditComponentBase.cs
+// Event handler for a navigation cancelled event raised by the router
 protected virtual void OnNavigationCancelled(object sender, EventArgs e)
 {
     // Set the boolean properties
@@ -260,8 +268,10 @@ protected virtual void OnNavigationCancelled(object sender, EventArgs e)
     // Trigger a component State update - buttons and alert need to be sorted
     InvokeAsync(this.StateHasChanged);
 }
-
-/// Event handler for the RecordFromControls FieldChanged Event
+```
+```c#
+// CEC.Blazor/Components/BaseForms/EditComponentBase.cs
+// Event handler for the RecordFromControls FieldChanged Event
 protected virtual void RecordFieldChanged(bool isdirty)
 {
     if (this.EditContext != null)
@@ -287,10 +297,22 @@ protected virtual void RecordFieldChanged(bool isdirty)
     }
 }
 ```
+```c#
+// CEC.Blazor/Components/BaseForms/RecordComponentBase.cs
+// Event handler for SameRoute event raised by the router.  Check if we need to load a new record
+protected async void OnSameRouteRouting(object sender, EventArgs e)
+{
+    // Gets the record - checks for a new ID in the querystring and if we have one loads the records
+    await LoadRecordAsync();
+}
+```
 
-The two annotated Save Button click events.
+##### Action Button Events
+
+There are four action events.
 
 ```c#
+// CEC.Blazor/Components/BaseForms/EditRecordComponentBase.cs
 /// Save Method called from the Button
 protected virtual async Task<bool> Save()
 {
@@ -317,24 +339,27 @@ protected virtual async Task<bool> Save()
     else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Bootstrap.ColourCode.danger);
     return ok;
 }
-
+```
+```c#
+// CEC.Blazor/Components/BaseForms/EditRecordComponentBase.cs
 /// Save and Exit Method called from the Button
 protected virtual async void SaveAndExit()
 {
     if (await this.Save()) this.ConfirmExit();
 }
 ```
-
-The annotated Exit and cancel button handlers
 ```c#
-/// Confirm Exit Method called from the Button
+// CEC.Blazor/Components/BaseForms/EditRecordComponentBase.cs
+/// Exit Method called from the Button
 protected virtual void Exit()
 {
-    // Check if we are free to exit ot need confirmation
+    // Check if we are free (we have a clean record) to exit or need confirmation
     if (this.IsClean) ConfirmExit();
     else this.ShowExitConfirmation = true;
 }
-
+```
+```c#
+// CEC.Blazor/Components/BaseForms/EditRecordComponentBase.cs
 /// Confirm Exit Method called from the Button
 protected virtual void ConfirmExit()
 {
@@ -354,8 +379,10 @@ protected virtual void ConfirmExit()
         else this.NavManager.NavigateTo("/");
     }
 }
-
-/// Cancel Method called from the Button
+```
+```c#
+// CEC.Blazor/Components/BaseForms/EditRecordComponentBase.cs
+// Cancel Method called from the Button
 protected void Cancel()
 {
     // Set the boolean properties
@@ -371,102 +398,12 @@ protected void Cancel()
 }
 ```
 
-#### A detailed look at the Events and Initialization Methods
+##### Navigation Buttons
 
-
-##### OnParametersSetAsync
-
-*OnParametersSetAsync* is implemented from bottom up (the base method is called before any local code).
-
-*RecordComponentBase* calls down the hierarchy (in this case all the way to *OwningComponentBase*) and then loads the record.
+Various exit buttons are wired to and button handler call *NavigateTo*.
 
 ```C#
-protected async override Task OnParametersSetAsync()
-{
-    await base.OnParametersSetAsync();
-    // Get the record if required
-    await this.LoadRecordAsync();
-}
-```
-*LoadRecordAsync* gets the record from the database through the *IDataControllerService* (which gets it through it's *IDataService*).  The commenting explains the steps.
-
-```C#
-protected virtual async Task LoadRecordAsync()
-{
-    if (this.IsService)
-    {
-        // Set the Loading flag and call statehaschanged to force UI changes 
-        // in this case making the UIErrorHandler show the loading spinner 
-        this.IsDataLoading = true;
-        StateHasChanged();
-
-        // Check if we have a query string value in the Route for ID.  If so use it
-        if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > 0 ? querystringid : this._ID;
-
-        // Check if the component is a modal.  If so get the supplied ID
-        else if (this.IsModal && this.Parent.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > 0 ? (int)modalid : this.ID;
-
-        // make this look async by adding a load delay
-        await Task.Delay(500);
-
-        // Get the current record - this will check if the id is different from the current record and only update if it's changed
-        await this.Service.GetRecordAsync(this._ID, false);
-
-        // Set the error message - it will only be displayed if we have an error
-        this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
-
-        // Set the Loading flag and call statehaschanged to force UI changes 
-        // in this case making the UIErrorHandler show the record or the erro message 
-        this.IsDataLoading = false;
-        StateHasChanged();
-    }
-}
-```
-
-##### OnAfterRenderAsync
-
-*OnAfterRenderAsync* is implemented from bottom up (base is called before any local code is executed).
-
-*RecordComponentBase* calls down the hierarchy (in this case all thew way to *OwningComponentBase*) and then wires up the RouterSessionService *SameComponentNavigation*.  This is for demo purposes to show record last/previous functionality in the record Viewer.
-
-```C#
-protected async override Task OnAfterRenderAsync(bool firstRender)
-{
-    await base.OnAfterRenderAsync(firstRender);
-    if (firstRender)
-    {
-        this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
-    }
-}
-```
-
-##### Event Handling
-
-The only events are button clicks:
-
-1. Previous and Next Buttons which call *NextRecord* in *WeatherViewer*.  This navigates to the same route with the new ID in the query string.  The router translates this into *SameComponentNavigation* event which is wired to *OnSameRouteRouting* in *OnAfterRenderAsync* in *RecordComponentBase*, and triggers *LoadRecordAsync*.  See above.
-
-```C#
-// WeatherViewer Code
-protected void NextRecord(int increment) 
-{
-    var rec = (this._ID + increment) == 0 ? 1 : this._ID + increment;
-    rec = rec > this.Service.BaseRecordCount ? this.Service.BaseRecordCount : rec;
-    this.NavManager.NavigateTo($"/WeatherForecast/View?id={rec}");
-}
-```
-```C#
-// RecordComponentBase Code
-protected async void OnSameRouteRouting(object sender, EventArgs e)
-{
-    // Gets the record - checks for a new ID in the querystring and if we have one loads the records
-    await LoadRecordAsync();
-}
-```
-
-2. Various Exit Actions which call NavigateTo in *ControllerServiceComponentBase*. 
-
-```C#
+// CEC.Blazor/Components/BaseForms/ControllerServiceComponentBase.cs
 protected virtual void NavigateTo(PageExitType exittype)
 {
     this.NavigateTo(new EditorEventArgs(exittype));
@@ -476,9 +413,8 @@ protected override void NavigateTo(EditorEventArgs e)
 {
     if (IsService)
     {
-        //check if record name is populated and if not populates it
-        if (string.IsNullOrEmpty(e.RecordName) && e.ExitType == PageExitType.ExitToList) e.RecordName = this.Service.RecordConfiguration.RecordListName;
-        else if (string.IsNullOrEmpty(e.RecordName)) e.RecordName = this.Service.RecordConfiguration.RecordName;
+        //check if record name is populated and if not populate it
+        if (string.IsNullOrEmpty(e.RecordName)) e.RecordName = this.Service.RecordConfiguration.RecordName;
 
         // check if the id is set for view or edit.  If not, sets it.
         if ((e.ExitType == PageExitType.ExitToEditor || e.ExitType == PageExitType.ExitToView) && e.ID == 0) e.ID = this._ID;
@@ -486,11 +422,10 @@ protected override void NavigateTo(EditorEventArgs e)
     }
 }
 ```
-These propagate the events down to *NavigateTo* in *ApplicationComponentBase**
+These propagate down to *NavigateTo* in *ApplicationComponentBase*
 ```c#
-// ApplicationComponentBase Code
-// based on structured approach to organising record CRUD routes
-// and RecordConfiguration class informstion for each record type
+// CEC.Blazor/Components/BaseForms/ApplicationComponentBase.cs
+// Structured approach to organising record CRUD routing
 protected virtual void NavigateTo(EditorEventArgs e)
 {
     switch (e.ExitType)
@@ -523,35 +458,9 @@ protected virtual void NavigateTo(EditorEventArgs e)
 }
 ```
 
-#### Editing a Record
+### Wrap Up
+That wraps up this section.  We've looked at the Edit process in detail to see how the code works.  The next section looks in detail at UI Controls seen in the razor markup in this article.
 
-The edit page uses CEC.FormControls to maintain edit state and CEC.Routing to restrict navigation when there are unsaved changes.
-
-```html
-@page "/WeatherForecast/New"
-@page "/WeatherForecast/Edit"
-@inherits ApplicationComponentBase
-@namespace CEC.Blazor.WASM.Client.Routes
-
-<WeatherEditor></WeatherEditor>
-```
-
-*WeatherEditor* contains only code specific to editing the WeatherForecast record.  We'll look at the associated razor page below. 
-
-```C#
-public partial class WeatherEditor : EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
-{
-    [Inject]
-    public WeatherForecastControllerService ControllerService { get; set; }
-
-    private string CardCSS => this.IsModal ? "m-0" : "";
-
-    protected async override Task OnInitializedAsync()
-    {
-        // Assign the correct controller service
-        this.Service = this.ControllerService;
-        await base.OnInitializedAsync();
-    }
-}
-```
-
+Some key points to note:
+1. The differences in code between a Blazor Server and a Blazor WASM project are very minor.
+2. Most of the code resides in generic boilerplate classes.

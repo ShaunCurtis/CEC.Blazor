@@ -97,8 +97,7 @@ namespace CEC.Blazor.Components.BaseForms
             if (IsService)
             {
                 //check if record name is populated and if not populates it
-                if (string.IsNullOrEmpty(e.RecordName) && e.ExitType == PageExitType.ExitToList) e.RecordName = this.Service.RecordConfiguration.RecordListName;
-                else if (string.IsNullOrEmpty(e.RecordName)) e.RecordName = this.Service.RecordConfiguration.RecordName;
+                if (string.IsNullOrEmpty(e.RecordName)) e.RecordName = this.Service.RecordConfiguration.RecordName;
 
                 // check if the id is set for view or edit.  If not, sets it.
                 if ((e.ExitType == PageExitType.ExitToEditor || e.ExitType == PageExitType.ExitToView) && e.ID == 0) e.ID = this._ID;

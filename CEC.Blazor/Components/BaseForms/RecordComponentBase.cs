@@ -57,10 +57,8 @@ namespace CEC.Blazor.Components.BaseForms
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            if (firstRender)
-            {
-                this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
-            }
+            // Wire up the SameComponentNavigation Event - i.e. we potentially have a new record to load in the same View 
+            if (firstRender) this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
         }
 
         /// <summary>

@@ -107,18 +107,8 @@ namespace CEC.Blazor.Components.BaseForms
             this.RouteUrl = this.NavManager.Uri;
             // Set up this page as the active page in the router service
             this.RouterSessionService.ActiveComponent = this;
-            // Wires up the router NavigationCancelled event
+            // Wire up the router NavigationCancelled event
             this.RouterSessionService.NavigationCancelled += this.OnNavigationCancelled;
-        }
-
-        protected async override Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-            if (firstRender)
-            {
-                // Wires up the SameComponentNavigation Event - i.e. we potentially have a new record to load in thwe same View 
-                this.RouterSessionService.SameComponentNavigation += this.OnSameRouteRouting;
-            }
         }
 
         /// <summary>
