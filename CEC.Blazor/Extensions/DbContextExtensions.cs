@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CEC.Blazor.Extensions
@@ -64,6 +65,16 @@ namespace CEC.Blazor.Extensions
             var set = par.GetValue(context);
             var sets = (DbSet<TRecord>)set;
             return await sets.FirstOrDefaultAsync(item => ((IDbRecord<TRecord>)item).ID == id);
+        }
+
+        public async static Task<SortedDictionary<int, string>> GetRecordLookupListAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        {
+            var list = new SortedDictionary<int, string>();
+            var par = context.GetType().GetProperty(dbSetName ?? IDbRecord<TRecord>.RecordName);
+            var set = par.GetValue(context);
+            var sets = (DbSet<TRecord>)set;
+            await sets.ForEachAsync(item => list.Add(item.ID, item.DisplayName));
+            return list;
         }
 
     }

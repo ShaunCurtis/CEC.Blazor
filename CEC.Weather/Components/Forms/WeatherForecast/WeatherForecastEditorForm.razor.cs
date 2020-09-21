@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CEC.Weather.Components
 {
-    public partial class WeatherEditorForm : EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+    public partial class WeatherForecastEditorForm : EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
     {
         [Inject]
         public WeatherForecastControllerService ControllerService { get; set; }

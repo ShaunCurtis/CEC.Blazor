@@ -4,55 +4,55 @@
 @typeparam TRecord
 
 <CascadingValue Value="(this)">
-    <UITag Css="@this.CardCSS">
+        <UITag Css="@this.CardCSS">
 
-        <UITag Css="@this.CardHeaderCSS">
+            <UITag Css="@this.CardHeaderCSS">
 
-            <UITag>
+                <UITag>
 
-                <UITag Css="@HeaderFontSize" Tag="span">
-                    @Title
+                    <UITag Css="@HeaderFontSize" Tag="span">
+                        @Title
+                    </UITag>
+
+                    <UIButton ColourCode="Bootstrap.ColourCode.outline_light" SizeCode="Bootstrap.SizeCode.sm" AddOnCss="@this.CollapseButtonCSS" ClickEvent="(e => this.Toggle())">@this.CollapseText</UIButton>
+
                 </UITag>
 
-                <UIButton ColourCode="Bootstrap.ColourCode.outline_light" SizeCode="Bootstrap.SizeCode.sm" AddOnCss="@this.CollapseButtonCSS" ClickEvent="(e => this.Toggle())">@this.CollapseText</UIButton>
+            </UITag>
+
+            <UITag Css="@this.CardBodyCSS">
+
+                @Navigation
+
+                @Top
+
+                <UIGridTableContainer MaxColumn="this.MaxColumn">
+
+                    <UIGridTableRow>
+
+                        @TableHeader
+
+                    </UIGridTableRow>
+
+                    <UIErrorHandler IsError="this.IsError" IsLoading="this.IsLoading" ErrorMessage="No Records">
+
+                        @foreach (var item in this.Paging.PagedRecords)
+                        {
+
+                            <UIGridTableRow>
+
+                                @RowTemplate(item)
+
+                            </UIGridTableRow>
+
+                        }
+
+                    </UIErrorHandler>
+
+                </UIGridTableContainer>
 
             </UITag>
 
         </UITag>
-
-        <UITag Css="@this.CardBodyCSS">
-
-            @Navigation
-
-            @Top
-
-            <UIGridTableContainer MaxColumn="this.MaxColumn">
-
-                <UIGridTableRow>
-
-                    @TableHeader
-
-                </UIGridTableRow>
-
-                <UIErrorHandler IsError="this.IsError" IsLoading="this.IsLoading" ErrorMessage="No Records">
-
-                    @foreach (var item in this.Paging.PagedRecords)
-                    {
-
-                        <UIGridTableRow>
-
-                            @RowTemplate(item)
-
-                        </UIGridTableRow>
-
-                    }
-
-                </UIErrorHandler>
-
-            </UIGridTableContainer>
-
-        </UITag>
-
-    </UITag>
 
 </CascadingValue>

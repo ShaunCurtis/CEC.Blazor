@@ -69,6 +69,7 @@ namespace CEC.Weather.Data
         public DbWeatherForecast ShadowCopy()
         {
             return new DbWeatherForecast() {
+                ID = this.ID,
                 Date = this.Date,
                 TemperatureC = this.TemperatureC,
                 Frost = this.Frost,

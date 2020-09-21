@@ -8,11 +8,6 @@ namespace CEC.Blazor.Components
 {
     public class FilterList : IFilterList
     {
-
-        public Guid GUID { get; set; } = Guid.NewGuid();
-
-        public bool Show { get => this.ShowState == 0; }
-
         public Dictionary<string, object> Filters { get; set; } = new Dictionary<string, object>();
 
         public IFilterList.FilterViewState ShowState { get; set; } = IFilterList.FilterViewState.NotSet;

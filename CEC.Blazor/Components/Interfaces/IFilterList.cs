@@ -12,7 +12,7 @@ namespace CEC.Blazor.Components
             Hide = 2
         }
 
-        public Guid GUID { get;}
+        public Guid GUID { get => Guid.NewGuid();}
 
         public bool Show { get => this.ShowState == 0; }
 

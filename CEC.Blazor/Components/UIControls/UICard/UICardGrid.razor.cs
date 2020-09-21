@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UICardGrid<TRecord> where TRecord : IDbRecord<TRecord>, new()
+    public partial class UICardGrid<TRecord> : 
+        UICardListBase 
+        where TRecord : IDbRecord<TRecord>, new()
     {
 
         [Parameter]

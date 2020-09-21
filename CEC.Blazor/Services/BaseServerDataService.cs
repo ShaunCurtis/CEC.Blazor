@@ -70,7 +70,13 @@ namespace CEC.Blazor.Services
         /// <param name="id"></param>
         /// <returns></returns>
         public async Task<DbTaskResult> DeleteRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Delete);
-             
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SortedDictionary<int, string>> GetLookupListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await this.DBContext.CreateDbContext().GetRecordLookupListAsync<TLookup>();
+
         /// <summary>
         /// Method to Check if a property has SPParameter Attribute
         /// </summary>

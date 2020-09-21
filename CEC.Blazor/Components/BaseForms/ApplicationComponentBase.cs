@@ -8,6 +8,7 @@ using CEC.Routing.Services;
 using System.Linq;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
+using CEC.Blazor.Extensions;
 
 namespace CEC.Blazor.Components.BaseForms
 {
@@ -56,6 +57,22 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         [CascadingParameter]
         public BootstrapModal Parent { get; set; }
+
+        /// <summary>
+        /// Property for the ID of the record to retrieve.
+        /// Normally set by Routing e.g. /Farm/Edit/1
+        /// </summary>
+        [Parameter]
+        public int? ID
+        {
+            get => this._ID;
+            set => this._ID = (value is null) ? -1 : (int)value;
+        }
+
+        /// <summary>
+        /// Version of the ID that sets null to 0
+        /// </summary>
+        public int _ID { get; private set; }
 
         /// <summary>
         /// A unique Guid for this  instance of the Component
@@ -107,7 +124,10 @@ namespace CEC.Blazor.Components.BaseForms
 
         protected async override Task OnInitializedAsync()
         {
+            // Gets the user if Authentication is enabled
             if (this.AuthenticationState != null) await this.GetUserAsync();
+            // Check if we have a query string value in the Route for ID.  If so use it
+            if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > -1 ? querystringid : this._ID;
             await base.OnInitializedAsync();
         }
 

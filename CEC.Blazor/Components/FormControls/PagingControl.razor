@@ -13,37 +13,37 @@
                 {
                     @if (this.DisplayType == PagingDisplayType.FullwithoutPageSize)
                     {
-                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlock(-1, false))">1&laquo;</button></li>
+                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlockAsync(-1, false))">1&laquo;</button></li>
                     }
                     else
                     {
-                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlock(-1, false))">&laquo;</button></li>
+                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlockAsync(-1, false))">&laquo;</button></li>
                     }
-                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePage(-1))">Previous</button></li>
+                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePageAsync(-1))">Previous</button></li>
                     @for (int i = this.Paging.StartPage; i <= this.Paging.EndPage; i++)
                     {
                         var currentpage = i;
-                        <li class="page-item @(currentpage == this.Paging.CurrentPage ? "active" : "")"><button class="page-link" @onclick="(e => this.Paging.GoToPage(currentpage))">@currentpage</button></li>
+                        <li class="page-item @(currentpage == this.Paging.CurrentPage ? "active" : "")"><button class="page-link" @onclick="(e => this.Paging.GoToPageAsync(currentpage))">@currentpage</button></li>
                     }
-                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePage(1))">Next</button></li>
+                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePageAsync(1))">Next</button></li>
                     @if (this.DisplayType == PagingDisplayType.FullwithoutPageSize)
                     {
-                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlock(1, false))">&raquo;@this.Paging.TotalPages</button></li>
+                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlockAsync(1, false))">&raquo;@this.Paging.TotalPages</button></li>
                     }
                     else
                     {
-                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlock(1, false))">&raquo;</button></li>
+                        <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.ChangeBlockAsync(1, false))">&raquo;</button></li>
                     }
                 }
                 else
                 {
-                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePage(-1))">1&laquo;</button></li>
+                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePageAsync(-1))">1&laquo;</button></li>
                     @for (int i = this.Paging.StartPage; i <= this.Paging.EndPage; i++)
                     {
                         var currentpage = i;
-                        <li class="page-item @(currentpage == this.Paging.CurrentPage ? "active" : "")"><button class="page-link" @onclick="(e => this.Paging.GoToPage(currentpage))">@currentpage</button></li>
+                        <li class="page-item @(currentpage == this.Paging.CurrentPage ? "active" : "")"><button class="page-link" @onclick="(e => this.Paging.GoToPageAsync(currentpage))">@currentpage</button></li>
                     }
-                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePage(1))">&raquo;@this.Paging.TotalPages</button></li>
+                    <li class="page-item"><button class="page-link" @onclick="(e => this.Paging.MoveOnePageAsync(1))">&raquo;@this.Paging.TotalPages</button></li>
                 }
             </ul>
         </nav>

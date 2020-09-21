@@ -1,13 +1,16 @@
-﻿using CEC.Blazor.Data;
+﻿using CEC.Blazor.Components.UIControls;
+using CEC.Blazor.Components.Modal;
+using CEC.Blazor.Data;
 using CEC.Blazor.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace CEC.Blazor.Components.BaseForms
 {
-    public class ListComponentBase<TRecord, TContext> : 
-        ControllerServiceComponentBase<TRecord, TContext> 
+    public class ListComponentBase<TRecord, TContext> :
+        ControllerServiceComponentBase<TRecord, TContext>
         where TRecord : class, IDbRecord<TRecord>, new()
          where TContext : DbContext
     {
@@ -18,9 +21,15 @@ namespace CEC.Blazor.Components.BaseForms
         public IControllerPagingService<TRecord> Paging => this.Service != null ? (IControllerPagingService<TRecord>)this.Service : null;
 
         /// <summary>
+        /// Property referencing the Bootstrap modal instance
+        /// </summary>
+        protected BootstrapModal _BootstrapModal { get; set; }
+
+        /// <summary>
         /// constructed Value for the List Title based on the RecordConfiguration
         /// </summary>
-        public string ListTitle => this.IsService ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : "Record List";
+        [Parameter]
+        public string ListTitle { get; set; }
 
         /// <summary>
         /// Should be overridden in inherited components
@@ -28,12 +37,20 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         protected async override Task OnInitializedAsync()
         {
+            // Reset the Service i.e. clear the record list, filter etc.
             if (this.IsService)
             {
                 await this.Service.Reset();
-                await this.Service.LoadPagingAsync();
+                this.ListTitle = string.IsNullOrEmpty(this.ListTitle) ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : this.ListTitle;
             }
             await base.OnInitializedAsync();
+        }
+
+        protected async override Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+            // Load the page - as we've reset everything this will be the first page with the default filters
+            if (this.IsService) await this.Service.LoadPagingAsync();
             this.Loading = false;
         }
 
@@ -94,6 +111,47 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         /// <param name="filterlist"></param>
         protected virtual async void FilterUpdated(IFilterList filterlist) => await this.Service.ResetListAsync();
+
+
+        /// <summary>
+        /// Method called when the user clicks on a row in the viewer.
+        /// </summary>
+        /// <param name="id"></param>
+        protected async void OnViewAsync<TForm>(int id)
+        {
+            if (this.UIOptions.UseModalViewer && this._BootstrapModal != null)
+            {
+                var modalOptions = new BootstrapModalOptions()
+                {
+                    ModalBodyCSS = "p-0",
+                    ModalCSS = "modal-xl",
+                    HideHeader = true,
+                };
+                modalOptions.Parameters.Add("ID", id);
+                await this._BootstrapModal.Show<TForm>(modalOptions);
+            }
+            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToView, id, this.Service.RecordConfiguration.RecordName));
+        }
+
+        /// <summary>
+        /// Method called when the user clicks on a row Edit button.
+        /// </summary>
+        /// <param name="id"></param>
+        protected async void OnEditAsync<TForm>(int id)
+        {
+            if (this.UIOptions.UseModalEditor && this._BootstrapModal != null)
+            {
+                var modalOptions = new BootstrapModalOptions()
+                {
+                    ModalBodyCSS = "p-0",
+                    ModalCSS = "modal-xl",
+                    HideHeader = true
+                };
+                modalOptions.Parameters.Add("ID", id);
+                await this._BootstrapModal.Show<TForm>(modalOptions);
+            }
+            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, id, this.Service.RecordConfiguration.RecordName));
+        }
 
         public override void Dispose()
         {

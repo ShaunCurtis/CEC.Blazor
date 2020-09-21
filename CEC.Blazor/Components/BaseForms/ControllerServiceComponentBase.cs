@@ -20,20 +20,6 @@ namespace CEC.Blazor.Components.BaseForms
         public IControllerService<T, TContext> Service { get; set; }
 
         /// <summary>
-        /// Property for the ID of the record to retrieve.
-        /// Normally set by Routing e.g. /Farm/Edit/1
-        /// </summary>
-        [Parameter] public int? ID { 
-            get => this._ID;
-            set => this._ID = (value is null) ? -1 : (int)value; 
-        }
-
-        /// <summary>
-        /// Version of the ID that sets null to 0
-        /// </summary>
-        public int _ID { get; private set; }
-
-        /// <summary>
         /// Property to control various UI Settings
         /// Used as a cascadingparameter
         /// </summary>

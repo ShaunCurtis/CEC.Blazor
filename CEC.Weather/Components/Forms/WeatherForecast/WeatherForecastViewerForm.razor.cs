@@ -3,11 +3,12 @@ using CEC.Blazor.Extensions;
 using CEC.Weather.Data;
 using CEC.Weather.Services;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CEC.Weather.Components
 {
-    public partial class WeatherViewerForm : RecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+    public partial class WeatherForecastViewerForm : RecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
     {
         [Inject]
         private WeatherForecastControllerService ControllerService { get; set; }
