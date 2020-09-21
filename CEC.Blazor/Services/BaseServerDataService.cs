@@ -42,6 +42,12 @@ namespace CEC.Blazor.Services
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
+        public async Task<List<TRecord>> GetFilteredRecordListAsync(IFilterList filterList) => await this.DBContext.CreateDbContext().GetRecordFilteredListAsync<TRecord>(filterList);
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <returns></returns>
         public async Task<TRecord> GetRecordAsync(int id) => await this.DBContext.CreateDbContext().GetRecordAsync<TRecord>(id);
 
         /// <summary>

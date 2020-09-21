@@ -65,7 +65,6 @@ namespace CEC.Blazor.Components.UIControls
         /// </summary>
         protected List<string> UsedAttributes { get; set; } = new List<string>() { "class" };
 
-
         /// <summary>
         /// Html tag for the control - default is a div.
         /// In general use css display to change the block behaviour
@@ -177,12 +176,11 @@ namespace CEC.Blazor.Components.UIControls
             if (this._Show)
             {
                 this.ClearDuplicateAttributes();
-                int i = -1;
-                builder.OpenElement(i++, this._Tag);
-                builder.AddMultipleAttributes(i++, AdditionalAttributes);
-                builder.AddAttribute(i++, "class", this._Css);
-                if (!string.IsNullOrEmpty(this._Content)) builder.AddContent(i++, (MarkupString)this._Content);
-                else if (this.ChildContent != null) builder.AddContent(i++, ChildContent);
+                builder.OpenElement(0, this._Tag);
+                builder.AddMultipleAttributes(1, AdditionalAttributes);
+                builder.AddAttribute(2, "class", this._Css);
+                if (!string.IsNullOrEmpty(this._Content)) builder.AddContent(3, (MarkupString)this._Content);
+                else if (this.ChildContent != null) builder.AddContent(3, ChildContent);
                 builder.CloseElement();
             }
         }

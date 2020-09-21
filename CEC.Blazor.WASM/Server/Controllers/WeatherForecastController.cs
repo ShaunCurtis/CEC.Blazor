@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using CEC.Weather.Services;
 using CEC.Weather.Data;
 using CEC.Blazor.Data;
+using CEC.Blazor.Components;
 
 namespace CEC.Blazor.WASM.Server.Controllers
 {
@@ -27,6 +28,10 @@ namespace CEC.Blazor.WASM.Server.Controllers
         [MVC.Route("weatherforecast/list")]
         [HttpGet]
         public async Task<List<DbWeatherForecast>> GetList() => await DataService.GetRecordListAsync();
+
+        [MVC.Route("weatherforecast/filteredlist")]
+        [HttpPost]
+        public async Task<List<DbWeatherForecast>> GetFilteredRecordListAsync([FromBody]FilterList filterList) => await DataService.GetFilteredRecordListAsync(filterList);
 
         [MVC.Route("weatherforecast/count")]
         [HttpGet]

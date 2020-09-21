@@ -9,7 +9,9 @@ namespace CEC.Blazor.Components.UIControls
     /// <summary>
     /// UI Rendering Wrapper to build a Grid Column
     /// </summary>
-    public class UIGridTableHeaderColumn : UIGridTableColumn<DbBaseRecord>
+    public class UIGridTableHeaderColumn<TRecord> : 
+        UIGridTableColumn<TRecord>
+          where TRecord : IDbRecord<TRecord>, new()
     {
 
         [Parameter]

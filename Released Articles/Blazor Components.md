@@ -12,7 +12,14 @@ A Blazor Server Application has three contexts:
 
 To expand on this so there's no misunderstanding, two browser windows open on the same application are two totally separate client applications, with two Hub Sessions.  They share the same singleton services, but that's all.  It the same as having two copies of Visual Studio running.   \<F5\> the browser and the application restarts - the same as closing and then re-starting a desktop application.
 
-## First Load
+A Blazor WASM Application has one context:
+
+1. The Client Application [aka the SPA] - the Blazor web page running in the client web browser. It's standalone.
+Again so there's no misunderstanding, two browser windows or tabs open on the same application are two totally separate client applications. The same as having two copies of Visual Studio running. <F5> the browser and the application restarts - just like closing and then re-starting a desktop application.
+
+## The Client Application
+
+### Blazor Server
 
 A Blazor Client Application starts with an HTTP request to a Blazor configured DotNet Core Server Application running on a web server.
 
@@ -37,6 +44,28 @@ App is a component class defined in *App.razor*. It's the root component in the 
 Once *blazor.server.js* loads, the client application is established in the browser page and a SignalR connection estabished with the server.  However, at this point we have a static page, not a live page - there's no wiring into JSInterop and the server site components.  To complete the initial load, the Client Application calls the Blazor Hub Session and requests a complete server render of the rendertree.  It then applies the resultant DOM changes to the Client Application DOM.
 
 Everything is now wired up an running.  We have a Client Application running with a live SignalR connection to the Blazor Hub.  The Hub Session has a Renderer object that maintains a server side copy of the DOM and pushes any changes down to the Client Application through the SignalR connection.  Client Application events are now routed via SignalR to the Blazor Hub Renderer and mapped to component events/methods in the rendertree.  All page changes within the client application are routed through the SignalR connection - there's no standard http requests - and handled by the configured router.  A request to navigate to a page outside the routed context causes a full browser load, closing the SignalR connection and thus the Client Application.
+
+### Blazor WASM
+A Blazor Client Application starts with an HTTP request to a web server swith the Blazor files installed with a index.html.
+
+#### Index.html
+The Blazor specific section are:
+
+```html
+<app>
+    ....
+</app>
+```
+
+App is a component class defined in App.razor. It's the root component for the render tree. It's important to understand what's going on at this point. We don't have a Client Application running, we're in the "bootstrap" process. The page contains the code - in blazor.webassembly.js - to start the Client Application, but until it's first rendered by the web browser, and blazor.webassemblyjs is run, and the WASM code downloaded and installed there's no Client Application. The Client Application gets loaded by:
+
+```html
+<script src="_framework/blazor.webassembly.js"></script>
+```
+
+Once the WASM code is loaded, it creates the render tree from *App* down and re-renders the page.  We now have a live apllication.
+
+From this point on Server and WASM are the same.
 
 #### App.razor
  
@@ -366,9 +395,8 @@ namespace CEC.Blazor.Server.Pages
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            int i = -1;
-            builder.OpenElement(i++, "div");
-            builder.AddContent(i++, (MarkupString)this._Content);
+            builder.OpenElement(0, "div");
+            builder.AddContent(1, (MarkupString)this._Content);
             builder.CloseElement();
         }
     }
