@@ -11,8 +11,6 @@ namespace CEC.Weather.Components
         [Inject]
         public WeatherForecastControllerService ControllerService { get; set; }
 
-        private string CardCSS => this.IsModal ? "m-0" : "";
-
         protected async override Task OnInitializedAsync()
         {
             // Assign the correct controller service

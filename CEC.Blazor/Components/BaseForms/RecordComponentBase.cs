@@ -13,7 +13,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// <summary>
         /// This Page/Component Title
         /// </summary>
-        public virtual string PageTitle { get; }
+        public virtual string PageTitle => (this.Service?.Record?.DisplayName ?? string.Empty).Trim();
 
         /// <summary>
         /// Boolean Property that checks if a record exists

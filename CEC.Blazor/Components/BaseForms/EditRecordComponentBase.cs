@@ -78,6 +78,11 @@ namespace CEC.Blazor.Components.BaseForms
         protected string CardHeaderColour => this.IsClean ? "bg-secondary text-white" : "bg-danger text-white";
 
         /// <summary>
+        /// Property to set the CardCSS dependant upon the display type
+        /// </summary>
+        protected string CardCSS => this.IsModal ? "m-0" : "";
+
+        /// <summary>
         /// property used by the UIErrorHandler component
         /// </summary>
         protected override bool IsError { get => !(this.IsRecord && this.EditContext != null); }

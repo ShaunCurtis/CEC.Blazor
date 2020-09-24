@@ -1,0 +1,36 @@
+﻿@namespace CEC.Blazor.Components.FormControls
+
+@typeparam T
+@inherits FormRecordControlBase<T>
+
+@if (this.Locked)
+{
+    <input class="form-control-plaintext" readonly @bind="this.LockedDisplayValue" />
+}
+else
+{
+    <select class="form-control" id="@Id" @onchange="((e) => this.ValueHasChanged(e))" value="@this.CurrentValueAsString">
+        @if (this.ShowDefaultOption && this.DefaultOptionSelectable)
+        {
+            <option value="@this.DefaultKey">@this.DefaultValue</option>
+        }
+        else if (this.ShowDefaultOption)
+        {
+            <option value="@this.DefaultKey" hidden disabled>@this.DefaultValue</option>
+        }
+        @if (this.isOptionList)
+        {
+            @foreach (var item in this.OptionList)
+            {
+                if (this.IsSelected(item.Key))
+                {
+                    <option value="@item.Key.ToString()" selected>@item.Value</option>
+                }
+                else
+                {
+                    <option value="@item.Key.ToString()">@item.Value</option>
+                }
+            }
+        }
+    </select>
+}

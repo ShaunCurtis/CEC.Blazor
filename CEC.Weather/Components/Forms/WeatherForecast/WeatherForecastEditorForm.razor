@@ -1,14 +1,13 @@
-﻿@namespace CEC.Weather.Components
-
-@using CEC.Blazor.Components
+﻿@using CEC.Blazor.Components
 @using CEC.Blazor.Components.BaseForms
 @using CEC.Blazor.Components.UIControls
+@using CEC.Blazor.Components.FormControls
 @using CEC.Weather.Data
 @using CEC.FormControls.Components.FormControls
 @using Microsoft.AspNetCore.Components.Forms
 @using Blazored.FluentValidation
- 
 
+@namespace CEC.Weather.Components
 @inherits EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
 
 <UICard IsCollapsible="false">
@@ -127,17 +126,17 @@
 
                         </UIFormRow>
 
-                        @*<UIFormRow>
+                        <UIFormRow>
 
                             <UILabelColumn Columns="4">
                                 Outlook:
                             </UILabelColumn>
 
                             <UIColumn Columns="8">
-                                <InputControlButtonGroup OptionList="this.ControllerService.OutlookOptionList" class="form-control" @bind-Value="this.Service.Record.OutlookValue" RecordValue="@this.Service.ShadowRecord.OutlookValue"></InputControlButtonGroup>
+                                <InputControlButtonGroup OptionList="this.ControllerService.OutlookOptionList" class="form-control" @bind-Value="@this.Service.Record.OutlookValue" RecordValue="@this.Service.ShadowRecord.OutlookValue"></InputControlButtonGroup>
                             </UIColumn>
 
-                        </UIFormRow>*@
+                        </UIFormRow>
 
                         <UIFormRow>
 

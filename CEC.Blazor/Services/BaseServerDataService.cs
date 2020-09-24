@@ -80,8 +80,16 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
         /// <returns></returns>
-        public async Task<SortedDictionary<int, string>> GetLookupListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await this.DBContext.CreateDbContext().GetRecordLookupListAsync<TLookup>();
+        public async Task<List<string>> GetDistinctListAsync(DbDistinctRequest req) => await this.DBContext.CreateDbContext().GetDistinctListAsync(req);
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
+        /// <returns></returns>
+        public async Task<List<DbBaseRecord>> GetBaseRecordListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await this.DBContext.CreateDbContext().GetBaseRecordListAsync<TLookup>();
 
         /// <summary>
         /// Method to Check if a property has SPParameter Attribute

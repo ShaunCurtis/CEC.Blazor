@@ -168,6 +168,11 @@ namespace CEC.Blazor.Services
         /// </summary>
         public event EventHandler ListHasChanged;
 
+        /// <summary>
+        /// Event triggered whwen the list has changed
+        /// </summary>
+        public event EventHandler FilterHasChanged;
+
         #endregion
 
         public BaseControllerService(IConfiguration configuration, NavigationManager navigationManager)
@@ -191,6 +196,11 @@ namespace CEC.Blazor.Services
             this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
             this.SetClean();
         }
+
+        /// <summary>
+        /// Method to trigger a Record Changed Event
+        /// </summary>
+        public virtual void TriggerFilterChangedEvent(object sender) => this.FilterHasChanged?.Invoke(sender, EventArgs.Empty);
 
         /// <summary>
         /// Method to trigger a Record Changed Event
@@ -312,7 +322,8 @@ namespace CEC.Blazor.Services
             // Check if the record set is null. and only refresh the record set if it's null
             if (!this.IsRecords)
             {
-                this.Records = await this.Service.GetFilteredRecordListAsync(FilterList);
+                if (this.FilterList.Load) this.Records = await this.Service.GetFilteredRecordListAsync(FilterList);
+                else this.Records = new List<TRecord>();
                 return true;
             }
             return false;
@@ -412,8 +423,28 @@ namespace CEC.Blazor.Services
         /// </summary>
         /// <typeparam name="TLookup"></typeparam>
         /// <returns></returns>
-        public async Task<SortedDictionary<int, string>> GetLookUpListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await Service.GetLookupListAsync<TLookup>();
-        
+        public async Task<SortedDictionary<int, string>> GetLookUpListAsync<TLookup>(string selectAllText = null) where TLookup : class, IDbRecord<TLookup>
+        {
+            var list = await this.Service.GetBaseRecordListAsync<TLookup>();
+            var LookupList = new SortedDictionary<int, string>();
+            if (!string.IsNullOrEmpty(selectAllText)) LookupList.Add(0, selectAllText);
+            list.ForEach(item => LookupList.Add(item.ID, item.DisplayName));
+            return LookupList;
+        }
+
+        /// <summary>
+        /// Method to get a lookup list of values for a Field in TLookup record
+        /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
+        /// <returns></returns>
+        public async Task<List<string>> GetDistinctListAsync(DbDistinctRequest req) => await this.Service.GetDistinctListAsync(req);
+
+        /// <summary>
+        /// Method to get a base record set from an IDbRecord record
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<DbBaseRecord>> GetBaseRecordListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await this.Service.GetBaseRecordListAsync<TLookup>();
+
         /// <summary>
         /// Pseudo Dispose Event - not currently used as Services don't have a Dispose event
         /// </summary>

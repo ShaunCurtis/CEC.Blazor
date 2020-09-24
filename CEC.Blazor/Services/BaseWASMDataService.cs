@@ -39,6 +39,24 @@ namespace CEC.Blazor.Services
         /// <returns></returns>
         public async Task<List<TRecord>> GetRecordListAsync() => await this.HttpClient.GetFromJsonAsync<List<TRecord>>($"{RecordConfiguration.RecordName}/list");
 
+        public virtual async Task<List<DbBaseRecord>> GetBaseRecordListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup>
+        {
+            var recordname = typeof(TLookup).Name.Replace("Db", "", System.StringComparison.CurrentCultureIgnoreCase);
+            return await this.HttpClient.GetFromJsonAsync<List<DbBaseRecord>>($"{recordname}/base");
+        }
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
+        /// <returns></returns>
+        public async Task<List<string>> GetDistinctListAsync(DbDistinctRequest req)
+        {
+            var response = await this.HttpClient.PostAsJsonAsync($"{RecordConfiguration.RecordName}/distinctlist", req);
+            var result = await response.Content.ReadFromJsonAsync<List<string>>();
+            return result;
+        }
+
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>

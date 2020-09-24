@@ -78,6 +78,19 @@ namespace CEC.Blazor.Services
         /// <returns></returns>
         public Task<SortedDictionary<int, string>> GetLookupListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => Task.FromResult(new SortedDictionary<int,string>());
 
+        /// <summary>
+        /// Method to get a dictionary of distinct values for a field in a record type
+        /// Used in Lookup Lists
+        /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
+        /// <returns></returns>
+        public Task<List<string>> GetDistinctListAsync(DbDistinctRequest req) => Task.FromResult(new List<string>());
+        
+        /// <summary>
+        /// Method to get a base record set from an IDbRecord record
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<DbBaseRecord>> GetBaseRecordListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => Task.FromResult(new List<DbBaseRecord>());
 
         /// <summary>
         /// Method to build the a list of SqlParameters for a CUD Stored Procedure

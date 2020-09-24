@@ -89,6 +89,11 @@ namespace CEC.Blazor.Services
         public IFilterList FilterList { get; set; }
 
         /// <summary>
+        /// Event raised when the Filter has Changed
+        /// </summary>
+        public event EventHandler FilterHasChanged;
+
+        /// <summary>
         /// Event raised when the Record has Changed
         /// </summary>
         public event EventHandler RecordHasChanged;
@@ -107,6 +112,22 @@ namespace CEC.Blazor.Services
         /// Event triggered when the record is saved
         /// </summary>
         public event EventHandler OnClean;
+
+        /// <summary>
+        /// Method to trigger a Record Changed Event
+        /// </summary>
+        public void TriggerFilterChangedEvent(object sender);
+
+        /// <summary>
+        /// Method to trigger a Record Changed Event
+        /// </summary>
+        public void TriggerRecordChangedEvent(object sender);
+
+        /// <summary>
+        /// Method to trigger a List Changed Event
+        /// </summary>
+        public void TriggerListChangedEvent(object sender);
+
 
         /// <summary>
         /// Method to Reset the Service to New condition
@@ -158,8 +179,19 @@ namespace CEC.Blazor.Services
         /// <returns></returns>
         public Task<bool> GetNewRecordAsync() => Task.FromResult(false);
 
+        /// <summary>
+        /// Method to get a lookuplist for a Record of ID and DisplayName
+        /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
+        /// <returns></returns>
+        public Task<SortedDictionary<int,string>> GetLookUpListAsync<TLookup>(string selectAllText = null) where TLookup : class, IDbRecord<TLookup> => Task.FromResult(new SortedDictionary<int, string>());
 
-        public Task<SortedDictionary<int,string>> GetLookUpListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => Task.FromResult(new SortedDictionary<int, string>());
+        /// <summary>
+        /// Method to get a lookup list of values for a Field in TLookup record
+        /// </summary>
+        /// <typeparam name="TLookup"></typeparam>
+        /// <returns></returns>
+        public Task<SortedDictionary<object, string>> GetDistinctListAsync<TLookup>(string fieldName) where TLookup : class, IDbRecord<TLookup> => Task.FromResult(new SortedDictionary<object, string>());
 
         /// <summary>
         /// Method to reset the record to new

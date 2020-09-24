@@ -26,6 +26,12 @@ namespace CEC.Blazor.Components.BaseForms
         protected BootstrapModal _BootstrapModal { get; set; }
 
         /// <summary>
+        /// Boolean used by Filter set to true if you want empty recordset if no filter is set
+        /// </summary>
+        [Parameter]
+        public bool OnlyLoadIfFilter { get; set; } = false;
+
+        /// <summary>
         /// constructed Value for the List Title based on the RecordConfiguration
         /// </summary>
         [Parameter]
@@ -49,9 +55,23 @@ namespace CEC.Blazor.Components.BaseForms
         protected async override Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
-            // Load the page - as we've reset everything this will be the first page with the default filters
-            if (this.IsService) await this.Service.LoadPagingAsync();
+            // Load the page - as we've reset everything this will be the first page with the default filter
+            if (this.IsService)
+            {
+                // Load the filters for the recordset
+                this.LoadFilter();
+                // Load the paged recordset
+                await this.Service.LoadPagingAsync();
+            }
             this.Loading = false;
+        }
+
+        /// <summary>
+        /// Method called to load the filter
+        /// </summary>
+        protected virtual void LoadFilter()
+        {
+            if (IsService) this.Service.FilterList.OnlyLoadIfFilters = this.OnlyLoadIfFilter;
         }
 
         /// <summary>
@@ -64,6 +84,7 @@ namespace CEC.Blazor.Components.BaseForms
             {
                 this.Paging.PageHasChanged += this.UpdateUI;
                 this.Service.ListHasChanged += this.OnRecordsUpdate;
+                this.Service.FilterHasChanged += this.FilterUpdated;
             }
             base.OnAfterRender(firstRender);
         }
@@ -93,7 +114,6 @@ namespace CEC.Blazor.Components.BaseForms
         /// <param name="recordno"></param>
         protected void UpdateUI(object sender, int recordno) => this.StateHasChanged();
 
-
         /// <summary>
         /// Event Handler for when the List is updated Externally i.e. not by the Pager 
         /// </summary>
@@ -102,16 +122,20 @@ namespace CEC.Blazor.Components.BaseForms
         protected virtual async void ListUpdated(object sender, EventArgs e)
         {
             await this.Paging.LoadAsync();
-            this.StateHasChanged();
+            await InvokeAsync(this.StateHasChanged);
         }
 
         /// <summary>
-        /// Event Handler normally linked to the Filter Control to force a reset of the Data Service Record List
-        /// Which triggers a refresh of the pager
+        /// Event Handler for when the filter is updated Externally 
         /// </summary>
-        /// <param name="filterlist"></param>
-        protected virtual async void FilterUpdated(IFilterList filterlist) => await this.Service.ResetListAsync();
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual async void FilterUpdated(object sender, EventArgs e)
+        {
+            await this.Service.ResetListAsync();
+            await this.Paging.LoadAsync();
+            await InvokeAsync(this.StateHasChanged);
+        }
 
         /// <summary>
         /// Method called when the user clicks on a row in the viewer.
