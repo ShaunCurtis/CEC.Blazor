@@ -112,7 +112,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="recordno"></param>
-        protected void UpdateUI(object sender, int recordno) => this.StateHasChanged();
+        protected void UpdateUI(object sender, int recordno) => InvokeAsync(StateHasChanged);
 
         /// <summary>
         /// Event Handler for when the List is updated Externally i.e. not by the Pager 
@@ -130,12 +130,12 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual async void FilterUpdated(object sender, EventArgs e)
-        {
-            await this.Service.ResetListAsync();
-            await this.Paging.LoadAsync();
-            await InvokeAsync(this.StateHasChanged);
-        }
+        protected virtual async void FilterUpdated(object sender, EventArgs e) => await this.Service.ResetListAsync();
+        //{
+        //    await this.Service.ResetListAsync();
+        //    await this.Paging.LoadAsync();
+        //    await InvokeAsync(this.StateHasChanged);
+        //}
 
         /// <summary>
         /// Method called when the user clicks on a row in the viewer.

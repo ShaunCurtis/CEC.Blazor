@@ -52,20 +52,6 @@ namespace CEC.Blazor.Components
         }
 
         /// <summary>
-        /// Method to Copy the Filter
-        /// </summary>
-        /// <returns></returns>
-        public IFilterList Copy()
-        {
-            var list = new FilterList()
-            {
-                ShowState = this.ShowState
-            };
-            foreach (var set in this.Filters) list.Filters.Add(set.Key, set.Value);
-            return list;
-        }
-
-        /// <summary>
         /// Method to get a Filter value
         /// </summary>
         /// <param name="name"></param>

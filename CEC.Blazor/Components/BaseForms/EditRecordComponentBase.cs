@@ -101,9 +101,9 @@ namespace CEC.Blazor.Components.BaseForms
         /// <summary>
         /// Inherited - Always call the base method first
         /// </summary>
-        protected async override Task LoadRecordAsync()
+        protected async override Task LoadRecordAsync(bool firstLoad = false)
         {
-            await base.LoadRecordAsync();
+            await base.LoadRecordAsync(firstLoad);
 
             //set up the Edit Context
             this.EditContext = new EditContext(this.Service.Record);

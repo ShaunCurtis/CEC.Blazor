@@ -18,7 +18,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// <summary>
         /// Boolean Property that checks if a record exists
         /// </summary>
-        protected virtual bool IsRecord => this?.Service.IsRecord ?? false;
+        protected virtual bool IsRecord => this.Service?.IsRecord ?? false;
 
         /// <summary>
         /// Used to determine if the page can display data
@@ -51,7 +51,7 @@ namespace CEC.Blazor.Components.BaseForms
         {
             await base.OnParametersSetAsync();
             // Get the record if required
-            await this.LoadRecordAsync();
+            await this.LoadRecordAsync(true);
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -65,14 +65,14 @@ namespace CEC.Blazor.Components.BaseForms
         /// Reloads the record if the ID has changed
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task LoadRecordAsync()
+        protected virtual async Task LoadRecordAsync(bool firstload = false)
         {
             if (this.IsService)
             {
-                // Set the Loading flag and call statehaschanged to force UI changes 
-                // in this case making the UIErrorHandler show the loading spinner 
+                // Set the Loading flag 
+                //  call StateHasChanged only if we are responding to an event.  In the component loading cycle it will be called for us shortly
                 this.IsDataLoading = true;
-                StateHasChanged();
+                if (!firstload) StateHasChanged();
 
                 // Check if we have a query string value in the Route for ID.  If so use it
                 if (this.NavManager.TryGetQueryString<int>("id", out int querystringid)) this.ID = querystringid > -1 ? querystringid : this._ID;
@@ -89,10 +89,10 @@ namespace CEC.Blazor.Components.BaseForms
                 // Set the error message - it will only be displayed if we have an error
                 this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
 
-                // Set the Loading flag and call statehaschanged to force UI changes 
-                // in this case making the UIErrorHandler show the record or the erro message 
+                // Set the Loading flag
                 this.IsDataLoading = false;
-                StateHasChanged();
+                //  call StateHasChanged only if we are responding to an event.  In the component loading cycle it will be called for us shortly
+                if (!firstload) StateHasChanged();
             }
         }
 
