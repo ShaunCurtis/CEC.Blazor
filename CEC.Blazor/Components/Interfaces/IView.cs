@@ -1,4 +1,5 @@
-﻿using CEC.Routing.Services;
+﻿using CEC.Blazor.Components.Base;
+using CEC.Routing.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -11,5 +12,9 @@ namespace CEC.Blazor.Components
     public interface IView : IComponent
     {
         public Guid GUID => Guid.NewGuid();
+
+        [CascadingParameter]
+        public ViewManager ViewManager { get; set; }
+
     }
 }

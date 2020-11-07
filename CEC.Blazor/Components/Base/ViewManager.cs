@@ -11,11 +11,19 @@ namespace CEC.Blazor.Components.Base
     /// Displays the specified view component, rendering it inside its layout
     /// and any further nested layouts.
     /// </summary>
-    class ViewManager : IComponent
+    public class ViewManager : IComponent
     {
-        private readonly RenderFragment _renderDelegate;
-        private readonly RenderFragment _renderPageWithParametersDelegate;
         private RenderHandle _renderHandle;
+
+        /// <summary>
+        /// Render Fragment to render this object
+        /// </summary>
+        private readonly RenderFragment _componentRenderFragment;
+
+        /// <summary>
+        /// Boolean Flag to track if there's a pending render event queued
+        /// </summary>
+        private bool _RenderEventQueued;
 
         /// <summary>
         /// Gets or sets the default view data.
@@ -32,7 +40,9 @@ namespace CEC.Blazor.Components.Base
         /// ViewData used by the component
         /// </summary>
         private ViewData _ViewData => this.ViewData ?? this.DefaultViewData;
- 
+
+        private Type CurrentView { get; set; }
+
         /// <summary>
         /// Gets or sets the type of a layout to be used if the page does not
         /// declare any layout. If specified, the type must implement <see cref="IComponent"/>
@@ -41,15 +51,11 @@ namespace CEC.Blazor.Components.Base
         [Parameter]
         public Type DefaultLayout { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="RouteView"/>.
-        /// </summary>
-        public ViewManager()
+        public ViewManager() => _componentRenderFragment = builder =>
         {
-            // Cache the delegate instances
-            _renderDelegate = Render;
-            _renderPageWithParametersDelegate = RenderPageWithParameters;
-        }
+            this._RenderEventQueued = false;
+            BuildRenderTree(builder);
+        };
 
         /// <inheritdoc />
         public void Attach(RenderHandle renderHandle)
@@ -57,11 +63,32 @@ namespace CEC.Blazor.Components.Base
             _renderHandle = renderHandle;
         }
 
+        /// <summary>
+        /// Method to check if view is the current View
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        public bool IsCurrentView(Type view) => this.CurrentView == view;
+
         /// <inheritdoc />
         public Task SetParametersAsync(ParameterView parameters)
         {
             parameters.SetParameterProperties(this);
-            return this.LoadView();
+            this.ViewHasChanged();
+            return Task.CompletedTask;
+            //return this.LoadView();
+        }
+
+        /// <summary>
+        /// Method to force a UI update
+        /// </summary>
+        public void ViewHasChanged()
+        {
+            if (!this._RenderEventQueued)
+            {
+                this._RenderEventQueued = true;
+                _renderHandle.Render(_componentRenderFragment);
+            }
         }
 
         /// <summary>
@@ -71,42 +98,58 @@ namespace CEC.Blazor.Components.Base
         /// <returns></returns>
         public Task LoadView(ViewData viewData = null)
         {
-            this.ViewData =  viewData ?? this.ViewData;
+            this.ViewData = viewData ?? this._ViewData;
             if (_ViewData == null)
             {
                 throw new InvalidOperationException($"The {nameof(ViewManager)} component requires a non-null value for the parameter {nameof(ViewData)}.");
             }
-            _renderHandle.Render(_renderDelegate);
+            this.CurrentView = viewData.PageType;
+            this.ViewHasChanged();
             return Task.CompletedTask;
-
         }
 
         /// <summary>
         /// Renders the component.
         /// </summary>
         /// <param name="builder">The <see cref="RenderTreeBuilder"/>.</param>
-        protected virtual void Render(RenderTreeBuilder builder)
+        protected virtual void BuildRenderTree(RenderTreeBuilder builder)
         {
             var pageLayoutType = _ViewData.PageType.GetCustomAttribute<LayoutAttribute>()?.LayoutType ?? DefaultLayout;
 
             builder.OpenComponent<CascadingValue<ViewManager>>(0);
             builder.AddAttribute(1, "Value", this);
-            builder.OpenComponent<LayoutView>(1);
-            builder.AddAttribute(2, nameof(LayoutView.Layout), pageLayoutType);
-            builder.AddAttribute(3, nameof(LayoutView.ChildContent), _renderPageWithParametersDelegate);
-            builder.CloseComponent();
+            builder.AddAttribute(2, "ChildContent", this._layoutViewFragment);
             builder.CloseComponent();
         }
-
-        private void RenderPageWithParameters(RenderTreeBuilder builder)
-        {
-            builder.OpenComponent(0, _ViewData.PageType);
-
-            foreach (var kvp in _ViewData.ViewValues)
+        private RenderFragment _layoutViewFragment =>
+            builder =>
             {
-                builder.AddAttribute(1, kvp.Key, kvp.Value);
-            }
-            builder.CloseComponent();
-        }
+                builder.OpenComponent<LayoutView>(0);
+                builder.AddAttribute(1, nameof(LayoutView.Layout), DefaultLayout);
+                builder.AddAttribute(2, nameof(LayoutView.ChildContent), this._viewFragment);
+                builder.CloseComponent();
+            };
+
+        private RenderFragment _testFragement =>
+            builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddContent(1, "This is a component");
+                builder.CloseElement();
+            };
+
+        private RenderFragment _viewFragment =>
+            builder =>
+            {
+                builder.OpenComponent(0, _ViewData.PageType);
+                if (this._ViewData.ViewValues != null)
+                {
+                    foreach (var kvp in _ViewData.ViewValues)
+                    {
+                        builder.AddAttribute(1, kvp.Key, kvp.Value);
+                    }
+                }
+                builder.CloseComponent();
+            };
     }
 }

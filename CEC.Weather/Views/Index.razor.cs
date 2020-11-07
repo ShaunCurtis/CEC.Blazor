@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CEC.Blazor.Components;
+using CEC.Blazor.Components.Base;
+using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Server.Routes
+namespace CEC.Weather.Views
 {
-    public partial class Index : ComponentBase
+    public partial class Index : ComponentBase, IView
     {
+        [CascadingParameter]
+        public ViewManager ViewManager { get; set; }
+
 
         protected async override Task OnInitializedAsync()
         {

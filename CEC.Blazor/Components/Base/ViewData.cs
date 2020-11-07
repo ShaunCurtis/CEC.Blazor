@@ -33,11 +33,11 @@ namespace CEC.Blazor.Components.Base
 
             if (!typeof(IView).IsAssignableFrom(pageType))
             {
-                throw new ArgumentException($"The vire must implement {nameof(IView)}.", nameof(pageType));
+                throw new ArgumentException($"The view must implement {nameof(IView)}.", nameof(pageType));
             }
 
             PageType = pageType;
-            ViewValues = viewValues ?? throw new ArgumentNullException(nameof(viewValues));
+            //ViewValues = viewValues ?? throw new ArgumentNullException(nameof(viewValues));
         }
     }
 }

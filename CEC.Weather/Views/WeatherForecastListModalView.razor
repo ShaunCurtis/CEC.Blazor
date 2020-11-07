@@ -1,0 +1,30 @@
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.Weather.Components
+@using CEC.Blazor.Components.Base
+
+@namespace CEC.Weather.Views
+
+@inherits ApplicationComponentBase
+@implements IView
+
+<WeatherForecastListForm UIOptions="this.UIOptions"></WeatherForecastListForm>
+
+@code {
+
+    [CascadingParameter]
+    public ViewManager ViewManager { get; set; }
+
+    public UIOptions UIOptions => new UIOptions()
+    {
+        ListNavigationToViewer = true,
+        ShowButtons = true,
+        ShowAdd = true,
+        ShowEdit = true,
+        UseModalEditor = true,
+        UseModalViewer = true
+    };
+
+}

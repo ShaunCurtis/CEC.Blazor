@@ -1,11 +1,8 @@
-﻿@using CEC.Blazor.Components
-@using CEC.Blazor.Components.BaseForms
-@using CEC.Blazor.Components.UIControls
-@using CEC.Weather.Data
-@using CEC.Weather.Components
+﻿@using CEC.Weather.Components
 @using CEC.Blazor.Components.Base
+@using Microsoft.AspNetCore.Components.Authorization
 
-@namespace CEC
+@namespace CEC.Weather.Components
 
 <CascadingAuthenticationState>
     <ViewManager DefaultViewData="@viewData" DefaultLayout="@typeof(BaseLayout)">
