@@ -141,7 +141,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// Method called when the user clicks on a row in the viewer.
         /// </summary>
         /// <param name="id"></param>
-        protected async void OnViewAsync<TForm>(int id)
+        protected async void OnViewAsync<TForm>(int id) where TForm: IComponent
         {
             if (this.UIOptions.UseModalViewer && this._BootstrapModal != null)
             {
@@ -161,7 +161,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// Method called when the user clicks on a row Edit button.
         /// </summary>
         /// <param name="id"></param>
-        protected async void OnEditAsync<TForm>(int id)
+        protected async void OnEditAsync<TForm>(int id) where TForm : IComponent
         {
             if (this.UIOptions.UseModalEditor && this._BootstrapModal != null)
             {
