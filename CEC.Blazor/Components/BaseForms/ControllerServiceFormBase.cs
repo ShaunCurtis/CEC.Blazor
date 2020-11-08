@@ -8,9 +8,9 @@ using CEC.Blazor.Components.Base;
 
 namespace CEC.Blazor.Components.BaseForms
 {
-    public class ControllerServiceFormBase<T, TContext> : 
+    public class ControllerServiceFormBase<TRecord, TContext> : 
         FormBase 
-        where T : class, IDbRecord<T>, new()
+        where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
     {
 
@@ -18,19 +18,13 @@ namespace CEC.Blazor.Components.BaseForms
         /// Service with IDataRecordService Interface that corresponds to Type T
         /// Normally set as the first line in the Page OnInitialized event.
         /// </summary>
-        public IControllerService<T, TContext> Service { get; set; }
+        public IControllerService<TRecord, TContext> Service { get; set; }
 
         /// <summary>
         /// Property to control various UI Settings
         /// Used as a cascadingparameter
         /// </summary>
         [Parameter] public UIOptions UIOptions { get; set; } = new UIOptions();
-
-        /// <summary>
-        /// An additional property that can be set in routing for cutom load actions
-        /// Check individual record routing for specifics 
-        /// </summary>
-        [Parameter] public int? Action { get; set; } = 0;
 
         /// <summary>
         /// The default alert used by all inherited components
@@ -63,35 +57,6 @@ namespace CEC.Blazor.Components.BaseForms
             this.AlertMessage.ColourCode = Bootstrap.ColourCode.info;
             this.AlertMessage.IsAlert = false;
             this.AlertMessage.Message = "All Clear";
-        }
-
-        /*===================================================================
-         *  Section contains the Navigation methods used by the List/Viewer/Editor pages.
-         *  All use the Record Configuration obect obtained from the DataService Service to help 
-         *  define the actual  routing path
-         ===================================================================-*/
-
-        /// <summary>
-        /// Generic Navigator
-        /// </summary>
-        /// <param name="id"></param>
-        protected virtual void NavigateTo(PageExitType exittype)
-        {
-            // Calls the main NavigateTo Method
-            this.NavigateTo(new EditorEventArgs(exittype));
-        }
-
-        /// <summary>
-        /// Generic Navigator
-        /// </summary>
-        /// <param name="id"></param>
-        protected override void NavigateTo(EditorEventArgs e)
-        {
-            if (IsService)
-            {
-                //check if record name is populated and if not populates it
-                if (string.IsNullOrEmpty(e.RecordName)) e.RecordName = this.Service.RecordConfiguration.RecordName;
-            }
         }
     }
 }

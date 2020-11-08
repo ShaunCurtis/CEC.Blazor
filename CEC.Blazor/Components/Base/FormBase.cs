@@ -1,7 +1,6 @@
 ﻿using CEC.Blazor.Components.Modal;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Services;
-using CEC.Routing.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -25,12 +24,6 @@ namespace CEC.Blazor.Components.Base
         [Inject]
         protected IConfiguration AppConfiguration { get; set; }
 
-         /// <summary>
-        /// Injected Router Session Object
-        /// </summary>
-        [Inject]
-        protected RouterSessionService RouterSessionService { get; set; }
-
         /// <summary>
         /// Injected Property for the Browser Service
         /// Provides access to JS based browser routiines such as fining the browser dimensions and resetting
@@ -43,7 +36,7 @@ namespace CEC.Blazor.Components.Base
         /// Cascaded Parameter if the Component is used in Modal mode
         /// </summary>
         [CascadingParameter]
-        protected BootstrapModal ModalParent { get; set; }
+        protected IModal ModalParent { get; set; }
 
         /// <summary>
         /// Boolean Property to check if this component is in Modal Mode
@@ -55,6 +48,11 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+        /// <summary>
+        /// Cascaded ViewManager
+        /// </summary>
+        [CascadingParameter] public ViewManager ViewManager { get; set; }
 
         /// <summary>
         /// Property holding the current user name
@@ -77,7 +75,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         /// <param name="firstRender"></param>
         /// <returns></returns>
-        public async override Task OnRenderAsync(bool firstRender)
+        protected async override Task OnRenderAsync(bool firstRender)
         {
             if (firstRender) {
                 await GetUserAsync();
@@ -100,38 +98,9 @@ namespace CEC.Blazor.Components.Base
             }
         }
 
-        /// <summary>
-        /// Generic Navigator.  Uses the Record Configuation information for specific routing
-        /// </summary>
-        protected virtual void NavigateTo(EditorEventArgs e)
+        public void Exit()
         {
-            switch (e.ExitType)
-            {
-                case PageExitType.ExitToList:
-                    this.NavManager.NavigateTo($"/{e.RecordName}/");
-                    break;
-                case PageExitType.ExitToView:
-                    this.NavManager.NavigateTo($"/{e.RecordName}/View?id={e.ID}");
-                    break;
-                case PageExitType.ExitToEditor:
-                    this.NavManager.NavigateTo($"/{e.RecordName}/Edit?id={e.ID}");
-                    break;
-                case PageExitType.SwitchToEditor:
-                    this.NavManager.NavigateTo($"/{e.RecordName}/Edit?id={e.ID}");
-                    break;
-                case PageExitType.ExitToNew:
-                    this.NavManager.NavigateTo($"/{e.RecordName}/New?qid={e.ID}");
-                    break;
-                case PageExitType.ExitToLast:
-                    if (!string.IsNullOrEmpty(this.RouterSessionService.ReturnRouteUrl)) this.NavManager.NavigateTo(this.RouterSessionService.ReturnRouteUrl);
-                    this.NavManager.NavigateTo("/");
-                    break;
-                case PageExitType.ExitToRoot:
-                    this.NavManager.NavigateTo("/");
-                    break;
-                default:
-                    break;
-            }
+            this.ViewManager.LoadViewAsync(this.ViewManager.LastViewData);
         }
 
         /// <summary>
@@ -139,7 +108,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         public void ModalExit()
         {
-            if (IsModal) this.ModalParent.Close(BootstrapModalResult.Exit());
+            if (IsModal) this.ModalParent.Close(ModalResult.Exit());
         }
 
         /// <summary>
@@ -147,7 +116,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         public void ModalCancel()
         {
-            if (IsModal) this.ModalParent.Close(BootstrapModalResult.Cancel());
+            if (IsModal) this.ModalParent.Close(ModalResult.Cancel());
         }
 
         /// <summary>
@@ -155,7 +124,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         public void ModalOK()
         {
-            if (IsModal) this.ModalParent.Close(BootstrapModalResult.OK());
+            if (IsModal) this.ModalParent.Close(ModalResult.OK());
         }
 
         /// <summary>

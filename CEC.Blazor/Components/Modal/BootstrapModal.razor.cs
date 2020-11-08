@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class BootstrapModal : ComponentBase
+    public partial class BootstrapModal : ComponentBase, IModal
     {
-        public BootstrapModalOptions Options { get; set; } = new BootstrapModalOptions();
+        public ModalOptions Options { get; set; } = new ModalOptions();
 
         private RenderFragment _Content { get; set; }
 
@@ -16,20 +16,20 @@ namespace CEC.Blazor.Components.UIControls
 
         private Task modalResult { get; set; }
 
-        private string _ContainerCss => $"modal fade show {this.Options.ContainerCSS}".Trim();
+        private string _ContainerCss => $"modal fade show {this.Options.GetParameterAsString("ContainerCSS")}".Trim();
 
-        private string _ModalCss => $"modal-dialog {this.Options.ModalCSS}";
+        private string _ModalCss => $"modal-dialog {this.Options.GetParameterAsString("ModalCSS")}".Trim();
 
-        private string _ModalHeaderCss => $"modal-header {this.Options.ModalHeaderCSS}".Trim();
+        private string _ModalHeaderCss => $"modal-header {this.Options.GetParameterAsString("ModalHeaderCSS")}".Trim();
 
-        private string _ModalBodyCss => $"modal-body {this.Options.ModalBodyCSS}".Trim();
+        private string _ModalBodyCss => $"modal-body {this.Options.GetParameterAsString("ModalBodyCSS")}".Trim();
 
-        private TaskCompletionSource<BootstrapModalResult> _modalcompletiontask { get; set; } = new TaskCompletionSource<BootstrapModalResult>();
+        private TaskCompletionSource<ModalResult> _modalcompletiontask { get; set; } = new TaskCompletionSource<ModalResult>();
 
-        public Task<BootstrapModalResult> Show<TModal>(BootstrapModalOptions options) where TModal: IComponent 
+        public Task<ModalResult> Show<TModal>(ModalOptions options) where TModal: IComponent 
         {
             this.Options = options;
-            this._modalcompletiontask = new TaskCompletionSource<BootstrapModalResult>();
+            this._modalcompletiontask = new TaskCompletionSource<ModalResult>();
             var i = 0;
             this._Content = new RenderFragment(builder =>
             {
@@ -41,7 +41,7 @@ namespace CEC.Blazor.Components.UIControls
             return _modalcompletiontask.Task;
         }
 
-        public void Update(BootstrapModalOptions options = null)
+        public void Update(ModalOptions options = null)
         {
             this.Options = options??= this.Options;
             InvokeAsync(StateHasChanged);
@@ -49,19 +49,18 @@ namespace CEC.Blazor.Components.UIControls
 
         public async void Dismiss()
         {
-            _ = _modalcompletiontask.TrySetResult(BootstrapModalResult.Cancel());
+            _ = _modalcompletiontask.TrySetResult(ModalResult.Cancel());
             this._ShowModal = false;
             this._Content = null;
             await InvokeAsync(StateHasChanged);
         }
 
-        public async void Close(BootstrapModalResult result)
+        public async void Close(ModalResult result)
         {
             _ = _modalcompletiontask.TrySetResult(result);
             this._ShowModal = false;
             this._Content = null;
             await InvokeAsync(StateHasChanged);
         }
-
     }
 }

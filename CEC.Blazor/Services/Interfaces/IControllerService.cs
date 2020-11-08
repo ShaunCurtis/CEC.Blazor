@@ -137,12 +137,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Method to set the state to clean
         /// </summary>
-        public void SetClean(bool isClean = true);
-
-        /// <summary>
-        /// Method to set the state to clean
-        /// </summary>
-        public void SetDirty();
+        public void SetDirtyState(bool isdirty);
 
         /// <summary>
         /// Method to Update or Add the Database Record

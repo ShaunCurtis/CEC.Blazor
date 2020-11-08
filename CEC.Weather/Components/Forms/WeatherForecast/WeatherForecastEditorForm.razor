@@ -8,7 +8,7 @@
 @using Blazored.FluentValidation
 
 @namespace CEC.Weather.Components
-@inherits EditRecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+@inherits EditRecordFormBase<DbWeatherForecast, WeatherForecastDbContext>
 
 <UICard IsCollapsible="false">
     <Header>
@@ -164,17 +164,13 @@
                     </UIColumn>
                     <UIButtonColumn Columns="5">
 
-                        <UIButton Show="this.NavigationCancelled && this.IsLoaded" ClickEvent="this.Cancel" ColourCode="Bootstrap.ColourCode.cancel">Cancel</UIButton>
-
-                        <UIButton Show="this.NavigationCancelled && this.IsLoaded" ClickEvent="this.SaveAndExit" ColourCode="Bootstrap.ColourCode.save">Save &amp; Exit</UIButton>
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.SaveAndExit" ColourCode="Bootstrap.ColourCode.save">Save &amp; Exit</UIButton>
 
                         <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.Save" ColourCode="Bootstrap.ColourCode.save">Save</UIButton>
 
-                        <UIButton Show="this.ShowExitConfirmation && this.IsLoaded" ClickEvent="this.ConfirmExit" ColourCode="Bootstrap.ColourCode.danger_exit">Exit Without Saving</UIButton>
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.ConfirmExit" ColourCode="Bootstrap.ColourCode.danger_exit">Exit Without Saving</UIButton>
 
-                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))" ColourCode="Bootstrap.ColourCode.nav">Exit To List</UIButton>
-
-                        <UIButton Show="(!this.NavigationCancelled) && !this.ShowExitConfirmation" ClickEvent="this.Exit" ColourCode="Bootstrap.ColourCode.nav">Exit</UIButton>
+                        <UIButton Show="this.IsClean" ClickEvent="this.TryExit" ColourCode="Bootstrap.ColourCode.nav">Exit</UIButton>
 
                     </UIButtonColumn>
 

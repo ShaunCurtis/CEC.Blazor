@@ -6,7 +6,7 @@
 @using CEC.Blazor.Extensions
 @using CEC.FormControls.Components.FormControls
 
-@inherits RecordComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+@inherits RecordFormBase<DbWeatherForecast, WeatherForecastDbContext>
 
 <UICard>
 
@@ -133,11 +133,7 @@
 
                 <UIButtonColumn Columns="6">
 
-                    <UIButton Show="!this.IsModal" ColourCode="Bootstrap.ColourCode.nav" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToList))">
-                        Exit To List
-                    </UIButton>
-
-                    <UIButton Show="!this.IsModal" ColourCode="Bootstrap.ColourCode.nav" ClickEvent="(e => this.NavigateTo(PageExitType.ExitToLast))">
+                    <UIButton Show="!this.IsModal" ColourCode="Bootstrap.ColourCode.nav" ClickEvent="(e => this.Exit())">
                         Exit
                     </UIButton>
 

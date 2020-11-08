@@ -194,7 +194,7 @@ namespace CEC.Blazor.Services
             this.Records = new List<TRecord>();
             this.PagedRecords = null;
             this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
-            this.SetClean();
+            this.SetDirtyState(false);
         }
 
         /// <summary>
@@ -256,22 +256,13 @@ namespace CEC.Blazor.Services
         }
 
         /// <summary>
-        /// Method to set the state to clean
-        /// </summary>
-        public void SetClean(bool isClean = true)
-        {
-            this.IsClean = isClean;
-            this.OnClean?.Invoke(this, EventArgs.Empty);
-
-        }
-
-        /// <summary>
         /// Method to set the state to dirty
         /// </summary>
-        public void SetDirty()
+        public void SetDirtyState(bool isdirty = true)
         {
-            this.IsClean = false;
-            this.OnDirty?.Invoke(this, EventArgs.Empty);
+            this.IsClean = !isdirty;
+            if (isdirty) this.OnDirty?.Invoke(this, EventArgs.Empty);
+            else this.OnClean?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -349,7 +340,7 @@ namespace CEC.Blazor.Services
                     this.Record ??= new TRecord();
                     this.ShadowRecord = this.Record.ShadowCopy();
                     if (!this.IsRecords) this.BaseRecordCount = await this.Service.GetRecordListCountAsync();
-                    this.SetClean();
+                    this.SetDirtyState(false);
                     this.TriggerRecordChangedEvent(this);
                 }
             }
@@ -376,7 +367,7 @@ namespace CEC.Blazor.Services
             if (this.TaskResult.IsOK)
             {
                 this.ShadowRecord = this.Record.ShadowCopy();
-                this.SetClean();
+                this.SetDirtyState(false);
                 this.TriggerRecordChangedEvent(this);
                 this.TriggerListChangedEvent(this);
             }
@@ -394,7 +385,7 @@ namespace CEC.Blazor.Services
             {
                 this.Record = await this.Service.GetRecordAsync(this.TaskResult.NewID);
                 this.ShadowRecord = this.Record.ShadowCopy();
-                this.SetClean();
+                this.SetDirtyState(false);
                 this.TriggerRecordChangedEvent(this);
                 this.TriggerListChangedEvent(this);
             }

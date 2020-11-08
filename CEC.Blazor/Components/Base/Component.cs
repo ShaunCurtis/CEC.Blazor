@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace CEC.Blazor.Components.Base
 {
+    /// <summary>
+    /// Abstract Base Class implementing basic IComponent functions
+    /// </summary>
     public abstract class Component : IComponent, IHandleEvent, IHandleAfterRender
     {
         private readonly RenderFragment _renderFragment;
@@ -13,6 +16,11 @@ namespace CEC.Blazor.Components.Base
         private bool _hasNeverRendered = true;
         private bool _hasPendingQueuedRender;
         private bool _hasCalledOnAfterRender;
+
+        /// <summary>
+        /// Property to check if the component is loading -  set internally
+        /// </summary>
+        public bool Loading { get; protected set; } = true;
 
         /// <summary>
         /// Constructs an instance of <see cref="ControlBase"/>.
@@ -73,7 +81,11 @@ namespace CEC.Blazor.Components.Base
         /// <returns></returns>
         protected virtual bool ShouldRender() => true;
 
-
+        /// <summary>
+        /// Public Method called after the component has been rendered
+        /// </summary>
+        /// <param name="firstRender"></param>
+        /// <returns></returns>
         protected virtual Task OnAfterRenderAsync(bool firstRender)
             => Task.CompletedTask;
 
@@ -105,28 +117,53 @@ namespace CEC.Blazor.Components.Base
             _renderHandle = renderHandle;
         }
 
+        /// <summary>
+        /// Implementation of the IComponent SetParametersAsync
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public virtual async Task SetParametersAsync(ParameterView parameters)
         {
             parameters.SetParameterProperties(this);
             await this._StartRenderAsync();
         }
 
+        /// <summary>
+        /// Method to reset the component and render from scatch
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task ResetAsync()
         {
             this._firstRender = true;
             await this._StartRenderAsync();
         }
 
+        /// <summary>
+        /// Internal Method called from SetParametersAsync to begin the render process
+        /// Tracks if this is the first or subsequnet renders
+        /// </summary>
+        /// <returns></returns>
         private async Task _StartRenderAsync()
         {
+            if (this._firstRender) this.Render();
             await this.OnRenderAsync(this._firstRender);
-            this._firstRender = false; 
+            this._firstRender = false;
             this.Render();
         }
 
-        public virtual Task OnRenderAsync(bool firstRender) => Task.CompletedTask;
+        /// <summary>
+        /// Principle exposed Render "Event"
+        /// </summary>
+        /// <param name="firstRender"></param>
+        /// <returns></returns>
+        protected virtual Task OnRenderAsync(bool firstRender) => Task.CompletedTask;
 
-
+        /// <summary>
+        /// Internal method to track the render event
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="arg"></param>
+        /// <returns></returns>
         Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem callback, object arg)
         {
             var task = callback.InvokeAsync(arg);
@@ -135,6 +172,10 @@ namespace CEC.Blazor.Components.Base
             return shouldAwaitTask ? CallRenderOnAsyncCompletion(task) : Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Internal Method triggered after the component has rendered calling OnAfterRenderAsync
+        /// </summary>
+        /// <returns></returns>
         Task IHandleAfterRender.OnAfterRenderAsync()
         {
             var firstRender = !_hasCalledOnAfterRender;
@@ -142,6 +183,11 @@ namespace CEC.Blazor.Components.Base
             return OnAfterRenderAsync(firstRender);
         }
 
+        /// <summary>
+        /// Internal method to handle render completion
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
         private async Task CallRenderOnAsyncCompletion(Task task)
         {
             try

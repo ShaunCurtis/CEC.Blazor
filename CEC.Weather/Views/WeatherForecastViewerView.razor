@@ -1,18 +1,17 @@
 ﻿@using CEC.Blazor.Components
-@using CEC.Blazor.Components.BaseForms
-@using CEC.Blazor.Components.UIControls
-@using CEC.Weather.Data
 @using CEC.Weather.Components
 @using CEC.Blazor.Components.Base
 
 @namespace CEC.Weather.Views
 @implements IView
 
-@inherits ApplicationComponentBase
+@inherits Component
 
-<WeatherForecastViewerForm></WeatherForecastViewerForm>
+<WeatherForecastViewerForm ID="this.ID"></WeatherForecastViewerForm>
 
 @code {
-    [CascadingParameter]
-    public ViewManager ViewManager { get; set; }
+
+    [CascadingParameter] public ViewManager ViewManager { get; set; }
+
+    [Parameter] public int ID { get; set; } = 0;
 }

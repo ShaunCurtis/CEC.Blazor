@@ -25,7 +25,7 @@ namespace CEC.Weather.Views
         {
             var dict = new Dictionary<string, object>();
             var viewdata = new ViewData(typeof(Counter), dict);
-            if (this.ViewManager != null) ViewManager.LoadView(viewdata);
+            if (this.ViewManager != null) ViewManager.LoadViewAsync(viewdata);
         }
 
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CEC.Blazor.Components.Modal
 {
-    public enum BootstrapModalResultType
+    public enum ModalResultType
     {
         NoSet,
         OK,

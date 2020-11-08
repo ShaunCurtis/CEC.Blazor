@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace CEC.Blazor.Components.BaseForms
 {
-    public class ListComponentBase<TRecord, TContext> :
-        ControllerServiceComponentBase<TRecord, TContext>
+    public class ListFormBase<TRecord, TContext> :
+        ControllerServiceFormBase<TRecord, TContext>
         where TRecord : class, IDbRecord<TRecord>, new()
          where TContext : DbContext
     {
@@ -37,33 +37,35 @@ namespace CEC.Blazor.Components.BaseForms
         [Parameter]
         public string ListTitle { get; set; }
 
-        /// <summary>
-        /// Should be overridden in inherited components
-        /// and called after setting the Service
-        /// </summary>
-        protected async override Task OnInitializedAsync()
+        protected async override Task OnRenderAsync(bool firstRender)
         {
-            // Reset the Service i.e. clear the record list, filter etc.
             if (this.IsService)
             {
-                await this.Service.Reset();
-                this.ListTitle = string.IsNullOrEmpty(this.ListTitle) ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : this.ListTitle;
-            }
-            await base.OnInitializedAsync();
-        }
-
-        protected async override Task OnParametersSetAsync()
-        {
-            await base.OnParametersSetAsync();
-            // Load the page - as we've reset everything this will be the first page with the default filter
-            if (this.IsService)
-            {
+                if (firstRender)
+                {
+                    // Reset the Service if this is the first load
+                    await this.Service.Reset();
+                    this.ListTitle = string.IsNullOrEmpty(this.ListTitle) ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : this.ListTitle;
+                }
                 // Load the filters for the recordset
                 this.LoadFilter();
                 // Load the paged recordset
                 await this.Service.LoadPagingAsync();
+                this.Loading = false;
             }
-            this.Loading = false;
+            await base.OnRenderAsync(firstRender);
+
+        }
+
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                this.Paging.PageHasChanged += this.UpdateUI;
+                this.Service.ListHasChanged += this.OnRecordsUpdate;
+                this.Service.FilterHasChanged += this.FilterUpdated;
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         /// <summary>
@@ -72,21 +74,6 @@ namespace CEC.Blazor.Components.BaseForms
         protected virtual void LoadFilter()
         {
             if (IsService) this.Service.FilterList.OnlyLoadIfFilters = this.OnlyLoadIfFilter;
-        }
-
-        /// <summary>
-        /// Inherited
-        /// </summary>
-        /// <param name="firstRender"></param>
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-            {
-                this.Paging.PageHasChanged += this.UpdateUI;
-                this.Service.ListHasChanged += this.OnRecordsUpdate;
-                this.Service.FilterHasChanged += this.FilterUpdated;
-            }
-            base.OnAfterRender(firstRender);
         }
 
         /// <summary>
@@ -100,11 +87,11 @@ namespace CEC.Blazor.Components.BaseForms
             if (this.IsService)
             {
                 this.Loading = true;
-                this.StateHasChanged();
+                this.Render();
                 await this.Paging.LoadAsync();
             }
             this.Loading = false;
-            this.StateHasChanged();
+            this.Render();
         }
 
         /// <summary>
@@ -112,7 +99,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="recordno"></param>
-        protected void UpdateUI(object sender, int recordno) => InvokeAsync(StateHasChanged);
+        protected void UpdateUI(object sender, int recordno) => InvokeAsync(Render);
 
         /// <summary>
         /// Event Handler for when the List is updated Externally i.e. not by the Pager 
@@ -122,7 +109,7 @@ namespace CEC.Blazor.Components.BaseForms
         protected virtual async void ListUpdated(object sender, EventArgs e)
         {
             await this.Paging.LoadAsync();
-            await InvokeAsync(this.StateHasChanged);
+            await InvokeAsync(this.Render);
         }
 
         /// <summary>
@@ -131,50 +118,30 @@ namespace CEC.Blazor.Components.BaseForms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected virtual async void FilterUpdated(object sender, EventArgs e) => await this.Service.ResetListAsync();
-        //{
-        //    await this.Service.ResetListAsync();
-        //    await this.Paging.LoadAsync();
-        //    await InvokeAsync(this.StateHasChanged);
-        //}
 
         /// <summary>
         /// Method called when the user clicks on a row in the viewer.
         /// </summary>
         /// <param name="id"></param>
-        protected async void OnViewAsync<TForm>(int id) where TForm: IComponent
+        protected async void OnModalAsync<TForm>(int id) where TForm : IComponent
         {
-            if (this.UIOptions.UseModalViewer && this._BootstrapModal != null)
-            {
-                var modalOptions = new BootstrapModalOptions()
+                var modalOptions = new ModalOptions()
                 {
-                    ModalBodyCSS = "p-0",
-                    ModalCSS = "modal-xl",
-                    HideHeader = true,
+                    HideHeader = true
                 };
+                modalOptions.Parameters.Add("ModalBodyCSS", "p-0");
+                modalOptions.Parameters.Add("ModalCSS", "modal-xl");
                 modalOptions.Parameters.Add("ID", id);
-                await this._BootstrapModal.Show<TForm>(modalOptions);
-            }
-            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToView, id, this.Service.RecordConfiguration.RecordName));
+                await this.ViewManager.ShowModalAsync<TForm>(modalOptions);
         }
 
         /// <summary>
-        /// Method called when the user clicks on a row Edit button.
+        /// Method called when the user clicks on a row in the viewer.
         /// </summary>
         /// <param name="id"></param>
-        protected async void OnEditAsync<TForm>(int id) where TForm : IComponent
+        protected async void OnViewAsync<TView>(int id) where TView : IView
         {
-            if (this.UIOptions.UseModalEditor && this._BootstrapModal != null)
-            {
-                var modalOptions = new BootstrapModalOptions()
-                {
-                    ModalBodyCSS = "p-0",
-                    ModalCSS = "modal-xl",
-                    HideHeader = true
-                };
-                modalOptions.Parameters.Add("ID", id);
-                await this._BootstrapModal.Show<TForm>(modalOptions);
-            }
-            else this.NavigateTo(new EditorEventArgs(PageExitType.ExitToEditor, id, this.Service.RecordConfiguration.RecordName));
+            await this.ViewManager.LoadViewAsync<TView>("ID", id);
         }
 
         public override void Dispose()

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using CEC.Routing;
 using CEC.Blazor.WASM.Client.Extensions;
+using CEC.Weather.Components;
 
 namespace CEC.Blazor.WASM.Client
 {
