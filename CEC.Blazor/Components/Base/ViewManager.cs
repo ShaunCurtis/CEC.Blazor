@@ -18,14 +18,24 @@ namespace CEC.Blazor.Components.Base
     public class ViewManager : IComponent
     {
 
-        [Inject]
-        private IJSRuntime _js { get; set; }
+        [Inject] private IJSRuntime _js { get; set; }
 
         /// <summary>
         /// Gets or sets the default view data.
         /// /// </summary>
-        [Parameter]
-        public ViewData DefaultViewData { get; set; }
+        [Parameter] public ViewData DefaultViewData { get; set; }
+
+        /// <summary>
+        /// The type of Modal Dialog to use for modals
+        /// </summary>
+        [Parameter] public Type ModalType { get; set; } = typeof(BootstrapModal);
+
+        /// <summary>
+        /// Gets or sets the type of a layout to be used if the page does not
+        /// declare any layout. If specified, the type must implement <see cref="IComponent"/>
+        /// and accept a parameter named <see cref="LayoutComponentBase.Body"/>.
+        /// </summary>
+        [Parameter] public Type DefaultLayout { get; set; }
 
         /// <summary>
         /// Gets or sets the view data.
@@ -55,11 +65,6 @@ namespace CEC.Blazor.Components.Base
         public ViewData LastViewData { get; protected set; }
 
         /// <summary>
-        /// The type of Modal Dialog to use for modals
-        /// </summary>
-        [Parameter] public Type ModalType { get; set; } = typeof(BootstrapModal);
-
-        /// <summary>
         /// Property referencing the Bootstrap modal instance
         /// </summary>
         public IModal ModalDialog { get; protected set; }
@@ -75,11 +80,6 @@ namespace CEC.Blazor.Components.Base
         private bool ExitState { get; set; }
 
         /// <summary>
-        /// The Current Rendered View
-        /// </summary>
-        private Type CurrentView { get; set; }
-
-        /// <summary>
         /// The RenderHandle to the Renderer
         /// </summary>
         private RenderHandle _renderHandle;
@@ -93,14 +93,6 @@ namespace CEC.Blazor.Components.Base
         /// Boolean Flag to track if there's a pending render event queued
         /// </summary>
         private bool _RenderEventQueued;
-
-        /// <summary>
-        /// Gets or sets the type of a layout to be used if the page does not
-        /// declare any layout. If specified, the type must implement <see cref="IComponent"/>
-        /// and accept a parameter named <see cref="LayoutComponentBase.Body"/>.
-        /// </summary>
-        [Parameter]
-        public Type DefaultLayout { get; set; }
 
         /// <summary>
         /// Constructor - builds the component render fragment
@@ -122,7 +114,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         /// <param name="view"></param>
         /// <returns></returns>
-        public bool IsCurrentView(Type view) => this.CurrentView == view;
+        public bool IsCurrentView(Type view) => this.ViewData?.PageType == view;
 
         public bool IsView => this._ViewData?.PageType != null;
 
@@ -162,7 +154,6 @@ namespace CEC.Blazor.Components.Base
                 {
                     throw new InvalidOperationException($"The {nameof(ViewManager)} component requires a non-null value for the parameter {nameof(ViewData)}.");
                 }
-                this.CurrentView = this._ViewData.PageType;
                 this.ViewHasChanged();
             }
             return Task.CompletedTask;

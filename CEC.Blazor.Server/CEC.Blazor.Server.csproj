@@ -13,7 +13,7 @@
     <PackageReference Include="CEC.FormControls" Version="1.0.1" />
     <PackageReference Include="CEC.Routing" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />-->
     <PackageReference Include="Microsoft.AspNetCore.ProtectedBrowserStorage" Version="0.1.0-alpha.19521.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">

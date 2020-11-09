@@ -12,7 +12,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Gets the type of the page matching the route.
         /// </summary>
-        public Type PageType { get; }
+        public Type PageType { get; private set;}
 
         /// <summary>
         /// Parameter values to add to the Route when created
