@@ -51,14 +51,13 @@ namespace CEC.Blazor.Components.UIControls
         {
             if (this._Show)
             {
-                int i = -1;
-                builder.OpenElement(i++, this._Tag);
-                builder.AddAttribute(i++, "class", this._Css);
-                if (this.ColumnSpan > 1) builder.AddAttribute(i++, "colspan", this.ColumnSpan);
-                builder.OpenElement(i++, "a");
-                builder.AddAttribute(i++, "class", this._BadgeCss);
-                builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToEditor(this.RecordID))));
-                builder.AddContent(i++, "Edit");
+                builder.OpenElement(0, this._Tag);
+                builder.AddAttribute(1, "class", this._Css);
+                if (this.ColumnSpan > 1) builder.AddAttribute(2, "colspan", this.ColumnSpan);
+                builder.OpenElement(3, "a");
+                builder.AddAttribute(4, "class", this._BadgeCss);
+                builder.AddAttribute(5, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToEditor(this.RecordID))));
+                builder.AddContent(6, "Edit");
                 builder.CloseElement();
                 builder.CloseElement();
             }

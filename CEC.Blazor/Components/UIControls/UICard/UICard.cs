@@ -95,32 +95,31 @@ namespace CEC.Blazor.Components.UIControls
             if (this.Show)
             {
                 this.ClearDuplicateAttributes();
-                int i = -1;
-                builder.OpenElement(i++, "div");
-                builder.AddMultipleAttributes(i++, AdditionalAttributes);
-                builder.AddAttribute(i++, "class", this._Css);
-                builder.OpenElement(i++, "div");
-                builder.AddAttribute(i++, "class", this._HeaderCss);
+                builder.OpenElement(0, "div");
+                builder.AddMultipleAttributes(2, AdditionalAttributes);
+                builder.AddAttribute(2, "class", this._Css);
+                builder.OpenElement(3, "div");
+                builder.AddAttribute(4, "class", this._HeaderCss);
                 if (this.Header != null)
                 {
-                    builder.OpenElement(i++, "h4");
-                    builder.AddContent(i++, this.Header);
+                    builder.OpenElement(5, "h4");
+                    builder.AddContent(6, this.Header);
                     builder.CloseElement();
                 }
                 if (this.IsCollapsible)
                 {
-                    builder.OpenElement(i++, "button");
-                    builder.AddAttribute(i++, "class", this.CollapseButtonCSS);
-                    builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Toggle())));
-                    builder.AddContent(i++, this.CollapseText);
+                    builder.OpenElement(7, "button");
+                    builder.AddAttribute(8, "class", this.CollapseButtonCSS);
+                    builder.AddAttribute(9, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Toggle())));
+                    builder.AddContent(10, this.CollapseText);
                     builder.CloseElement();
                 }
                 builder.CloseElement();
-                builder.OpenElement(i++, "div");
-                builder.AddAttribute(i++, "class", this._BodyCss);
-                if (this.Navigation != null) builder.AddContent(i++, this.Navigation);
-                if (this.Body != null) builder.AddContent(i++, this.Body);
-                if (this.Buttons != null) builder.AddContent(i++, this.Buttons);
+                builder.OpenElement(11, "div");
+                builder.AddAttribute(12, "class", this._BodyCss);
+                if (this.Navigation != null) builder.AddContent(13, this.Navigation);
+                if (this.Body != null) builder.AddContent(14, this.Body);
+                if (this.Buttons != null) builder.AddContent(15, this.Buttons);
                 builder.CloseElement();
                 builder.CloseElement();
             }

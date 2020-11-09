@@ -39,48 +39,47 @@ namespace CEC.Blazor.Components.UIControls
         {
             if (this.Show)
             {
-                int i = -1;
-                builder.OpenElement(i++, this._Tag);
-                builder.AddAttribute(i++, "class", this._Css);
-                if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
-                if (this.ColumnSpan > 1) builder.AddAttribute(i++, "colspan", this.ColumnSpan);
-                builder.AddAttribute(i++, "scope", "col");
+                builder.OpenElement(0, this._Tag);
+                builder.AddAttribute(1, "class", this._Css);
+                if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(2, "style", this.Style);
+                if (this.ColumnSpan > 1) builder.AddAttribute(3, "colspan", this.ColumnSpan);
+                builder.AddAttribute(4, "scope", "col");
                 if (this.IsMaxColumn)
                 {
-                    builder.OpenElement(i++, "div");
-                    builder.AddAttribute(i++, "class", "grid-overflow");
-                    builder.OpenElement(i++, "div");
-                    builder.AddAttribute(i++, "class", "grid-overflowinner");
-                    this.AddSorting(ref builder,ref i);
-                    this.AddContent(ref builder, ref i);
+                    builder.OpenElement(5, "div");
+                    builder.AddAttribute(6, "class", "grid-overflow");
+                    builder.OpenElement(7, "div");
+                    builder.AddAttribute(8, "class", "grid-overflowinner");
+                    this.AddSorting(ref builder);
+                    this.AddContent(ref builder);
                     builder.CloseElement();
                     builder.CloseElement();
                 }
                 else
                 {
-                    this.AddSorting(ref builder, ref i);
-                    this.AddContent(ref builder, ref i);
+                    this.AddSorting(ref builder);
+                    this.AddContent(ref builder);
                 }
                 builder.CloseElement();
             }
         }
 
-        private void AddSorting(ref RenderTreeBuilder builder, ref int i)
+        private void AddSorting(ref RenderTreeBuilder builder)
         {
             if (this.Sorted)
             {
-                builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.Paging.Sort(e, this.FieldName))));
-                builder.OpenElement(i++, "span");
-                builder.AddAttribute(i++, "class", this.Card.Paging?.GetIcon(this.FieldName) ?? "");
+                builder.AddAttribute(10, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.Paging.Sort(e, this.FieldName))));
+                builder.OpenElement(11, "span");
+                builder.AddAttribute(12, "class", this.Card.Paging?.GetIcon(this.FieldName) ?? "");
                 builder.CloseElement();
             }
 
         }
 
-        private void AddContent(ref RenderTreeBuilder builder, ref int i)
+        private void AddContent(ref RenderTreeBuilder builder)
         {
-            if (this.ChildContent != null) builder.AddContent(i++, this.ChildContent);
-            else builder.AddContent(i++, this.FieldName);
+            if (this.ChildContent != null) builder.AddContent(20, this.ChildContent);
+            else builder.AddContent(21, this.FieldName);
         }
 
     }

@@ -36,60 +36,60 @@ namespace CEC.Blazor.Services
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<List<TRecord>> GetRecordListAsync() => await this.DBContext.CreateDbContext().GetRecordListAsync<TRecord>();
+        public virtual async Task<List<TRecord>> GetRecordListAsync() => await this.DBContext.CreateDbContext().GetRecordListAsync<TRecord>();
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<List<TRecord>> GetFilteredRecordListAsync(IFilterList filterList) => await this.DBContext.CreateDbContext().GetRecordFilteredListAsync<TRecord>(filterList);
+        public virtual async Task<List<TRecord>> GetFilteredRecordListAsync(IFilterList filterList) => await this.DBContext.CreateDbContext().GetRecordFilteredListAsync<TRecord>(filterList);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<TRecord> GetRecordAsync(int id) => await this.DBContext.CreateDbContext().GetRecordAsync<TRecord>(id);
+        public virtual async Task<TRecord> GetRecordAsync(int id) => await this.DBContext.CreateDbContext().GetRecordAsync<TRecord>(id);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<int> GetRecordListCountAsync() => await this.DBContext.CreateDbContext().GetRecordListCountAsync<TRecord>();
-
-        /// <summary>
-        /// Inherited IDataService Method
-        /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        public async Task<DbTaskResult> UpdateRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Update);
+        public virtual async Task<int> GetRecordListCountAsync() => await this.DBContext.CreateDbContext().GetRecordListCountAsync<TRecord>();
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> CreateRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Create);
+        public virtual async Task<DbTaskResult> UpdateRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Update);
+
+        /// <summary>
+        /// Inherited IDataService Method
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        public async virtual Task<DbTaskResult> CreateRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Create);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> DeleteRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Delete);
+        public virtual async Task<DbTaskResult> DeleteRecordAsync(TRecord record) => await this.RunStoredProcedure(record, SPType.Delete);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <typeparam name="TLookup"></typeparam>
         /// <returns></returns>
-        public async Task<List<string>> GetDistinctListAsync(DbDistinctRequest req) => await this.DBContext.CreateDbContext().GetDistinctListAsync(req);
+        public virtual async Task<List<string>> GetDistinctListAsync(DbDistinctRequest req) => await this.DBContext.CreateDbContext().GetDistinctListAsync(req);
 
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <typeparam name="TLookup"></typeparam>
         /// <returns></returns>
-        public async Task<List<DbBaseRecord>> GetBaseRecordListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await this.DBContext.CreateDbContext().GetBaseRecordListAsync<TLookup>();
+        public virtual async Task<List<DbBaseRecord>> GetBaseRecordListAsync<TLookup>() where TLookup : class, IDbRecord<TLookup> => await this.DBContext.CreateDbContext().GetBaseRecordListAsync<TLookup>();
 
         /// <summary>
         /// Method to Check if a property has SPParameter Attribute

@@ -14,7 +14,9 @@ namespace CEC.Blazor.Server.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Singleton service for the Server Side version of WeatherForecast Data Service 
-            services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService>();
+            // Dummy service produces a new recordset each time the application runs 
+            //services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService>();
+            services.AddSingleton<IWeatherForecastDataService, WeatherForecastDummyDataService>();
             // Scoped service for the WeatherForecast Controller Service
             services.AddScoped<WeatherForecastControllerService>();
             // Transient service for the Fluent Validator for the WeatherForecast record

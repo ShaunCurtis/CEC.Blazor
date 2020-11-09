@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CEC.Blazor.Components;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
-using CEC.Weather.Views;
+using CEC.Weather.Components.Views;
 
 namespace CEC.Weather.Components
 {

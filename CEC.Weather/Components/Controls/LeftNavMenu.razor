@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
 @using CEC.Blazor.Components.Base
-@using CEC.Weather.Views
+@using CEC.Weather.Components.Views
 @using CEC.Blazor.Components.UIControls
 
 @namespace CEC.Weather.Components
@@ -8,15 +8,15 @@
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">CEC.Blazor.Server</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+    <button class="navbar-toggler">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass" onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
-            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Views.Index)">
+            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Components.Views.Index)">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </UIViewLink>
         </li>

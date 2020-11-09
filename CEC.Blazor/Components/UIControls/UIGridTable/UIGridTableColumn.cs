@@ -63,25 +63,24 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            int i = -1;
-            builder.OpenElement(i++, this._Tag);
-            builder.AddAttribute(i++, "class", this._Css);
-            if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(i++, "style", this.Style);
-            if (this.ColumnSpan > 1) builder.AddAttribute(i++, "colspan", this.ColumnSpan);
-            if (this.RecordID > 0 && this.Card != null) builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToView(this.RecordID))));
+            builder.OpenElement(0, this._Tag);
+            builder.AddAttribute(1, "class", this._Css);
+            if (!string.IsNullOrEmpty(this.Style)) builder.AddAttribute(2, "style", this.Style);
+            if (this.ColumnSpan > 1) builder.AddAttribute(3, "colspan", this.ColumnSpan);
+            if (this.RecordID > 0 && this.Card != null) builder.AddAttribute(4, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e => this.Card.NavigateToView(this.RecordID))));
             if (this.IsMaxColumn)
             {
-                builder.OpenElement(i++, "div");
-                builder.AddAttribute(i++, "class", "grid-overflow");
-                builder.OpenElement(i++, "div");
-                builder.AddAttribute(i++, "class", "grid-overflowinner");
-                builder.AddContent(i++, ChildContent);
+                builder.OpenElement(5, "div");
+                builder.AddAttribute(6, "class", "grid-overflow");
+                builder.OpenElement(7, "div");
+                builder.AddAttribute(8, "class", "grid-overflowinner");
+                builder.AddContent(9, ChildContent);
                 builder.CloseElement();
                 builder.CloseElement();
             }
             else
             {
-                builder.AddContent(i++, ChildContent);
+                builder.AddContent(10, ChildContent);
             }
             builder.CloseElement();
         }

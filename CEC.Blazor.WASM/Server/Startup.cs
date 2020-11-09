@@ -4,9 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CEC.Blazor.WASM.Server.Extensions;
-using Microsoft.EntityFrameworkCore;
-using CEC.Blazor.Extensions;
-using CEC.Weather.Data;
 
 
 namespace CEC.Blazor.WASM.Server

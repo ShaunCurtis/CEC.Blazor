@@ -37,10 +37,9 @@ namespace CEC.Blazor.Components.UIControls
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            int i = -1;
-            builder.OpenComponent<CascadingValue<UIWrapper>>(i++);
-            builder.AddAttribute(i++, "Value", this);
-            if (this.ChildContent != null) builder.AddAttribute(i++, "ChildContent", ChildContent);
+            builder.OpenComponent<CascadingValue<UIWrapper>>(0);
+            builder.AddAttribute(1, "Value", this);
+            if (this.ChildContent != null) builder.AddAttribute(2, "ChildContent", ChildContent);
             builder.CloseComponent();
         }
     }

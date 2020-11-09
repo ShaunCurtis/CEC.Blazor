@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace CEC.Weather.Services
 {
-    public class WeatherForecastDummyDataService : 
-        BaseDataService<DbWeatherForecast, WeatherForecastDbContext>, 
-        IDataService<DbWeatherForecast, WeatherForecastDbContext>
+    public class WeatherForecastDummyDataService :
+        BaseServerDataService<DbWeatherForecast, WeatherForecastDbContext>,
+        IWeatherForecastDataService
     {
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace CEC.Weather.Services
         /// </summary>
         private List<DbWeatherForecast> Records { get; set; }
 
-        public WeatherForecastDummyDataService(IConfiguration configuration) : base(configuration)
+        public WeatherForecastDummyDataService(IConfiguration configuration) : base(configuration, null)
         {
             this.RecordConfiguration = new RecordConfigurationData() { RecordName = "WeatherForecast", RecordDescription = "Weather Forecast", RecordListName = "WeatherForecasts", RecordListDecription = "Weather Forecasts" };
             this.GetDummyRecords(100);
@@ -58,7 +58,7 @@ namespace CEC.Weather.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<DbWeatherForecast> GetRecordAsync(int id)
+        public override Task<DbWeatherForecast> GetRecordAsync(int id)
         {
             return Task.FromResult(this.Records.FirstOrDefault(item => item.ID == id));
         }
@@ -67,19 +67,23 @@ namespace CEC.Weather.Services
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<List<DbWeatherForecast>> GetRecordListAsync()
+        public override async Task<List<DbWeatherForecast>> GetRecordListAsync()
         {
             // Delay to demonstrate Async Programming
             await Task.Delay(2000);
             return this.Records;
         }
 
+        public override async Task<List<DbWeatherForecast>> GetFilteredRecordListAsync(IFilterList filterList) => await GetRecordListAsync();
+
+        public override Task<int> GetRecordListCountAsync() => Task.FromResult(Records.Count());
+
         /// <summary>
         /// Inherited IDataService Method
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> UpdateRecordAsync(DbWeatherForecast record)
+        public override async Task<DbTaskResult> UpdateRecordAsync(DbWeatherForecast record)
         {
             var rec = await GetRecordAsync(record.ID);
             if (rec != null) rec = record;
@@ -94,7 +98,7 @@ namespace CEC.Weather.Services
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public Task<DbTaskResult> CreateRecordAsync(DbWeatherForecast record)
+        public override Task<DbTaskResult> CreateRecordAsync(DbWeatherForecast record)
         {
             record.ID = this.Records.Max(item => item.ID) + 1;
             this.Records.Add(record);
@@ -107,7 +111,7 @@ namespace CEC.Weather.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<DbTaskResult> DeleteRecordAsync(int id)
+        public virtual async Task<DbTaskResult> DeleteRecordAsync(int id)
         {
             var rec = await GetRecordAsync(id);
             var isrecord = rec != null;

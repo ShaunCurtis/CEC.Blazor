@@ -48,7 +48,8 @@ namespace CEC.Blazor.Components.BaseForms
                 this.LoadFilter();
                 if (this.IsViewManager && !this.ViewManager.ViewData.GetFieldAsInt("Page", out page)) page = 1;
                 // Load the paged recordset
-                await this.Service.LoadPagingAsync(page);
+                await this.Service.LoadPagingAsync();
+                await this.Paging.GoToPageAsync(page);
                 this.Loading = false;
             }
             await base.OnRenderAsync(firstRender);

@@ -397,14 +397,14 @@ namespace CEC.Blazor.Services
         /// loads the delegate with the default service GetDataPage method and loads the first page
         /// Can be overridden for more complex situations
         /// </summary>
-        public async virtual Task LoadPagingAsync(int page = 1)
+        public async virtual Task LoadPagingAsync()
         {
             // set the record to null to force a reload of the records
             this.Records = null;
             // if requested adds a default service function to the delegate
             this.PageLoaderAsync = new IControllerPagingService<TRecord>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
             // loads the paging object
-            await this.LoadAsync(page);
+            await this.LoadAsync();
             // Trigger event so any listeners get notified
             this.TriggerListChangedEvent(this);
         }
@@ -647,10 +647,10 @@ namespace CEC.Blazor.Services
         /// Async Method to reload pagination.  Normally called by an external event when fitering is applied to the dataset
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> LoadAsync(int page = 1)
+        public async Task<bool> LoadAsync()
         {
             // Reset the page to 1
-            this.CurrentPage = page;
+            this.CurrentPage = 1;
             // Check if we have a sort column, if not set to the default column
             if (!string.IsNullOrEmpty(this.DefaultSortColumn)) this.SortColumn = this.DefaultSortColumn;
             // Set the sort direction to the default
