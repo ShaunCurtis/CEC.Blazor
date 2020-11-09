@@ -57,7 +57,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// The type of Modal Dialog to use for modals
         /// </summary>
-        public Type ModalType { get; set; } = typeof(BootstrapModal);
+        [Parameter] public Type ModalType { get; set; } = typeof(BootstrapModal);
 
         /// <summary>
         /// Property referencing the Bootstrap modal instance
@@ -212,12 +212,11 @@ namespace CEC.Blazor.Components.Base
         /// <param name="builder">The <see cref="RenderTreeBuilder"/>.</param>
         protected virtual void BuildRenderTree(RenderTreeBuilder builder)
         {
+            // Adds cascadingvalue for the ViewManager
             builder.OpenComponent<CascadingValue<ViewManager>>(0);
             builder.AddAttribute(1, "Value", this);
+            // Get the layout render fragment
             builder.AddAttribute(2, "ChildContent", this._layoutViewFragment);
-            builder.CloseComponent();
-            builder.OpenComponent(3, ModalType);
-            builder.AddComponentReferenceCapture(4, modal => this.ModalDialog = (IModal)modal);
             builder.CloseComponent();
         }
 
@@ -227,16 +226,22 @@ namespace CEC.Blazor.Components.Base
         private RenderFragment _layoutViewFragment =>
             builder =>
             {
+                // Adds the Modal Dialog infrastructure
                 var pageLayoutType = ViewData?.PageType?.GetCustomAttribute<LayoutAttribute>()?.LayoutType ?? DefaultLayout;
+                builder.OpenComponent(0, ModalType);
+                builder.AddComponentReferenceCapture(1, modal => this.ModalDialog = (IModal)modal);
+                builder.CloseComponent();
+                // Adds the Layout component
                 if (pageLayoutType != null)
                 {
-                    builder.OpenComponent<LayoutView>(0);
-                    builder.AddAttribute(1, nameof(LayoutView.Layout), pageLayoutType);
+                    builder.OpenComponent<LayoutView>(2);
+                    builder.AddAttribute(3, nameof(LayoutView.Layout), pageLayoutType);
+                    // Adds the view render fragment into the layout component
                     if (this._ViewData != null)
-                        builder.AddAttribute(2, nameof(LayoutView.ChildContent), this._viewFragment);
+                        builder.AddAttribute(4, nameof(LayoutView.ChildContent), this._viewFragment);
                     else
                     {
-                        builder.AddContent(0, this._fallbackFragment);
+                        builder.AddContent(2, this._fallbackFragment);
                     }
                     builder.CloseComponent();
                 }
@@ -252,10 +257,11 @@ namespace CEC.Blazor.Components.Base
         private RenderFragment _viewFragment =>
             builder =>
             {
+                // Adds the defined view with any defined parameters
                 builder.OpenComponent(0, _ViewData.PageType);
-                if (this._ViewData.ViewValues != null)
+                if (this._ViewData.ViewParameters != null)
                 {
-                    foreach (var kvp in _ViewData.ViewValues)
+                    foreach (var kvp in _ViewData.ViewParameters)
                     {
                         builder.AddAttribute(1, kvp.Key, kvp.Value);
                     }

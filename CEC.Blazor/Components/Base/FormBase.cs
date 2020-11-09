@@ -66,6 +66,11 @@ namespace CEC.Blazor.Components.Base
         public string CurrentUserID { get; set; }
 
         /// <summary>
+        /// Check if ViewManager exists
+        /// </summary>
+        public bool IsViewManager => this.ViewManager != null;
+
+        /// <summary>
         /// UserName without the domain name
         /// </summary>
         public string CurrentUserName => (!string.IsNullOrEmpty(this.CurrentUser)) && this.CurrentUser.Contains("@") ? this.CurrentUser.Substring(0, this.CurrentUser.IndexOf("@")) : string.Empty;

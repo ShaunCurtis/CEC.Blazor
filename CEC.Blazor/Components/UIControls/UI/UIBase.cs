@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CEC.Blazor.Components.Base;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace CEC.Blazor.Components.UIControls
     /// will force the component tag to be a div. 
     /// </summary>
 
-    public abstract class UIBase : IComponent
+    public abstract class UIBase : ControlBase
     {
 
         #region Public Properties

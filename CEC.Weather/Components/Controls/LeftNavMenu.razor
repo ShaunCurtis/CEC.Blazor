@@ -1,15 +1,10 @@
-﻿@namespace CEC.Weather.Components
-
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
-@using System;
-@using System.Collections.Generic;
-@using System.Diagnostics;
-@using Microsoft.AspNetCore.Components.Rendering;
+﻿@using Microsoft.AspNetCore.Components.Routing
 @using CEC.Blazor.Components.Base
 @using CEC.Weather.Views
-@using CEC.Blazor.Components.UIControls 
+@using CEC.Blazor.Components.UIControls
 
+@namespace CEC.Weather.Components
+@inherits Component
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">CEC.Blazor.Server</a>
@@ -21,22 +16,22 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
-            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Views.Index)" @onclick="e => this.ViewManager.LoadViewAsync<CEC.Weather.Views.Index>()">
+            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Views.Index)">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </UIViewLink>
         </li>
         <li class="nav-item px-3">
-            <UIViewLink class="nav-link" ViewType="typeof(Counter)" @onclick="e => this.ViewManager.LoadViewAsync<Counter>()">
+            <UIViewLink class="nav-link" ViewType="typeof(Counter)">
                 <span class="oi oi-cloudy" aria-hidden="true"></span> Counter
             </UIViewLink>
         </li>
         <li class="nav-item px-3">
-            <UIViewLink class="nav-link" ViewType="typeof(WeatherForecastListView)" @onclick="e => this.ViewManager.LoadViewAsync<WeatherForecastListView>()">
+            <UIViewLink class="nav-link" ViewType="typeof(WeatherForecastListView)">
                 <span class="oi oi-cloudy" aria-hidden="true"></span> Normal Weather
             </UIViewLink>
         </li>
         <li class="nav-item px-3">
-            <UIViewLink class="nav-link" ViewType="typeof(WeatherForecastListModalView)" @onclick="e => this.ViewManager.LoadViewAsync<WeatherForecastListModalView>()">
+            <UIViewLink class="nav-link" ViewType="typeof(WeatherForecastListModalView)">
                 <span class="oi oi-cloud-upload" aria-hidden="true"></span> Modal Weather
             </UIViewLink>
         </li>
@@ -67,33 +62,4 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-
-    private void weatherforecast()
-    {
-        var dict = new Dictionary<string, object>();
-        var viewdata = new ViewData(typeof(WeatherForecastListView), dict);
-        if (this.ViewManager != null) ViewManager.LoadViewAsync(viewdata);
-    }
-
-    private void weatherforecastmodal()
-    {
-        var dict = new Dictionary<string, object>();
-        var viewdata = new ViewData(typeof(WeatherForecastListModalView), dict);
-        if (this.ViewManager != null) ViewManager.LoadViewAsync(viewdata);
-    }
-
-    private void counter()
-    {
-        var dict = new Dictionary<string, object>();
-        var viewdata = new ViewData(typeof(Counter), dict);
-        if (this.ViewManager != null) ViewManager.LoadViewAsync(viewdata);
-    }
-
-    private void fallback()
-    {
-        var dict = new Dictionary<string, object>();
-        var viewdata = new ViewData(typeof(Counter), dict);
-        if (this.ViewManager != null) ViewManager.LoadViewAsync(viewdata);
-    }
-
 }

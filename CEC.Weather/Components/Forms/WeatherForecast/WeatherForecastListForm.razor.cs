@@ -36,7 +36,7 @@ namespace CEC.Weather.Components
         /// <param name="id"></param>
         protected void OnView(int id)
         {
-            if (this.UIOptions.UseModalViewer && this._BootstrapModal != null) this.OnModalAsync<WeatherForecastViewerForm>(id);
+            if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherForecastViewerForm>(id);
             else this.OnViewAsync<WeatherForecastViewerView>(id);
         }
 
@@ -46,7 +46,7 @@ namespace CEC.Weather.Components
         /// <param name="id"></param>
         protected void OnEdit(int id)
         {
-            if (this.UIOptions.UseModalViewer && this._BootstrapModal != null) this.OnModalAsync<WeatherForecastEditorForm>(id);
+            if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherForecastEditorForm>(id);
             else this.OnViewAsync<WeatherForecastEditorView>(id);
         }
 

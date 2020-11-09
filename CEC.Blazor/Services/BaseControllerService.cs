@@ -397,14 +397,14 @@ namespace CEC.Blazor.Services
         /// loads the delegate with the default service GetDataPage method and loads the first page
         /// Can be overridden for more complex situations
         /// </summary>
-        public async virtual Task LoadPagingAsync(bool withDelegate = true)
+        public async virtual Task LoadPagingAsync(int page = 1)
         {
             // set the record to null to force a reload of the records
             this.Records = null;
             // if requested adds a default service function to the delegate
-            if (withDelegate) this.PageLoaderAsync = new IControllerPagingService<TRecord>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
+            this.PageLoaderAsync = new IControllerPagingService<TRecord>.PageLoaderDelegateAsync(this.GetDataPageWithSortingAsync);
             // loads the paging object
-            await this.LoadAsync();
+            await this.LoadAsync(page);
             // Trigger event so any listeners get notified
             this.TriggerListChangedEvent(this);
         }
@@ -647,10 +647,10 @@ namespace CEC.Blazor.Services
         /// Async Method to reload pagination.  Normally called by an external event when fitering is applied to the dataset
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> LoadAsync()
+        public async Task<bool> LoadAsync(int page = 1)
         {
             // Reset the page to 1
-            this.CurrentPage = 1;
+            this.CurrentPage = page;
             // Check if we have a sort column, if not set to the default column
             if (!string.IsNullOrEmpty(this.DefaultSortColumn)) this.SortColumn = this.DefaultSortColumn;
             // Set the sort direction to the default
@@ -659,8 +659,6 @@ namespace CEC.Blazor.Services
             if (this.PageLoaderAsync != null) this.PagedRecords = await this.PageLoaderAsync();
             // Set the block back to the start
             await this.ChangeBlockAsync(0);
-            //  Force a UI update as everything has changed
-            this.PageHasChanged?.Invoke(this, this.CurrentPage);
             return true;
         }
 
@@ -671,7 +669,7 @@ namespace CEC.Blazor.Services
         {
             // Check if we have a method loaded in the PageLoaderAsync delegate and if so run it
             if (this.PageLoaderAsync != null) this.PagedRecords = await this.PageLoaderAsync();
-            //  Force a UI update as something has changed
+            // Raise the PageHasChanged event
             this.PageHasChanged?.Invoke(this, this.CurrentPage);
         }
 

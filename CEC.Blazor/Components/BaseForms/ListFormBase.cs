@@ -21,11 +21,6 @@ namespace CEC.Blazor.Components.BaseForms
         public IControllerPagingService<TRecord> Paging => this.Service != null ? (IControllerPagingService<TRecord>)this.Service : null;
 
         /// <summary>
-        /// Property referencing the Bootstrap modal instance
-        /// </summary>
-        protected BootstrapModal _BootstrapModal { get; set; }
-
-        /// <summary>
         /// Boolean used by Filter set to true if you want empty recordset if no filter is set
         /// </summary>
         [Parameter]
@@ -39,6 +34,7 @@ namespace CEC.Blazor.Components.BaseForms
 
         protected async override Task OnRenderAsync(bool firstRender)
         {
+            var page = 1;
             if (this.IsService)
             {
                 if (firstRender)
@@ -46,11 +42,13 @@ namespace CEC.Blazor.Components.BaseForms
                     // Reset the Service if this is the first load
                     await this.Service.Reset();
                     this.ListTitle = string.IsNullOrEmpty(this.ListTitle) ? $"List of {this.Service.RecordConfiguration.RecordListDecription}" : this.ListTitle;
+
                 }
                 // Load the filters for the recordset
                 this.LoadFilter();
+                if (this.IsViewManager && !this.ViewManager.ViewData.GetFieldAsInt("Page", out page)) page = 1;
                 // Load the paged recordset
-                await this.Service.LoadPagingAsync();
+                await this.Service.LoadPagingAsync(page);
                 this.Loading = false;
             }
             await base.OnRenderAsync(firstRender);
@@ -61,7 +59,7 @@ namespace CEC.Blazor.Components.BaseForms
         {
             if (firstRender)
             {
-                this.Paging.PageHasChanged += this.UpdateUI;
+                this.Paging.PageHasChanged += this.OnPageChanged;
                 this.Service.ListHasChanged += this.OnRecordsUpdate;
                 this.Service.FilterHasChanged += this.FilterUpdated;
             }
@@ -74,6 +72,12 @@ namespace CEC.Blazor.Components.BaseForms
         protected virtual void LoadFilter()
         {
             if (IsService) this.Service.FilterList.OnlyLoadIfFilters = this.OnlyLoadIfFilter;
+        }
+
+        protected void OnPageChanged(object sender, int page)
+        {
+            if (this.IsViewManager) this.ViewManager.ViewData.SetField("Page", page);
+            InvokeAsync(this.Render);
         }
 
         /// <summary>
@@ -148,8 +152,9 @@ namespace CEC.Blazor.Components.BaseForms
         {
             try
             {
+                this.Paging.PageHasChanged -= this.OnPageChanged;
                 this.Service.ListHasChanged -= this.OnRecordsUpdate;
-                this.Paging.PageHasChanged -= this.UpdateUI;
+                this.Service.FilterHasChanged -= this.FilterUpdated;
             }
             catch { }
             base.Dispose();

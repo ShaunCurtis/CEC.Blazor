@@ -156,7 +156,7 @@ namespace CEC.Blazor.Services
         /// Async Method to reload pagination.  Normally called by an external event when fitering is applied to the dataset
         /// </summary>
         /// <returns></returns>
-        public Task<bool> LoadAsync();
+        public Task<bool> LoadAsync(int page = 1);
 
         /// <summary>
         /// Method to trigger the page Changed Event

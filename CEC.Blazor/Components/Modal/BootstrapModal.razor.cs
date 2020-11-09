@@ -1,4 +1,5 @@
-﻿using CEC.Blazor.Components.Modal;
+﻿using CEC.Blazor.Components.Base;
+using CEC.Blazor.Components.Modal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;

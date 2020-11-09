@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using CEC.Blazor.Data;
 using CEC.Blazor.Services;
+using CEC.Blazor.Components.Base;
 
 namespace CEC.Blazor.Components
 {
-    public partial class PagingControl<TRecord> : ComponentBase where TRecord : IDbRecord<TRecord>, new()
+    public partial class PagingControl<TRecord> : ControlBase where TRecord : IDbRecord<TRecord>, new()
     {
         [CascadingParameter]
         public IControllerPagingService<TRecord> _Paging { get; set; }
@@ -23,24 +24,23 @@ namespace CEC.Blazor.Components
 
         private bool IsPagination => this.Paging != null && this.Paging.IsPagination;
 
-        protected override void OnInitialized()
+        protected override Task OnRenderAsync(bool firstRender)
         {
-            // Check if we have a cascaded IControllerPagingService if so use it
-            this.Paging = this._Paging?? this.Paging;
-            base.OnInitialized();
-        }
-        protected override Task OnParametersSetAsync()
-        {
+            if (firstRender)
+            {
+                // Check if we have a cascaded IControllerPagingService if so use it
+                this.Paging = this._Paging ?? this.Paging;
+            }
             if (this.IsPaging)
             {
                 this.Paging.PageHasChanged += this.UpdateUI;
                 if (this.DisplayType == PagingDisplayType.Narrow) Paging.PagingBlockSize = 4;
                 if (BlockSize > 0) Paging.PagingBlockSize = this.BlockSize;
             }
-            return base.OnParametersSetAsync();
+            return base.OnRenderAsync(firstRender);
         }
 
-        protected void UpdateUI(object sender, int recordno) => InvokeAsync(StateHasChanged);
+        protected void UpdateUI(object sender, int recordno) => InvokeAsync(Render);
 
         private string IsCurrent(int i) => i == this.Paging.CurrentPage ? "active" : string.Empty;
     }

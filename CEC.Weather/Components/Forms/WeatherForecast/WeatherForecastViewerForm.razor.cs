@@ -24,11 +24,12 @@ namespace CEC.Weather.Components
             return base.OnRenderAsync(firstRender);
         }
 
-        protected void NextRecord(int increment) 
+        protected async void NextRecord(int increment) 
         {
             var rec = (this._ID + increment) == 0 ? 1 : this._ID + increment;
             rec = rec > this.Service.BaseRecordCount ? this.Service.BaseRecordCount : rec;
-            this.NavManager.NavigateTo($"/WeatherForecast/View?id={rec}");
+            this.ID = rec;
+            await this.ResetAsync();
         }
     }
 }

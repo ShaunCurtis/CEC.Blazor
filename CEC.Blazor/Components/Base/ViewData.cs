@@ -15,9 +15,14 @@ namespace CEC.Blazor.Components.Base
         public Type PageType { get; }
 
         /// <summary>
-        /// Gets route parameter values extracted from the matched route.
+        /// Parameter values to add to the Route when created
         /// </summary>
-        public Dictionary<string, object> ViewValues { get; private set; }
+        public Dictionary<string, object> ViewParameters { get; private set; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// View values that can be used by the view and subcomponents
+        /// </summary>
+        public Dictionary<string, object> ViewFields { get; private set; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Constructs an instance of <see cref="ViewData"/>.
@@ -29,32 +34,81 @@ namespace CEC.Blazor.Components.Base
             if (pageType == null) throw new ArgumentNullException(nameof(pageType));
             if (!typeof(IView).IsAssignableFrom(pageType)) throw new ArgumentException($"The view must implement {nameof(IView)}.", nameof(pageType));
             this.PageType = pageType;
-            this.ViewValues = viewValues;
+            this.ViewParameters = viewValues;
         }
 
-        public bool GetValue(string key, out object value)
+        public bool GetParameter(string key, out object value)
         {
             value = null;
-            if (this.ViewValues.ContainsKey(key)) value = this.ViewValues[key];
-            return this.ViewValues.ContainsKey(key);
+            if (this.ViewParameters.ContainsKey(key)) value = this.ViewParameters[key];
+            return this.ViewParameters.ContainsKey(key);
         }
 
-        public object GetValue(string key)
+        public object GetParameter(string key)
         {
-            if (this.ViewValues.ContainsKey(key)) return this.ViewValues[key];
+            if (this.ViewParameters.ContainsKey(key)) return this.ViewParameters[key];
             else return null;
         }
 
-        public string GetValueAsString(string key)
+        public bool GetParameterAsString(string key, out string value)
         {
-            if (this.ViewValues.ContainsKey(key) && this.ViewValues[key] is string) return (string)this.ViewValues[key];
-            else return string.Empty;
+                value = string.Empty;
+                var val = GetParameter(key);
+                if (val is string)
+                {
+                    value = (string)this.ViewFields[key];
+                    return true;
+                }
+                return false;
         }
 
-        public void SetValue(string key, object value)
+        public void SetParameter(string key, object value)
         {
-            if (this.ViewValues.ContainsKey(key)) this.ViewValues[key] = value;
-            else this.ViewValues.Add(key, value);
+            if (this.ViewParameters.ContainsKey(key)) this.ViewParameters[key] = value;
+            else this.ViewParameters.Add(key, value);
+        }
+
+        public bool GetField(string key, out object value)
+        {
+            value = null;
+            if (this.ViewFields.ContainsKey(key)) value = this.ViewFields[key];
+            return this.ViewFields.ContainsKey(key);
+        }
+
+        public object GetField(string key)
+        {
+            if (this.ViewFields.ContainsKey(key)) return this.ViewFields[key];
+            else return null;
+        }
+
+        public bool GetFieldAsString(string key, out string value)
+        {
+            value = string.Empty;
+            var val = GetField(key);
+            if (val is string)
+            {
+                value = (string)this.ViewFields[key];
+                return true;
+            }
+            return false;
+        }
+
+        public bool GetFieldAsInt(string key, out int value)
+        {
+            value = 0;
+            var val = GetField(key);
+            if (val is int)
+            {
+                value = (int)this.ViewFields[key];
+                return true;
+            }
+            return false;
+        }
+
+        public void SetField(string key, object value)
+        {
+            if (this.ViewFields.ContainsKey(key)) this.ViewFields[key] = value;
+            else this.ViewFields.Add(key, value);
         }
 
 

@@ -201,7 +201,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Method to load up the Paged Data to display
         /// </summary>
-        public Task LoadPagingAsync(bool withDelegate = true);
+        public Task LoadPagingAsync(int page = 1);
 
         /// <summary>
         /// Method to get a page of data from the database - used during paging operations
