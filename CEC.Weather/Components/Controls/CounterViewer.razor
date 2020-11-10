@@ -1,0 +1,25 @@
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.Weather.Components
+@using CEC.Blazor.Components.Base
+
+@namespace CEC.Weather.Components
+
+@inherits Component
+
+<div class="bg-light text-dark p-3 m-2">
+    <h4>Counter Viewer Component</h4>
+
+    <p>Current count: @CurrentCount</p>
+
+    <p>Object Current count: @CounterInfo.Counter</p>
+
+    <p>Current Renders: @currentRenders</p>
+
+    <p>Render Type: @renderType</p>
+
+    <p>Parameter Set Requests: @ParameterSetRequests</p>
+
+</div>

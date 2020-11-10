@@ -7,6 +7,7 @@ namespace CEC.Blazor.Components.Base
 {
     /// <summary>
     /// Abstract Base Class implementing basic IComponent functions
+    /// A lot of the code is common with ComponentBase
     /// </summary>
     public abstract class Component : IComponent, IHandleEvent, IHandleAfterRender
     {
@@ -54,15 +55,10 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         protected void Render()
         {
-            if (_hasPendingQueuedRender)
-            {
-                return;
-            }
-
+            if (_hasPendingQueuedRender) return;
             if (_hasNeverRendered || ShouldRender())
             {
                 _hasPendingQueuedRender = true;
-
                 try
                 {
                     _renderHandle.Render(_renderFragment);
@@ -87,7 +83,10 @@ namespace CEC.Blazor.Components.Base
         /// <param name="firstRender"></param>
         /// <returns></returns>
         protected virtual Task OnAfterRenderAsync(bool firstRender)
-            => Task.CompletedTask;
+        {
+            this.Loading = false;
+            return Task.CompletedTask;
+        }
 
         /// <summary>
         /// Executes the supplied work item on the associated renderer's
@@ -122,7 +121,7 @@ namespace CEC.Blazor.Components.Base
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public virtual async Task SetParametersAsync(ParameterView parameters)
+        public async Task SetParametersAsync(ParameterView parameters)
         {
             parameters.SetParameterProperties(this);
             await this._StartRenderAsync();
@@ -145,10 +144,10 @@ namespace CEC.Blazor.Components.Base
         /// <returns></returns>
         private async Task _StartRenderAsync()
         {
-            if (this._firstRender) this.Render();
+            this.Loading = true;
             await this.OnRenderAsync(this._firstRender);
             this._firstRender = false;
-            this.Render();
+            await InvokeAsync(Render);
         }
 
         /// <summary>
@@ -168,7 +167,7 @@ namespace CEC.Blazor.Components.Base
         {
             var task = callback.InvokeAsync(arg);
             var shouldAwaitTask = task.Status != TaskStatus.RanToCompletion && task.Status != TaskStatus.Canceled;
-            this.Render();
+            InvokeAsync(Render);
             return shouldAwaitTask ? CallRenderOnAsyncCompletion(task) : Task.CompletedTask;
         }
 
@@ -190,17 +189,13 @@ namespace CEC.Blazor.Components.Base
         /// <returns></returns>
         private async Task CallRenderOnAsyncCompletion(Task task)
         {
-            try
+            try { await task; }
+            catch
             {
-                await task;
-            }
-            catch // avoiding exception filters for AOT runtime support
-            {
-                // Ignore exceptions from task cancellations, but don't bother issuing a state change.
                 if (task.IsCanceled) return;
                 else throw;
             }
-            Render();
+            await InvokeAsync(Render);
         }
     }
 }
