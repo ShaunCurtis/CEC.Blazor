@@ -8,6 +8,7 @@ namespace CEC.Blazor.Components.Base
     /// <summary>
     /// Abstract Base Class implementing basic IComponent functions
     /// A lot of the code is common with ComponentBase
+    /// Blazor Team copyright notices recognised.
     /// </summary>
     public abstract class Component : IComponent, IHandleEvent, IHandleAfterRender
     {
@@ -72,6 +73,12 @@ namespace CEC.Blazor.Components.Base
         }
 
         /// <summary>
+        /// Runs Render on the UI Thread
+        /// </summary>
+        /// <returns></returns>
+        protected async Task RenderAsync() => await this.InvokeAsync(Render);
+
+        /// <summary>
         /// Returns a flag to indicate whether the component should render.
         /// </summary>
         /// <returns></returns>
@@ -84,7 +91,6 @@ namespace CEC.Blazor.Components.Base
         /// <returns></returns>
         protected virtual Task OnAfterRenderAsync(bool firstRender)
         {
-            this.Loading = false;
             return Task.CompletedTask;
         }
 
@@ -134,6 +140,7 @@ namespace CEC.Blazor.Components.Base
         public virtual async Task ResetAsync()
         {
             this._firstRender = true;
+            this.Loading = true;
             await this._StartRenderAsync();
         }
 
@@ -145,9 +152,11 @@ namespace CEC.Blazor.Components.Base
         private async Task _StartRenderAsync()
         {
             this.Loading = true;
+            await RenderAsync();
             await this.OnRenderAsync(this._firstRender);
             this._firstRender = false;
-            await InvokeAsync(Render);
+            this.Loading = false;
+            await RenderAsync();
         }
 
         /// <summary>

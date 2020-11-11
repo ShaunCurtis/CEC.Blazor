@@ -73,7 +73,7 @@ namespace CEC.Blazor.Components.BaseForms
                 // Set the Loading flag 
                 this.IsDataLoading = true;
                 //  call StateHasChanged only if we are responding to an event.  In the component loading cycle it will be called for us shortly
-                if (!firstload) Render();
+                if (!firstload) await RenderAsync();
                 if (this.IsModal && this.ViewManager.ModalDialog.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > -1 ? (int)modalid : this.ID;
 
                 // Get the current record - this will check if the id is different from the current record and only update if it's changed
@@ -85,7 +85,7 @@ namespace CEC.Blazor.Components.BaseForms
                 // Set the Loading flag
                 this.IsDataLoading = false;
                 //  call Render only if we are responding to an event.  In the component loading cycle it will be called for us shortly
-                if (!firstload) Render();
+                if (!firstload) await RenderAsync();
             }
         }
     }

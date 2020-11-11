@@ -1,25 +1,20 @@
 ﻿using CEC.Blazor.Components;
 using CEC.Blazor.Components.Base;
+using CEC.Weather.Components.Views;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CEC.Weather.Components.Views
+namespace CEC.Weather.Components
 {
-    public partial class Counter : Component, IView
+    public partial class StaticViewer : Component
     {
-        public class CounterInfo
-        {
-            public int Counter { get; set; } = 0;
-        }
-
         [CascadingParameter]
         public ViewManager ViewManager { get; set; }
 
-        public CounterInfo counterInfo { get; set; } = new CounterInfo();
-        private int objectcount => counterInfo.Counter;
+        [Parameter] public int CurrentCount { get; set; } = 0;
 
-        private int currentCount = 1;
+        [Parameter] public Counter.CounterInfo CounterInfo { get; set; } = new Counter.CounterInfo();
 
         private int ParameterSetRequests = 0;
 
@@ -27,19 +22,6 @@ namespace CEC.Weather.Components.Views
 
         private string renderType = "None";
 
-        private void IncrementCount()
-        {
-            currentCount++;
-        }
-        private void IncrementObjectCount()
-        {
-            counterInfo.Counter++;
-        }
-
-        private void Reload()
-        {
-            this.ViewManager.LoadViewAsync(this.ViewManager.ViewData);
-        }
 
         protected override Task OnRenderAsync(bool firstRender)
         {

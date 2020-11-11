@@ -92,11 +92,11 @@ namespace CEC.Blazor.Components.BaseForms
             if (this.IsService)
             {
                 this.Loading = true;
-                this.Render();
+                await this.RenderAsync();
                 await this.Paging.LoadAsync();
             }
             this.Loading = false;
-            this.Render();
+            await this.RenderAsync();
         }
 
         /// <summary>

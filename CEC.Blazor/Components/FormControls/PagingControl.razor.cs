@@ -40,7 +40,7 @@ namespace CEC.Blazor.Components
             return base.OnRenderAsync(firstRender);
         }
 
-        protected void UpdateUI(object sender, int recordno) => InvokeAsync(Render);
+        protected async void UpdateUI(object sender, int recordno) => await RenderAsync();
 
         private string IsCurrent(int i) => i == this.Paging.CurrentPage ? "active" : string.Empty;
     }

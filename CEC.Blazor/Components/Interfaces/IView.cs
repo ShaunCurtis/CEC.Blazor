@@ -13,8 +13,7 @@ namespace CEC.Blazor.Components
     {
         public Guid GUID => Guid.NewGuid();
 
-        [CascadingParameter]
-        public ViewManager ViewManager { get; set; }
+        [CascadingParameter] public ViewManager ViewManager { get; set; }
 
     }
 }

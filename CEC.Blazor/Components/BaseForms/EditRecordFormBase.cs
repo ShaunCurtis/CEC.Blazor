@@ -124,7 +124,7 @@ namespace CEC.Blazor.Components.BaseForms
                 // Set the alert message to the return result
                 this.AlertMessage.SetAlert(this.Service.TaskResult);
                 // Trigger a component State update - buttons and alert need to be sorted
-                Render();
+                await RenderAsync();
             }
             else this.AlertMessage.SetAlert("A validation error occurred.  Check individual fields for the relevant error.", Bootstrap.ColourCode.danger);
             return ok;

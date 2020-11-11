@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
 using Microsoft.JSInterop;
+using Microsoft.AspNetCore.WebUtilities;
+using CEC.Blazor.Extensions;
 
 namespace CEC.Blazor.Components.Base
 {
@@ -17,6 +19,7 @@ namespace CEC.Blazor.Components.Base
     /// </summary>
     public class ViewManager : IComponent
     {
+        [Inject] private NavigationManager NavManager { get; set; }
 
         [Inject] private IJSRuntime _js { get; set; }
 
@@ -122,16 +125,16 @@ namespace CEC.Blazor.Components.Base
         public Task SetParametersAsync(ParameterView parameters)
         {
             parameters.SetParameterProperties(this);
-            this.ViewHasChanged();
+            this.ReadViewDataFromQueryString();
+            this.Render();
             return Task.CompletedTask;
-            //return this.LoadView();
         }
 
         /// <summary>
         /// Method to force a UI update
         /// Queues a render of the component
         /// </summary>
-        public void ViewHasChanged()
+        private void Render() => InvokeAsync(() =>
         {
             if (!this._RenderEventQueued)
             {
@@ -139,6 +142,7 @@ namespace CEC.Blazor.Components.Base
                 _renderHandle.Render(_componentRenderFragment);
             }
         }
+        );
 
         /// <summary>
         /// Method tp load a new view
@@ -154,7 +158,7 @@ namespace CEC.Blazor.Components.Base
                 {
                     throw new InvalidOperationException($"The {nameof(ViewManager)} component requires a non-null value for the parameter {nameof(ViewData)}.");
                 }
-                this.ViewHasChanged();
+                this.Render();
             }
             return Task.CompletedTask;
         }
@@ -248,16 +252,24 @@ namespace CEC.Blazor.Components.Base
         private RenderFragment _viewFragment =>
             builder =>
             {
-                // Adds the defined view with any defined parameters
-                builder.OpenComponent(0, _ViewData.PageType);
-                if (this._ViewData.ViewParameters != null)
+                try
                 {
-                    foreach (var kvp in _ViewData.ViewParameters)
+                    // Adds the defined view with any defined parameters
+                    builder.OpenComponent(0, _ViewData.PageType);
+                    if (this._ViewData.ViewParameters != null)
                     {
-                        builder.AddAttribute(1, kvp.Key, kvp.Value);
+                        foreach (var kvp in _ViewData.ViewParameters)
+                        {
+                            builder.AddAttribute(1, kvp.Key, kvp.Value);
+                        }
                     }
+                    builder.CloseComponent();
                 }
-                builder.CloseComponent();
+                catch
+                {
+                    // If the pagetype causes an error - load the fallback
+                    builder.AddContent(0, this._fallbackFragment);
+                }
             };
 
         /// <summary>
@@ -290,5 +302,70 @@ namespace CEC.Blazor.Components.Base
             if (action != ExitState) _js.InvokeAsync<bool>("setExitCheck", action);
             ExitState = action;
         }
+
+        /// <summary>
+        /// Method to read ViewData information from the Uri querystring
+        /// </summary>
+        private void ReadViewDataFromQueryString()
+        {
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            var vals = QueryHelpers.ParseQuery(uri.Query);
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("Class", out var classname))
+            {
+                var type = this.FindType(classname);
+                if (type != null) this.ViewData.PageType = type;
+            }
+            foreach (var set in vals)
+            {
+                if (set.Key.StartsWith("Param-")) {
+                    object value;
+                    if (Int32.TryParse(set.Value, out int intvalue)) value = intvalue;
+                    else if (Decimal.TryParse(set.Value, out decimal decvalue)) value = decvalue;
+                    else value = set.Value;
+                    this.ViewData.SetParameter(set.Key.Replace("Param-", ""), value);
+                }
+                if (set.Key.StartsWith("Field-"))
+                {
+                    this.ViewData.SetField(set.Key.Replace("Field-", ""), set.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        ///  Method to find a Type in the AppDomain Assemblies
+        /// </summary>
+        /// <param name="qualifiedTypeName"></param>
+        /// <returns></returns>
+        private Type FindType(string qualifiedTypeName)
+        {
+            Type t = Type.GetType(qualifiedTypeName);
+
+            if (t != null) return t;
+            else
+            {
+                foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    t = asm.GetType(qualifiedTypeName);
+                    if (t != null) return t;
+                }
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Executes the supplied work item on the associated renderer's
+        /// synchronization context.
+        /// </summary>
+        /// <param name="workItem">The work item to execute.</param>
+        protected Task InvokeAsync(Action workItem) => _renderHandle.Dispatcher.InvokeAsync(workItem);
+
+        /// <summary>
+        /// Executes the supplied work item on the associated renderer's
+        /// synchronization context.
+        /// </summary>
+        /// <param name="workItem">The work item to execute.</param>
+        protected Task InvokeAsync(Func<Task> workItem) => _renderHandle.Dispatcher.InvokeAsync(workItem);
+
+
     }
 }

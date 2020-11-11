@@ -20,8 +20,6 @@ namespace CEC.Blazor.WASM.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // the Services for the CEC.Blazor Library
             builder.Services.AddCECBlazor();
-            // the Services for the CEC.Routing Library
-            builder.Services.AddCECRouting();
             // the local application Services defined in ServiceCollectionExtensions.cs
             builder.Services.AddApplicationServices();
 

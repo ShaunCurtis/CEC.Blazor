@@ -12,7 +12,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Gets the type of the page matching the route.
         /// </summary>
-        public Type PageType { get; private set;}
+        public Type PageType { get; set;}
 
         /// <summary>
         /// Parameter values to add to the Route when created
@@ -34,7 +34,7 @@ namespace CEC.Blazor.Components.Base
             if (pageType == null) throw new ArgumentNullException(nameof(pageType));
             if (!typeof(IView).IsAssignableFrom(pageType)) throw new ArgumentException($"The view must implement {nameof(IView)}.", nameof(pageType));
             this.PageType = pageType;
-            this.ViewParameters = viewValues;
+            if (viewValues != null) this.ViewParameters = viewValues;
         }
 
         public bool GetParameter(string key, out object value)

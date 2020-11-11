@@ -47,7 +47,7 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void UIStateChanged(object sender, EventArgs e) => InvokeAsync(this.Render);
+        public async void UIStateChanged(object sender, EventArgs e) => await RenderAsync();
 
         /// <summary>
         /// Sets ther alert with a Danger Message

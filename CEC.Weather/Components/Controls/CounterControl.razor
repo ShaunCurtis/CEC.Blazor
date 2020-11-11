@@ -1,32 +1,23 @@
-﻿@using System.Net.Http
-@using System.Net.Http.Json
-@using CEC.Blazor.Components
-@using CEC.Blazor.Components.BaseForms
-@using CEC.Blazor.Components.UIControls
-@using CEC.Weather.Data
-@using CEC.Weather.Components
-@using CEC.Blazor.Components.Base
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
+﻿@using CEC.Blazor.Components.Base
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
 
-@implements IView
 
-@namespace CEC.Weather.Components.Views
+@namespace CEC.Weather.Components
 
 @inherits Component
 
-<div class="bg-secondary text-white p-1 m-1">
+<div class="bg-dark text-white p-1 m-1">
 
     <div class="p-3 m-0">
 
-        <h4>View</h4>
+        <h4>Counter Component</h4>
 
         <div class="container font-weight-bold">
             <div class="row">
                 <div class="col">
-                    Current count: @currentCount
+                    Current count: @CurrentCount
                 </div>
                 <div class="col">
                     Object Current count: @objectcount
@@ -35,7 +26,8 @@
                 </div>
             </div>
         </div>
-        <div class="text-right mt-2">
+        <div class="text-right" mt-2>
+
             <button class="btn btn-primary" @onclick="IncrementCount">Add Count</button>
 
             <button class="btn btn-primary" @onclick="IncrementObjectCount">Add Object Count</button>
@@ -44,14 +36,9 @@
 
             <button class="btn btn-warning" @onclick="ResetAsync">Reset</button>
 
-            <button class="btn btn-danger" @onclick="Reload">Reload</button>
         </div>
         <div>
-            <StaticViewer CurrentCount="this.currentCount" CounterInfo="this.counterInfo"></StaticViewer>
-
-            <CounterViewer CurrentCount="this.currentCount" CounterInfo="this.counterInfo"></CounterViewer>
-
-            <CounterControl CurrentCount="this.currentCount" counterInfo="this.counterInfo"></CounterControl>
+            <StaticViewer CurrentCount="CurrentCount" CounterInfo="this.counterInfo"></StaticViewer>
         </div>
     </div>
 
@@ -70,5 +57,3 @@
     </div>
 
 </div>
-
-
