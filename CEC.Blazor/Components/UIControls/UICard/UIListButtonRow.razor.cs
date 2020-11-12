@@ -2,7 +2,7 @@
 
 namespace CEC.Blazor.Components.UIControls
 {
-    public partial class UIListButtonRow : UICardListBase, IRecordNavigation
+    public partial class UIListButtonRow : UICardListBase
     {
         public bool ShowButtons => this.UIWrapper?.UIOptions?.ShowButtons ?? true;
 
@@ -17,16 +17,15 @@ namespace CEC.Blazor.Components.UIControls
         [Parameter]
         public RenderFragment Buttons { get; set; }
 
+        // TODO - sort this exit strategy now we don't have a navigator
         private void Navigate(PageExitType exitType) {
             switch (exitType)
             {
                 case PageExitType.ExitToEditor:
                 case PageExitType.ExitToNew:
                     if (this.UIWrapper.OnEdit != null) this.UIWrapper.OnEdit.Invoke(0);
-                    else ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
                     break;
                 default:
-                    ((IRecordNavigation)this).NavigateTo(new EditorEventArgs(exitType, 0, this.RecordConfiguration.RecordName));
                     break;
             }
         }

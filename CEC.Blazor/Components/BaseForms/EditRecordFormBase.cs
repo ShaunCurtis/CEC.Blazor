@@ -13,7 +13,7 @@ namespace CEC.Blazor.Components.BaseForms
        where TContext : DbContext
     {
         /// <summary>
-        /// Boolean Property controlling Routing
+        /// Boolean Property exposing the Service Clean state
         /// </summary>
         public bool IsClean => this.Service?.IsClean ?? true;
 
@@ -40,21 +40,6 @@ namespace CEC.Blazor.Components.BaseForms
         public bool IsNewRecord => this.Service?.RecordID == 0 ? true : false;
 
         /// <summary>
-        /// Property to create the card border based on the clean state
-        /// </summary>
-        protected string CardBorderColour => this.IsClean ? "border-secondary" : "border-danger";
-
-        /// <summary>
-        /// Property to create the card header colour based on the clean state
-        /// </summary>
-        protected string CardHeaderColour => this.IsClean ? "bg-secondary text-white" : "bg-danger text-white";
-
-        /// <summary>
-        /// Property to set the CardCSS dependant upon the display type
-        /// </summary>
-        protected string CardCSS => this.IsModal ? "m-0" : "";
-
-        /// <summary>
         /// property used by the UIErrorHandler component
         /// </summary>
         protected override bool IsError { get => !(this.IsRecord && this.EditContext != null); }
@@ -65,7 +50,6 @@ namespace CEC.Blazor.Components.BaseForms
         protected async override Task LoadRecordAsync(bool firstLoad = false)
         {
             await base.LoadRecordAsync(firstLoad);
-
             //set up the Edit Context
             this.EditContext = new EditContext(this.Service.Record);
         }
@@ -155,15 +139,14 @@ namespace CEC.Blazor.Components.BaseForms
             // To escape a dirty component set IsClean manually and navigate.
             this.Service.SetDirtyState(false);
             // Sort the exit strategy
-            if (this.IsModal) ModalExit();
-            else this.Exit();
+            this.Exit();
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             this.Service.OnDirty -= this.OnRecordDirty;
             this.Service.OnClean -= this.OnRecordClean;
-            base.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

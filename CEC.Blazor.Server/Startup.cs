@@ -25,8 +25,6 @@ namespace CEC.Blazor.Server
             services.AddServerSideBlazor();
             // the Services for the CEC.Blazor Library
             services.AddCECBlazor();
-            // the Services for the CEC.Routing Library
-            services.AddCECRouting();
             // the local application Services defined in ServiceCollectionExtensions.cs
             services.AddApplicationServices(Configuration);
         }

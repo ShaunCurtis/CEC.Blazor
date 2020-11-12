@@ -3,9 +3,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using CEC.Routing;
 using CEC.Blazor.WASM.Client.Extensions;
 using CEC.Weather.Components;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CEC.Blazor.WASM.Client
 {
@@ -14,7 +15,7 @@ namespace CEC.Blazor.WASM.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("app");
+            builder.RootComponents.Add<CEC.Weather.Components.App>("app");
 
             // Added here as we don't have access to builder in AddApplicationServices
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

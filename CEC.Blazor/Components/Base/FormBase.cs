@@ -4,6 +4,7 @@ using CEC.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,25 +13,43 @@ namespace CEC.Blazor.Components.Base
 {
     public abstract class FormBase : Component, IForm, IDisposable
     {
-        /// <summary>
-        /// Injected Navigation Service
-        /// </summary>
-        [Inject]
-        protected NavigationManager NavManager { get; set; }
+        private IServiceScope _scope;
+
 
         /// <summary>
-        /// Injected Configuration service giving access to the Application Configurstion Data
+        /// Gets the scoped <see cref="IServiceProvider"/> that is associated with this component.
         /// </summary>
-        [Inject]
-        protected IConfiguration AppConfiguration { get; set; }
+        protected IServiceProvider ScopedServices
+        {
+            get
+            {
+                if (ScopeFactory == null) throw new InvalidOperationException("Services cannot be accessed before the component is initialized.");
+                if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
+                _scope ??= ScopeFactory.CreateScope();
+                return _scope.ServiceProvider;
+            }
+        }
 
         /// <summary>
-        /// Injected Property for the Browser Service
-        /// Provides access to JS based browser routiines such as fining the browser dimensions and resetting
-        /// the browser history
+        /// Scope Factory to manage Scoped Services
         /// </summary>
         [Inject]
-        public BrowserService BrowserService { get; set; }
+        protected IServiceScopeFactory ScopeFactory { get; set; } = default!;
+
+
+        ///// <summary>
+        ///// Injected Configuration service giving access to the Application Configurstion Data
+        ///// </summary>
+        //[Inject]
+        //protected IConfiguration AppConfiguration { get; set; }
+
+        ///// <summary>
+        ///// Injected Property for the Browser Service
+        ///// Provides access to JS based browser routiines such as fining the browser dimensions and resetting
+        ///// the browser history
+        ///// </summary>
+        //[Inject]
+        //public BrowserService BrowserService { get; set; }
 
         /// <summary>
         /// Cascaded Parameter if the Component is used in Modal mode
@@ -76,6 +95,11 @@ namespace CEC.Blazor.Components.Base
         public string CurrentUserName => (!string.IsNullOrEmpty(this.CurrentUser)) && this.CurrentUser.Contains("@") ? this.CurrentUser.Substring(0, this.CurrentUser.IndexOf("@")) : string.Empty;
 
         /// <summary>
+        /// Gets a value determining if the component and associated services have been disposed.
+        /// </summary>
+        protected bool IsDisposed { get; private set; }
+
+        /// <summary>
         /// OnRenderAsync Method from Component
         /// </summary>
         /// <param name="firstRender"></param>
@@ -103,56 +127,60 @@ namespace CEC.Blazor.Components.Base
             }
         }
 
+        /// Exit methods for the form
+
+        public void Exit(ModalResult result)
+        {
+            if (IsModal) this.ModalParent.Close(result);
+            else this.ViewManager.LoadViewAsync(this.ViewManager.LastViewData);
+        }
+
         public void Exit()
         {
-            this.ViewManager.LoadViewAsync(this.ViewManager.LastViewData);
-        }
-
-        /// <summary>
-        /// Modal Exit
-        /// </summary>
-        public void ModalExit()
-        {
             if (IsModal) this.ModalParent.Close(ModalResult.Exit());
+            else this.ViewManager.LoadViewAsync(this.ViewManager.LastViewData);
         }
 
-        /// <summary>
-        /// Modal Cancel
-        /// </summary>
-        public void ModalCancel()
+        public void Cancel()
         {
             if (IsModal) this.ModalParent.Close(ModalResult.Cancel());
+            else this.ViewManager.LoadViewAsync(this.ViewManager.LastViewData);
+        }
+
+        public void OK()
+        {
+            if (IsModal) this.ModalParent.Close(ModalResult.OK());
+            else this.ViewManager.LoadViewAsync(this.ViewManager.LastViewData);
+        }
+
+
+        /// <summary>
+        /// IDisposable Interface
+        /// </summary>
+        async void IDisposable.Dispose()
+        {
+            if (!IsDisposed)
+            {
+                _scope?.Dispose();
+                _scope = null;
+                Dispose(disposing: true);
+                await this.DisposeAsync(true);
+                IsDisposed = true;
+            }
         }
 
         /// <summary>
-        /// Modal OK
+        /// Dispose Method
         /// </summary>
-        public void ModalOK()
-        {
-            if (IsModal) this.ModalParent.Close(ModalResult.OK());
-        }
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing) { }
+
 
         /// <summary>
         /// Async Dispose event to clean up event handlers
         /// </summary>
-        public virtual Task DisposeAsync() => Task.CompletedTask;
+        public virtual Task DisposeAsync(bool disposing) => Task.CompletedTask;
 
-        /// <summary>
-        /// Dispose event to clean up event handlers
-        /// </summary>
-        public virtual void Dispose()
-        {
-        }
-
-        /// <summary>
-        /// IDisposable Method to dispose of resources
-        /// </summary>
-        void IDisposable.Dispose()
-        {
-            this.Dispose();
-            var task = this.DisposeAsync();
-            task.Wait();
-        }
     }
 }
 

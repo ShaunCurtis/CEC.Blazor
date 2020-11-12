@@ -1,10 +1,12 @@
-﻿@using CEC.Blazor.Components
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Rendering;
+@using Microsoft.AspNetCore.Components.Forms
+@using CEC.Blazor.Components
 @using CEC.Blazor.Components.BaseForms
 @using CEC.Blazor.Components.UIControls
 @using CEC.Blazor.Components.FormControls
 @using CEC.Weather.Data
 @using CEC.FormControls.Components.FormControls
-@using Microsoft.AspNetCore.Components.Forms
 @using Blazored.FluentValidation
 
 @namespace CEC.Weather.Components
@@ -18,7 +20,7 @@
     <Body>
         <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
 
-            <UIErrorHandler IsError="@this.IsError" IsLoading="this.IsDataLoading" ErrorMessage="@this.RecordErrorMessage">
+            <UIErrorHandler IsError="@this.IsError" IsLoading="this.Loading" ErrorMessage="@this.RecordErrorMessage">
 
                 <UIContainer>
 

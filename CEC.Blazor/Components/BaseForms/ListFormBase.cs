@@ -149,7 +149,7 @@ namespace CEC.Blazor.Components.BaseForms
             await this.ViewManager.LoadViewAsync<TView>("ID", id);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace CEC.Blazor.Components.BaseForms
                 this.Service.FilterHasChanged -= this.FilterUpdated;
             }
             catch { }
-            base.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

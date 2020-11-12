@@ -42,21 +42,5 @@ namespace CEC.Blazor.Components.BaseForms
         /// </summary>
         protected bool IsService { get => this.Service != null; }
 
-        /// <summary>
-        /// Event Method for triggering a UI update
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public async void UIStateChanged(object sender, EventArgs e) => await RenderAsync();
-
-        /// <summary>
-        /// Sets ther alert with a Danger Message
-        /// </summary>
-        protected void ClearAlert()
-        {
-            this.AlertMessage.ColourCode = Bootstrap.ColourCode.info;
-            this.AlertMessage.IsAlert = false;
-            this.AlertMessage.Message = "All Clear";
-        }
     }
 }

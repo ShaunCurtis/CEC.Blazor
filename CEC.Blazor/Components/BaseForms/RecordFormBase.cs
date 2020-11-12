@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 namespace CEC.Blazor.Components.BaseForms
 {
-    public class RecordFormBase<TRecord, TContext> : 
-        ControllerServiceFormBase<TRecord, TContext> 
+    public class RecordFormBase<TRecord, TContext> :
+        ControllerServiceFormBase<TRecord, TContext>
         where TRecord : class, IDbRecord<TRecord>, new()
         where TContext : DbContext
     {
@@ -25,14 +25,9 @@ namespace CEC.Blazor.Components.BaseForms
         protected virtual bool IsError { get => !this.IsRecord; }
 
         /// <summary>
-        /// Used to determine if the page can display data
-        /// </summary>
-        protected virtual bool IsDataLoading { get; set; } = true;
-
-        /// <summary>
         /// Used to determine if the page has display data i.e. it's not loading or in error
         /// </summary>
-        protected virtual bool IsLoaded => !(this.IsDataLoading) && !(this.IsError);
+        protected virtual bool IsLoaded => !(this.Loading) && !(this.IsError);
 
         /// <summary>
         /// Property for the ID of the record to retrieve.
@@ -46,7 +41,7 @@ namespace CEC.Blazor.Components.BaseForms
         }
 
         /// <summary>
-        /// Version of the ID that sets null to 0
+        /// Not Null Version of the ID
         /// </summary>
         public int _ID { get; private set; }
 
@@ -55,11 +50,6 @@ namespace CEC.Blazor.Components.BaseForms
             if (firstRender && this.IsService) await this.Service.ResetRecordAsync();
             await this.LoadRecordAsync(firstRender);
             await base.OnRenderAsync(firstRender);
-        }
-
-        protected override Task OnAfterRenderAsync(bool firstRender)
-        {
-            return base.OnAfterRenderAsync(firstRender);
         }
 
         /// <summary>
@@ -71,8 +61,8 @@ namespace CEC.Blazor.Components.BaseForms
             if (this.IsService)
             {
                 // Set the Loading flag 
-                this.IsDataLoading = true;
-                //  call StateHasChanged only if we are responding to an event.  In the component loading cycle it will be called for us shortly
+                this.Loading = true;
+                //  call Render only if we are responding to an event.  In the component loading cycle it will be called for us shortly
                 if (!firstload) await RenderAsync();
                 if (this.IsModal && this.ViewManager.ModalDialog.Options.Parameters.TryGetValue("ID", out object modalid)) this.ID = (int)modalid > -1 ? (int)modalid : this.ID;
 
@@ -83,7 +73,7 @@ namespace CEC.Blazor.Components.BaseForms
                 this.RecordErrorMessage = $"The Application can't load the Record with ID: {this._ID}";
 
                 // Set the Loading flag
-                this.IsDataLoading = false;
+                this.Loading = false;
                 //  call Render only if we are responding to an event.  In the component loading cycle it will be called for us shortly
                 if (!firstload) await RenderAsync();
             }
