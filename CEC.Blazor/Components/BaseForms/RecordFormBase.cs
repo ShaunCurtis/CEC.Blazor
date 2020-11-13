@@ -78,5 +78,18 @@ namespace CEC.Blazor.Components.BaseForms
                 if (!firstload) await RenderAsync();
             }
         }
+
+        /// <summary>
+        /// Method to move up and down records
+        /// </summary>
+        /// <param name="increment"></param>
+        protected async void NextRecord(int increment)
+        {
+            var rec = (this._ID + increment) == 0 ? 1 : this._ID + increment;
+            rec = rec > this.Service.BaseRecordCount ? this.Service.BaseRecordCount : rec;
+            this.ID = rec;
+            await this.ResetAsync();
+        }
+
     }
 }

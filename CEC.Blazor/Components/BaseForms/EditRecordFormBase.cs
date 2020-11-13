@@ -66,16 +66,14 @@ namespace CEC.Blazor.Components.BaseForms
 
         protected void OnRecordDirty(object sender, EventArgs e)
         {
-            this.ViewManager.IsLocked = true;
-            this.ViewManager.SetPageExitCheck(true);
+            this.ViewManager.LockView();
             this.AlertMessage.SetAlert("The Record isn't Saved", Bootstrap.ColourCode.warning);
             InvokeAsync(this.Render);
         }
 
         protected void OnRecordClean(object sender, EventArgs e)
         {
-            this.ViewManager.IsLocked = false;
-            this.ViewManager.SetPageExitCheck(false);
+            this.ViewManager.UnLockView();
             this.AlertMessage.ClearAlert();
             InvokeAsync(this.Render);
         }

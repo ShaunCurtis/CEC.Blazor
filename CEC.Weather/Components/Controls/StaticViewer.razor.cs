@@ -20,7 +20,7 @@ namespace CEC.Weather.Components
 
         private int currentRenders = 1;
 
-        private string renderType = "None";
+        private string renderType { get; set; } = "None";
 
 
         protected override Task OnRenderAsync(bool firstRender)

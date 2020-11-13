@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Linq;
 using CEC.Blazor.Components.UIControls;
 using CEC.Blazor.Components.Modal;
 using Microsoft.JSInterop;
@@ -41,6 +42,11 @@ namespace CEC.Blazor.Components.Base
         [Parameter] public Type DefaultLayout { get; set; }
 
         /// <summary>
+        /// The size of the History list.
+        /// </summary>
+        [Parameter] public int ViewHistorySize { get; set; } = 10;
+
+        /// <summary>
         /// Gets or sets the view data.
         /// </summary>
         public ViewData ViewData
@@ -52,10 +58,15 @@ namespace CEC.Blazor.Components.Base
             }
             protected set
             {
-                this.LastViewData = this._ViewData;
+                this.AddViewToHistory(this._ViewData);
                 this._ViewData = value;
             }
         }
+
+        /// <summary>
+        /// Property that stores the View History.  It's size is controlled by ViewHistorySize
+        /// </summary>
+        public SortedList<DateTime, ViewData> ViewHistory { get; private set; } = new SortedList<DateTime, ViewData>();
 
         /// <summary>
         /// ViewData used by the component
@@ -65,8 +76,15 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Gets or sets the view data.
         /// </summary>
-        public ViewData LastViewData { get; protected set; }
-
+        public ViewData LastViewData
+        {
+            get
+            {
+                var newest = ViewHistory.Max(item => item.Key);
+                if (newest != null) return ViewHistory[newest];
+                else return null;
+            }
+        }
         /// <summary>
         /// Property referencing the Bootstrap modal instance
         /// </summary>
@@ -75,7 +93,7 @@ namespace CEC.Blazor.Components.Base
         /// <summary>
         /// Property to lock the View - i.e. stop any new view loading
         /// </summary>
-        public bool IsLocked { get; set; }
+        public bool IsLocked { get; private set; }
 
         /// <summary>
         /// The Application Exit State - set to false if there's unsaved data in the applicaton
@@ -125,6 +143,7 @@ namespace CEC.Blazor.Components.Base
         public Task SetParametersAsync(ParameterView parameters)
         {
             parameters.SetParameterProperties(this);
+            this._ViewData = this.DefaultViewData;
             this.ReadViewDataFromQueryString();
             this.Render();
             return Task.CompletedTask;
@@ -299,36 +318,49 @@ namespace CEC.Blazor.Components.Base
         /// <returns></returns>
         public void SetPageExitCheck(bool action)
         {
-            if (action != ExitState) _js.InvokeAsync<bool>("setExitCheck", action);
+            if (action != ExitState) _js.InvokeAsync<bool>("cecblazor_setEditorExitCheck", action);
             ExitState = action;
         }
 
         /// <summary>
         /// Method to read ViewData information from the Uri querystring
+        /// Probably needs some more work on data types and parsing
         /// </summary>
         private void ReadViewDataFromQueryString()
         {
+            ViewData viewData = null;
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
             var vals = QueryHelpers.ParseQuery(uri.Query);
-            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("Class", out var classname))
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("View", out var classname))
             {
                 var type = this.FindType(classname);
-                if (type != null) this.ViewData.PageType = type;
-            }
-            foreach (var set in vals)
-            {
-                if (set.Key.StartsWith("Param-")) {
-                    object value;
-                    if (Int32.TryParse(set.Value, out int intvalue)) value = intvalue;
-                    else if (Decimal.TryParse(set.Value, out decimal decvalue)) value = decvalue;
-                    else value = set.Value;
-                    this.ViewData.SetParameter(set.Key.Replace("Param-", ""), value);
-                }
-                if (set.Key.StartsWith("Field-"))
+                if (type != null)
                 {
-                    this.ViewData.SetField(set.Key.Replace("Field-", ""), set.Value);
+                    viewData = new ViewData(type, null);
+                    foreach (var set in vals)
+                    {
+                        if (set.Key.StartsWith("Param-"))
+                        {
+                            object value;
+                            if (DateTime.TryParse(set.Value, out DateTime datevalue)) value = datevalue;
+                            else if (Int32.TryParse(set.Value, out int intvalue)) value = intvalue;
+                            else if (Decimal.TryParse(set.Value, out decimal decvalue)) value = decvalue;
+                            else value = set.Value;
+                            viewData.SetParameter(set.Key.Replace("Param-", ""), value);
+                        }
+                        if (set.Key.StartsWith("Field-"))
+                        {
+                            object value;
+                            if (DateTime.TryParse(set.Value, out DateTime datevalue)) value = datevalue;
+                            else if (Int32.TryParse(set.Value, out int intvalue)) value = intvalue;
+                            else if (Decimal.TryParse(set.Value, out decimal decvalue)) value = decvalue;
+                            else value = set.Value;
+                            viewData.SetField(set.Key.Replace("Field-", ""), value);
+                        }
+                    }
                 }
             }
+            if (viewData != null) this.ViewData = viewData;
         }
 
         /// <summary>
@@ -351,7 +383,7 @@ namespace CEC.Blazor.Components.Base
                 return null;
             }
         }
-        
+
         /// <summary>
         /// Executes the supplied work item on the associated renderer's
         /// synchronization context.
@@ -366,6 +398,37 @@ namespace CEC.Blazor.Components.Base
         /// <param name="workItem">The work item to execute.</param>
         protected Task InvokeAsync(Func<Task> workItem) => _renderHandle.Dispatcher.InvokeAsync(workItem);
 
+        /// <summary>
+        /// Method to add a View to the View History and manage it's size
+        /// </summary>
+        /// <param name="value"></param>
+        private void AddViewToHistory(ViewData value)
+        {
+            while (this.ViewHistory.Count >= this.ViewHistorySize)
+            {
+                var oldest = ViewHistory.Min(item => item.Key);
+                this.ViewHistory.Remove(oldest);
+            }
+            this.ViewHistory.Add(DateTime.Now, value);
+        }
+
+        /// <summary>
+        /// Method to lock the View
+        /// </summary>
+        public void LockView()
+        {
+            this.IsLocked = true;
+            this.SetPageExitCheck(true);
+        }
+
+        /// <summary>
+        /// Method to unlock the View
+        /// </summary>
+        public void UnLockView()
+        {
+            this.IsLocked = false;
+            this.SetPageExitCheck(false);
+        }
 
     }
 }
