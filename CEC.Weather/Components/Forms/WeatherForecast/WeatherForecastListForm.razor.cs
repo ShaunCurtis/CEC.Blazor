@@ -15,8 +15,7 @@ namespace CEC.Weather.Components
         /// <summary>
         /// The Injected Controller service for this record
         /// </summary>
-        [Inject]
-        protected WeatherForecastControllerService ControllerService { get; set; }
+        [Inject] protected WeatherForecastControllerService ControllerService { get; set; }
 
         protected override Task OnRenderAsync(bool firstRender)
         {
@@ -49,6 +48,5 @@ namespace CEC.Weather.Components
             if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherForecastEditorForm>(id);
             else this.OnViewAsync<WeatherForecastEditorView>(id);
         }
-
-}
+    }
 }

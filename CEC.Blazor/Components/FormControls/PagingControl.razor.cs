@@ -8,17 +8,13 @@ namespace CEC.Blazor.Components
 {
     public partial class PagingControl<TRecord> : ControlBase where TRecord : IDbRecord<TRecord>, new()
     {
-        [CascadingParameter]
-        public IControllerPagingService<TRecord> _Paging { get; set; }
+        [CascadingParameter] public IControllerPagingService<TRecord> _Paging { get; set; }
 
-        [Parameter]
-        public IControllerPagingService<TRecord> Paging { get; set; }
+        [Parameter] public IControllerPagingService<TRecord> Paging { get; set; }
 
-        [Parameter]
-        public PagingDisplayType DisplayType { get; set; } = PagingDisplayType.Full;
+        [Parameter] public PagingDisplayType DisplayType { get; set; } = PagingDisplayType.Full;
 
-        [Parameter]
-        public int BlockSize { get; set; } = 0;
+        [Parameter] public int BlockSize { get; set; } = 0;
 
         private bool IsPaging => this.Paging != null;
 
