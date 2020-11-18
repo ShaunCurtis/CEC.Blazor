@@ -13,8 +13,8 @@ namespace CEC.Blazor.Components.UIControls
 
         public void Close(bool state)
         {
-            if (state) this.Parent.Close(BootstrapModalResult.Exit());
-            else this.Parent.Close(BootstrapModalResult.Cancel());
+            if (state) this.Parent.Close(ModalResult.Exit());
+            else this.Parent.Close(ModalResult.Cancel());
         }
 
     }

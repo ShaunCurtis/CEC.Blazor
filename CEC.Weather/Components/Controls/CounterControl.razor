@@ -1,0 +1,59 @@
+﻿@using CEC.Blazor.Components.Base
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+
+
+@namespace CEC.Weather.Components
+
+@inherits Component
+
+<div class="bg-dark text-white p-1 m-1">
+
+    <div class="p-3 m-0">
+
+        <h4>Counter Component</h4>
+
+        <div class="container font-weight-bold">
+            <div class="row">
+                <div class="col">
+                    Current count: @CurrentCount
+                </div>
+                <div class="col">
+                    Object Current count: @objectcount
+                </div>
+                <div class="col">
+                </div>
+            </div>
+        </div>
+        <div class="text-right" mt-2>
+
+            <button class="btn btn-primary" @onclick="IncrementCount">Add Count</button>
+
+            <button class="btn btn-primary" @onclick="IncrementObjectCount">Add Object Count</button>
+
+            <button class="btn btn-info" @onclick="Render">Render</button>
+
+            <button class="btn btn-warning" @onclick="ResetAsync">Reset</button>
+
+        </div>
+        <div>
+            <StaticViewer CurrentCount="CurrentCount" CounterInfo="this.counterInfo"></StaticViewer>
+        </div>
+    </div>
+
+    <div class="container m-0 p-0 small border-top">
+        <div class="row">
+            <div class="col">
+                Current Renders: @currentRenders
+            </div>
+            <div class="col">
+                Render Type: @renderType
+            </div>
+            <div class="col">
+                Parameter Set Requests: @ParameterSetRequests
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,15 @@
+﻿@using CEC.Weather.Components
+@using CEC.Blazor.Components.Base
+@using Microsoft.AspNetCore.Components.Authorization
+
+@namespace CEC.Weather.Components
+
+@*<CascadingAuthenticationState>*@
+<ViewManager DefaultViewData="this.viewData" ModalType="typeof(CEC.Blazor.Components.UIControls.BootstrapModal)"  DefaultLayout="typeof(BaseLayout)">
+</ViewManager>
+@*</CascadingAuthenticationState>*@
+
+@code {
+    public ViewData viewData = new ViewData(typeof(CEC.Weather.Components.Views.Index), null);
+}
+

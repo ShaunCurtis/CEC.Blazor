@@ -2,15 +2,15 @@
 
 @namespace CEC.Blazor.Components.UIControls
 
-@if (this.ShowModal)
+@if (this._ShowModal)
 {
-    <CascadingValue Value="this">
-        <div class="modal fade show @this.Options.ContainerCSS" data-backdrop="static" tabindex="-1" role="dialog" aria-modal="true" style="display:block;">
-            <div class="modal-dialog @this.Options.ModalCSS ">
+    <CascadingValue Value="(IModal)this">
+        <div class="@this._ContainerCss" data-backdrop="static" tabindex="-1" role="dialog" aria-modal="true" style="display:block;">
+            <div class="@this._ModalCss">
                 <div class="modal-content">
                     @if (!this.Options.HideHeader)
                     {
-                        <div class="modal-header @this.Options.ModalHeaderCSS ">
+                        <div class="@this._ModalHeaderCss">
                             <h5 class="modal-title">@this.Options.Title</h5>
                             @if (this.Options.ShowCloseButton)
                             {
@@ -20,8 +20,8 @@
                             }
                         </div>
                     }
-                    <div class="modal-body @this.Options.ModalBodyCSS">
-                        @this.Content
+                    <div class="@this._ModalBodyCss">
+                        @this._Content
                     </div>
                 </div>
             </div>

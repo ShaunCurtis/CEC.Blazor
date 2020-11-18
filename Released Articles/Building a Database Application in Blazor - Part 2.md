@@ -1,20 +1,36 @@
-# Building a Database Application in Blazor 
-## Part 2 - Services - Building the CRUD Data Layers
+# Part 2 - Services - Building the CRUD Data Layers
 
 This article is the second in a series on Building Blazor Projects: it describes techniques and methodologies for abstracting the data and business logic layers into boilerplate code in a library.
 
-See the [CEC.Blazor GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor) for the libraries and sample projects.
+1. [Project Structure and Framework](https://www.codeproject.com/Articles/5279560/Building-a-Database-Application-in-Blazor-Part-1-P)
+2. [Services - Building the CRUD Data Layers](https://www.codeproject.com/Articles/5279596/Building-a-Database-Application-in-Blazor-Part-2-S)
+3. [View Components - CRUD Edit and View Operations in the UI](https://www.codeproject.com/Articles/5279963/Building-a-Database-Application-in-Blazor-Part-3-C)
+4. [UI Components - Building HTML/CSS Controls](https://www.codeproject.com/Articles/5280090/Building-a-Database-Application-in-Blazor-Part-4-U)
+5. [View Components - CRUD List Operations in the UI](https://www.codeproject.com/Articles/5280391/Building-a-Database-Application-in-Blazor-Part-5-V)
+6. [A walk through detailing how to add weather stations and weather station data to the application](https://www.codeproject.com/Articles/5281000/Building-a-Database-Application-in-Blazor-Part-6-A)
 
-### Services
+## Repository and Database
 
-Blazor is built on DI [Dependency Injection] and IOC [Inversion of Control].  If your not familiar with these concepts, do a little [backgound reading](https://www.codeproject.com/Articles/5274732/Dependency-Injection-and-IoC-Containers-in-Csharp) before diving into Blazor.  You will save yourself time in the long run!
+[CEC.Blazor GitHub Repository](https://github.com/ShaunCurtis/CEC.Blazor)
+
+There's a SQL script in /SQL in the repository for building the database.
+
+[You can see the Server version of the project running here](https://cec-blazor-server.azurewebsites.net/).
+
+[You can see the WASM version of the project running here](https://cec-blazor-wasm.azurewebsites.net/).
+
+## Services
+
+Blazor is built on DI [Dependency Injection] and IOC [Inversion of Control].  If your not familiar with these concepts, do a little [backgound reading](https://www.codeproject.com/Articles/5274732/Dependency-Injection-and-IoC-Containers-in-Csharp) before diving into Blazor.  You'll save yourself time in the long run!
 
 Blazor Singleton and Transient services are relatively straight forward.  You can read more about them in the [Microsoft Documentation](https://docs.microsoft.com/en-us/aspnet/core/blazor/fundamentals/dependency-injection).  Scoped are a little more complicated.
 
 1. A scoped service object exists for the lifetime of a client application session - note client and not server.  Any application resets, such as F5 or navigation away from the application, resets all scoped services.  A duplicated tab in a browser creates a new application, and a new set of scoped services.
-2. A scoped service can be object scoped in code.  This is most common in a UI conponent.  The *OwningComponentBase* component class has functionality to restrict the life of a scoped service to the lifetime of the component. This will be discussed in further detail n the next article. 
+2. A scoped service can be scoped to an object in code.  This is most common in a UI conponent.  The `OwningComponentBase` component class has functionality to restrict the life of a scoped service to the lifetime of the component. This is covered in more detail in another article. 
 
-Services is the Blazor IOC [Inversion of Control] container.  In Server mode services are configured in *startup.cs*:
+Services is the Blazor IOC [Inversion of Control] container.
+
+In Server mode services are configured in `startup.cs`:
 
 ```c#
 // CEC.Blazor.Server/startup.cs
@@ -24,17 +40,17 @@ public void ConfigureServices(IServiceCollection services)
     services.AddServerSideBlazor();
     // the Services for the CEC.Blazor .
     services.AddCECBlazor();
-    // the Services for the CEC.Routing Library
-    services.AddCECRouting();
     // the local application Services defined in ServiceCollectionExtensions.cs
     services.AddApplicationServices(Configurtion);
 }
 ```
+
 ```c#
 // CEC.Blazor.Server/Extensions/ServiceCollectionExtensions.cs
 public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
 {
     // Singleton service for the Server Side version of WeatherForecast Data Service 
+    //services.AddSingleton<IWeatherForecastDataService, WeatherForecastDummyDataService>();
     services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService>();
     // Scoped service for the WeatherForecast Controller Service
     services.AddScoped<WeatherForecastControllerService>();
@@ -47,7 +63,7 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
 }
 ```
 
- and *program.cs* in WASM mode:
+ and `program.cs` in WASM mode:
 
 ```c#
 // CEC.Blazor.WASM.Client/program.cs
@@ -58,13 +74,12 @@ public static async Task Main(string[] args)
     builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
     // the Services for the CEC.Blazor Library
     builder.Services.AddCECBlazor();
-    // the Services for the CEC.Routing Library
-    builder.Services.AddCECRouting();
     // the local application Services defined in ServiceCollectionExtensions.cs
     builder.Services.AddApplicationServices();
     .....
 }
 ```
+
 ```c#
 // CEC.Blazor.WASM.Client/Extensions/ServiceCollectionExtensions.cs
 public static IServiceCollection AddApplicationServices(this IServiceCollection services)
@@ -79,15 +94,15 @@ public static IServiceCollection AddApplicationServices(this IServiceCollection 
 }
 ```
 Points:
-1. There's an *IServiceCollection* extension method for each project/library to encapsulate the specific services needed for the project.
-2. Only the data layer service is different.  The Server version, used by both the Blazor Server and the WASM API Server, interfaces with the database and Entitiy Framework.  It's scoped as a Singleton - as we are running async, DbContexts are created and closed per query.  The Client version uses *HttpClient* (which is a scoped service) to make calls to the API and is therefore itself scoped.
+1. There's an `IServiceCollection` extension method for each project/library to encapsulate the specific services needed for the project.
+2. Only the data layer service is different.  The Server version, used by both the Blazor Server and the WASM API Server, interfaces with the database and Entitiy Framework.  It's scoped as a Singleton - as we are running async, DbContexts are created and closed per query.  The Client version uses `HttpClient` (which is a scoped service) to make calls to the API and is therefore itself scoped.  There's also a dummy data service to emulate the database.
 3. A code factory is used to build the specific DBContext, and provide the necessary level of abstraction for boilerplating the core data service code in the base library.
 
 ### Generics
 
 The boilerplate library code relies heavily on Generics.  The two generic entities used are:
-1. *TRecord* - this represents a model record class.  It must implement *IDbRecord*, a vanilla *new()* and be a class.
-2. *TContext* - this is the database context and must inherit from the *DbContext* class.
+1. `TRecord` - this represents a model record class.  It must implement `IDbRecord`, a vanilla `new()` and be a class.
+2. `TContext` - this is the database context and must inherit from the `DbContext` class.
 
 Class declarations look like this:
 
@@ -108,11 +123,11 @@ The database account ued by Entity Framework database has access limited to sele
 
 The demo application can be run with or without a full database connection - there's a "Dummy database" server Data Service.
 
-All EF code is implemented in *CEC.Weather*, the shared project specific library.
+All EF code is implemented in `CEC.Weather`, the shared project specific library.
 
 #### WeatherForecastDBContext
 
-The *DbContext* has a *DbSet* per record type.  Each *DbSet* is linked to a view in *OnModelCreating()*.  The WeatherForecast application has one record type.
+The `DbContext` has a `DbSet` per record type.  Each `DbSet` is linked to a view in `OnModelCreating()`.  The WeatherForecast application has one record type.
 
 The class looks like this:
 ```c#
@@ -138,7 +153,7 @@ public class WeatherForecastDbContext : DbContext
 
 #### IDbRecord
 
-*IDbRecord* defines the common interface for all database records.  
+`IDbRecord` defines the common interface for all database records.  
 ```c#
 // CEC.Blazor/Data/Interfaces/IDbRecord.cs
 public interface IDbRecord<T>
@@ -157,7 +172,7 @@ IDbRecord ensures:
 
 #### IDataService
 
-Core Data Service functionality is defined in the *IDataService* interface.
+Core Data Service functionality is defined in the `IDataService` interface.
 
 ```c#
 // CEC.Blazor/Services/Interfaces/IDataService.cs
@@ -205,7 +220,7 @@ Core Data Service functionality is defined in the *IDataService* interface.
 
 #### BaseDataService
 
-*BaseDataService* implements the Interface
+`BaseDataService` implements the Interface
 
 ```c#
 // CEC.Blazor/Services/Interfaces
@@ -232,17 +247,17 @@ public abstract class BaseDataService<TRecord>: IDataService<TRecord> where TRec
 See the [project code](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseServerDataService.cs) for the full class - it's rather long.
 
 The service implements boilerplate code:
-1. Implement the *IDataService* interface CRUD methods.
+1. Implement the `IDataService` interface CRUD methods.
 1. Async Methods to build out the Create, Update and Delete Stored Procedures.
 2. Async Methods to get lists and individual records using EF DbSets. 
 
 The code relies on either:
 * using naming conventions
-  * Model class names Db*RecordName* - e.g. *DbWeatherForecast*.
-  * DbContext DbSet properties named *RecordName* - e.g. *WeatherForecast*.  
+  * Model class names Db`RecordName` - e.g. `DbWeatherForecast`.
+  * DbContext DbSet properties named `RecordName` - e.g. `WeatherForecast`.  
 * using custom attributes.
-  * *DbAccess* - class level attribute to define the Stored Procedure names.
-  * *SPParameter* - Property specific attribute to mark all properties used in the Stored Procedures.
+  * `DbAccess` - class level attribute to define the Stored Procedure names.
+  * `SPParameter` - Property specific attribute to mark all properties used in the Stored Procedures.
 
 A short section of the DbWeatherForecast model class is shown below decorated with the custom attributes. 
 
@@ -258,9 +273,9 @@ public class DbWeatherForecast :IDbRecord<DbWeatherForecast>
     ......
 }
 ```
-Data operations on EF are implemented as extension methods on *DBContext*.
+Data operations on EF are implemented as extension methods on `DBContext`.
 
-Stored Procedures are run by calling *ExecStoredProcAsync()*.  The method is shown below.  It uses the EF DBContext to get a normal ADO Database Command Object, and then executes the Stored Procedure with a parameter set built using the custom attributes from the Model class. 
+Stored Procedures are run by calling `ExecStoredProcAsync()`.  The method is shown below.  It uses the EF DBContext to get a normal ADO Database Command Object, and then executes the Stored Procedure with a parameter set built using the custom attributes from the Model class. 
 
 ```c#
 // CEC.Blazor/Extensions/DBContextExtensions.cs
@@ -336,9 +351,9 @@ protected async Task<DbTaskResult> RunStoredProcedure(TRecord record, SPType spT
     return ret;
 }
 ```
-You can dig into the detail of *GetSqlParameters* in the [GitHub Code File](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseServerDataService.cs).
+You can dig into the detail of `GetSqlParameters` in the [GitHub Code File](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseServerDataService.cs).
 
-The Read and List methods get the DbSet name through reflection, and use EF methodology and the *IDbRecord* interface to get the data.
+The Read and List methods get the DbSet name through reflection, and use EF methodology and the `IDbRecord` interface to get the data.
 
 ```c#
 // CEC.Blazor/Extensions/DBContextExtensions
@@ -372,7 +387,7 @@ public async static Task<TRecord> GetRecordAsync<TRecord>(this DbContext context
 
 See the [project code](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseWASMDataService.cs) for the full class.
 
-The client version of the class is relatively simple, using the *HttpClient* to make API calls to the server.  Again we rely on naming conventions for boilerplating to work.
+The client version of the class is relatively simple, using the `HttpClient` to make API calls to the server.  Again we rely on naming conventions for boilerplating to work.
 
 Using Create as an example.
 
@@ -400,7 +415,7 @@ public interface IWeatherForecastDataService :
 }
 ```
 
-The WASM service inherits from *BaseWASMDataService* and implements *IWeatherForecastDataService*.  It defines the generics and configures the *RecordConfiguration*.
+The WASM service inherits from `BaseWASMDataService` and implements `IWeatherForecastDataService`.  It defines the generics and configures the `RecordConfiguration`.
 
 ```c#
 // CEC.Weather/Services/WeatherForecastWASMDataService.cs
@@ -415,7 +430,7 @@ public class WeatherForecastWASMDataService :
 }
 ```
 
-The Server service inherits from *BaseServerDataService* and implements *IWeatherForecastDataService*.  It defines the generics and configures the *RecordConfiguration*.
+The Server service inherits from `BaseServerDataService` and implements `IWeatherForecastDataService`.  It defines the generics and configures the `RecordConfiguration`.
 
 ```c#
 // CEC.Weather/Services/WeatherForecastServerDataService.cs
@@ -432,16 +447,16 @@ public class WeatherForecastServerDataService :
 
 ### The Business Logic/Controller Service Tier
 
-Controllers are normally configured as Scoped Services and then further restricted using OwningComponentBase in the UI when needed.
+Controllers are normally configured as Scoped Services.
 
-The controller tier interface and base class are generic and reside in the CEC.Blazor library.  Two interfaces *IControllerService* and *IControllerPagingService* define the required functionality.  Both are implemented in the BaseControllerService class.  
+The controller tier interface and base class are generic and reside in the CEC.Blazor library.  Two interfaces `IControllerService` and `IControllerPagingService` define the required functionality.  Both are implemented in the BaseControllerService class.  
 
 The code for the [IControllerService](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/Interfaces/IControllerService.cs), [IControllerPagingService](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/Interfaces/IControllerPagingService.cs) and [BaseControllerService](https://github.com/ShaunCurtis/CEC.Blazor/blob/master/CEC.Blazor/Services/BaseControllerService.cs) are too long to show here.  We'll cover most of the functionality when we look at how the UI layer interfaces with the controller layer.
 
 The main functionality implemented is:
 
 1. Properties to hold the current record and recordset and their status.
-2. Properties and methods - defined in *IControllerPagingService* - for UI paging operations on large datasets.
+2. Properties and methods - defined in `IControllerPagingService` - for UI paging operations on large datasets.
 4. Properties and methods to sort the the dataset.
 3. Properties and methods to track the edit status of the record (Dirty/Clean).
 4. Methods to implement CRUD operations through the IDataService Interface.
@@ -457,7 +472,7 @@ The class:
 1. Implements the class constructor that gets the required DI services, sets up the base class and sets the default sort column for db dataset paging and sorting.
 2. Gets the Dictionary object for the Outlook Enum Select box in the UI.
 
-Note that the data service used is the *IWeatherForecastDataService* configured in Services.  For WASM this is *WeatherForecastWASMDataService* and for Server or the API EASM Server this is *WeatherForecastServerDataService*.
+Note that the data service used is the `IWeatherForecastDataService` configured in Services.  For WASM this is `WeatherForecastWASMDataService` and for Server or the API EASM Server this is `WeatherForecastServerDataService`.
 ```c#
 // CEC.Weather/Controllers/ControllerServices/WeatherForecastControllerService.cs
 public class WeatherForecastControllerService : BaseControllerService<DbWeatherForecast, WeatherForecastDbContext>, IControllerService<DbWeatherForecast, WeatherForecastDbContext>
@@ -475,7 +490,7 @@ public class WeatherForecastControllerService : BaseControllerService<DbWeatherF
 
 #### WeatherForecastController
 
-While it's not a service, the *WeatherForecastController* is the final bit of the data layers to cover.  It uses *IWeatherForecastDataService* to access it's data service and makes the same calls as the ControllerService into the DataService to access and return the requested data sets.  I've not found a way yet to abstract this, so we need to implement one per record.
+While it's not a service, the `WeatherForecastController` is the final bit of the data layers to cover.  It uses `IWeatherForecastDataService` to access it's data service and makes the same calls as the ControllerService into the DataService to access and return the requested data sets.  I've not found a way yet to abstract this, so we need to implement one per record.
  
 ```c#
 // CEC.Blazor.WASM.Server/Controllers/WeatherForecastController.cs
@@ -523,11 +538,17 @@ public class WeatherForecastController : ControllerBase
 ```
 
 ### Wrap Up
-This article demonstrates how to abstract the data and controller tier code into a reuseable library.
+This article demonstrates how to abstract the data and controller tier code into a library.
 
 Some key points to note:
 1. Aysnc code is used wherever possible.  The data access functions are all async.
 2. Generics make much of the boilerplating possible.  They create complexity, but are worth the effort.
-3. The use of Interfaces for Dependancy Injection and UI boilerplating.
+3. Interfaces are crucial for Dependancy Injection and UI boilerplating.
 
-The next section looks at the Presentation Layer / UI framework.
+The next section looks at the [Presentation Layer / UI Framework](https://www.codeproject.com/Articles/5279963/Building-a-Database-Application-in-Blazor-Part-3-C).
+
+## History
+
+* 15-Sep-2020: Initial version.
+* 2-Oct-2020: Minor formatting updates and typo fixes.
+* 17-Nov-2020: Major Blazor.CEC library changes.  Change to ViewManager from Router and new Component base implementation.

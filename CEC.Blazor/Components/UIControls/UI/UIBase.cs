@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CEC.Blazor.Components.Base;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace CEC.Blazor.Components.UIControls
 {
     /// <summary>
     /// Base UI Rendering Wrapper to build a Css Framework Html Component
-    /// This is a base component implementing IComponent - not a ComponentBase inherited class.
+    /// This is a base component implementing ControlBase - not a ComponentBase inherited class.
     /// Note that many of the parameter properties have a protected _property
     /// You can override the value used by setting the _property specifically in any derived classes
     /// The _property is the property actually used in the render process.
@@ -15,7 +16,7 @@ namespace CEC.Blazor.Components.UIControls
     /// will force the component tag to be a div. 
     /// </summary>
 
-    public abstract class UIBase : IComponent
+    public abstract class UIBase : ControlBase
     {
 
         #region Public Properties
@@ -99,90 +100,22 @@ namespace CEC.Blazor.Components.UIControls
 
         #endregion
 
-        #region Internal class Variables
-
-        /// <summary>
-        /// Render Handle passed when Attach method called
-        /// </summary>
-        private RenderHandle _renderHandle;
-
-        /// <summary>
-        /// Render Fragment to render this object
-        /// </summary>
-        private readonly RenderFragment _componentRenderFragment;
-
-        /// <summary>
-        /// Boolean Flag to track if there's a pending render event queued
-        /// </summary>
-        private bool _RenderEventQueued;
-        #endregion
-
-        #region Class initialization/destruction Methods
-
-        /// <summary>
-        /// Class Initialization Event
-        /// builds out the component renderfragment to pass to the Renderer when an render event is queued on the renderer
-        /// </summary>
-        public UIBase() => _componentRenderFragment = builder =>
-        {
-            this._RenderEventQueued = false;
-            BuildRenderTree(builder);
-        };
-
-        #endregion
-
-        #region IComponent Implementation
-        
-        /// <summary>
-        /// Method called to attach the object to a RenderTree
-        /// The render handle gives the component access to the renderer and its render queue
-        /// </summary>
-        /// <param name="renderHandle"></param>
-        public void Attach(RenderHandle renderHandle) => _renderHandle = renderHandle;
-
-        /// <summary>
-        /// Method called by the Renderer when one or more object parameters have been set or changed
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public virtual Task SetParametersAsync(ParameterView parameters)
-        {
-            parameters.SetParameterProperties(this);
-            StateHasChanged();
-            return Task.CompletedTask;
-        }
-
-        #endregion
-
         #region Methods
-
-        /// <summary>
-        /// Method to force a UI update
-        /// </summary>
-        public void StateHasChanged()
-        {
-            if (!this._RenderEventQueued)
-            {
-                this._RenderEventQueued = true;
-                _renderHandle.Render(_componentRenderFragment);
-            }
-        }
 
         /// <summary>
         /// inherited
         /// </summary>
         /// <param name="builder"></param>
-        protected virtual void BuildRenderTree(RenderTreeBuilder builder)
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             if (this._Show)
             {
                 this.ClearDuplicateAttributes();
-                int i = -1;
-                builder.OpenElement(i++, this._Tag);
-                builder.AddMultipleAttributes(i++, AdditionalAttributes);
-                builder.AddAttribute(i++, "class", this._Css);
-                if (!string.IsNullOrEmpty(this._Content)) builder.AddContent(i++, (MarkupString)this._Content);
-                else if (this.ChildContent != null) builder.AddContent(i++, ChildContent);
+                builder.OpenElement(0, this._Tag);
+                builder.AddMultipleAttributes(1, AdditionalAttributes);
+                builder.AddAttribute(2, "class", this._Css);
+                if (!string.IsNullOrEmpty(this._Content)) builder.AddContent(3, (MarkupString)this._Content);
+                else if (this.ChildContent != null) builder.AddContent(4, ChildContent);
                 builder.CloseElement();
             }
         }

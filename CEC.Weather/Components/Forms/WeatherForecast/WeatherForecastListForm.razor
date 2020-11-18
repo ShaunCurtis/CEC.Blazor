@@ -4,7 +4,7 @@
 @using CEC.Blazor.Components.UIControls
 @using CEC.Weather.Data
 
-@inherits ListComponentBase<DbWeatherForecast, WeatherForecastDbContext>
+@inherits ListFormBase<DbWeatherForecast, WeatherForecastDbContext>
 
 <UIWrapper UIOptions="@this.UIOptions" RecordConfiguration="@this.Service.RecordConfiguration" OnView="@OnView" OnEdit="@OnEdit">
 
@@ -55,5 +55,3 @@
         </UICardGrid>
 
 </UIWrapper>
-
-<BootstrapModal @ref="this._BootstrapModal"></BootstrapModal>

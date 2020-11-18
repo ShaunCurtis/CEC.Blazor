@@ -1,0 +1,22 @@
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.Base
+@using CEC.Blazor.Components.UIControls 
+@using CEC.Weather.Components
+
+
+@namespace CEC.Weather.Components.Views
+@implements IView
+
+@inherits Component
+
+<WeatherStationViewerForm></WeatherStationViewerForm>
+<UIBootstrapBase Css="mt-2">
+    <WeatherReportListForm WeatherStationID="this.ID" OnlyLoadIfFilter="true"></WeatherReportListForm>
+</UIBootstrapBase>
+
+@code {
+
+    [CascadingParameter] public ViewManager ViewManager { get; set; }
+
+    [Parameter] public int ID { get; set; } = 0;
+}

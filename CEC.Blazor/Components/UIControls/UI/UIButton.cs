@@ -38,12 +38,11 @@ namespace CEC.Blazor.Components.UIControls
         {
             if (this.Show)
             {
-                var i = -1;
-                builder.OpenElement(i++, this._Tag);
-                builder.AddAttribute(i++, "type", this.ButtonType);
-                builder.AddAttribute(i++, "class", this._Css);
-                builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, this.ButtonClick));
-                builder.AddContent(i++, ChildContent);
+                builder.OpenElement(0, this._Tag);
+                builder.AddAttribute(1, "type", this.ButtonType);
+                builder.AddAttribute(2, "class", this._Css);
+                builder.AddAttribute(3, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, this.ButtonClick));
+                builder.AddContent(4, ChildContent);
                 builder.CloseElement();
             }
         }

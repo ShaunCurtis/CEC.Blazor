@@ -1,11 +1,18 @@
-﻿
-<RecordRouter AppAssembly="@typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</RecordRouter>
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.Weather.Components
+@using CEC.Blazor.Components.Base
+
+@namespace CEC
+
+<CascadingAuthenticationState>
+    <ViewManager DefaultViewData="@viewData" DefaultLayout="@typeof(BaseLayout)">
+    </ViewManager>
+</CascadingAuthenticationState>
+
+@code {
+    public ViewData viewData = new ViewData(typeof(CEC.Weather.Views.Index), null);
+}
+

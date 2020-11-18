@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using CEC.Routing;
 using CEC.Blazor.Server.Extensions;
-using CEC.Blazor.Extensions;
-using CEC.Weather.Data;
 
 namespace CEC.Blazor.Server
 {
@@ -28,8 +25,6 @@ namespace CEC.Blazor.Server
             services.AddServerSideBlazor();
             // the Services for the CEC.Blazor Library
             services.AddCECBlazor();
-            // the Services for the CEC.Routing Library
-            services.AddCECRouting();
             // the local application Services defined in ServiceCollectionExtensions.cs
             services.AddApplicationServices(Configuration);
         }

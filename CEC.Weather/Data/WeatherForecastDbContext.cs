@@ -20,6 +20,10 @@ namespace CEC.Weather.Data
 
         public DbSet<DbWeatherForecast> WeatherForecast { get; set; }
 
+        public DbSet<DbWeatherStation> WeatherStation { get; set; }
+
+        public DbSet<DbWeatherReport> WeatherReport { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
@@ -28,6 +32,19 @@ namespace CEC.Weather.Data
                     eb.HasNoKey();
                     eb.ToView("vw_WeatherForecast");
                 });
+            modelBuilder
+                .Entity<DbWeatherStation>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("vw_WeatherStation");
+                });
+            modelBuilder
+                .Entity<DbWeatherReport>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("vw_WeatherReport");
+                });
+
         }
 
         /// <summary>

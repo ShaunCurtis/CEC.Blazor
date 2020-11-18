@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using CEC.Blazor.Components.Base
+@using CEC.Weather.Components.Views
+@using CEC.Blazor.Components.UIControls
+
+@namespace CEC.Weather.Components
+@inherits Component
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">CEC.Blazor Weather App</a>
+    <button class="navbar-toggler">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Components.Views.Index)">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </UIViewLink>
+        </li>
+        <li class="nav-item px-3">
+            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Components.Views.Counter)">
+                <span class="oi oi-cloudy" aria-hidden="true"></span> Counter
+            </UIViewLink>
+        </li>
+        <li class="nav-item px-3">
+            <UIViewLink class="nav-link" ViewType="typeof(CEC.Weather.Components.Views.WeatherForecastListView)">
+                <span class="oi oi-cloudy" aria-hidden="true"></span> Normal Weather
+            </UIViewLink>
+        </li>
+        <li class="nav-item px-3">
+            <UIViewLink class="nav-link" ViewType="typeof(WeatherForecastListModalView)">
+                <span class="oi oi-cloud-upload" aria-hidden="true"></span> Modal Weather
+            </UIViewLink>
+        </li>
+        <li class="nav-item px-3">
+            <UIViewLink class="nav-link" ViewType="typeof(WeatherStationListView)">
+                <span class="oi oi-cloud-upload" aria-hidden="true"></span> Weather Stations
+            </UIViewLink>
+        </li>
+        <li class="nav-item px-3">
+            <UIViewLink class="nav-link" ViewType="typeof(WeatherReportListView)">
+                <span class="oi oi-cloud-upload" aria-hidden="true"></span> Weather Report
+            </UIViewLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="https://github.com/ShaunCurtis/CEC.Blazor">
+                <span class="oi oi-fork" aria-hidden="true"></span> Github Repo
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public ViewManager ViewManager { get; set; }
+
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+
+

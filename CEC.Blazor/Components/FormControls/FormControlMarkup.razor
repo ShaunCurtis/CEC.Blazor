@@ -1,5 +1,7 @@
 ﻿@namespace CEC.Blazor.Components
 
+@inherits CEC.Blazor.Components.Base.ControlBase
+
 @if (String.IsNullOrEmpty(this.HtmlLink))
 {
     <div class="form-control-plaintext form-control-markup">@((MarkupString)this.Value)</div>

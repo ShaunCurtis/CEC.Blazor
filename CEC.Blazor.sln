@@ -15,17 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Weather", "CEC.Weather\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Released Articles", "Released Articles", "{64CAF2C4-8B4B-4D5B-93AF-1C34A0103AB4}"
 	ProjectSection(SolutionItems) = preProject
-		Released Articles\AsyncProgramming.md = Released Articles\AsyncProgramming.md
-		Released Articles\Blazor Components.md = Released Articles\Blazor Components.md
 		Released Articles\Building a Database Application in Blazor - Part 1.md = Released Articles\Building a Database Application in Blazor - Part 1.md
 		Released Articles\Building a Database Application in Blazor - Part 2.md = Released Articles\Building a Database Application in Blazor - Part 2.md
 		Released Articles\CodeProject.css = Released Articles\CodeProject.css
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "In Process Articles", "In Process Articles", "{955C1E4D-58A1-475D-8266-5B63F2B42F7F}"
-	ProjectSection(SolutionItems) = preProject
-		In Process Articles\Building a Database Application in Blazor - Part 3.md = In Process Articles\Building a Database Application in Blazor - Part 3.md
-		In Process Articles\Building a Database Application in Blazor - Part 4.md = In Process Articles\Building a Database Application in Blazor - Part 4.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7725F7F9-BB2A-496D-A64B-CD8DB108025C}"

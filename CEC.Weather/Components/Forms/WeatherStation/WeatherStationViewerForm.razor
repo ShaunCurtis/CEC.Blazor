@@ -1,0 +1,88 @@
+﻿@namespace CEC.Weather.Components
+@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.Weather.Extensions
+@using CEC.FormControls.Components.FormControls
+
+@inherits RecordFormBase<DbWeatherStation, WeatherForecastDbContext>
+
+<UICard>
+
+    <Header>
+        @this.PageTitle
+    </Header>
+
+    <Body>
+
+        <UIErrorHandler IsError="this.IsError" IsLoading="this.Loading" ErrorMessage="@this.RecordErrorMessage">
+
+            <UIContainer>
+
+                <UIRow>
+
+                    <UILabelColumn Columns="2">
+                        ID
+                    </UILabelColumn>
+
+                    <UIColumn Columns="2">
+                        <FormControlPlainText Value="@this.Service.Record.ID.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="2">
+                        Name
+                    </UILabelColumn>
+
+                    <UIColumn Columns="2">
+                        <FormControlPlainText Value="@this.Service.Record.Name"></FormControlPlainText>
+                    </UIColumn>
+
+                </UIRow>
+
+                <UIRow>
+
+                    <UILabelColumn Columns="2">
+                        Latitude/Longitude
+                    </UILabelColumn>
+
+                    <UIColumn Columns="4">
+                        <FormControlPlainText Value="@this.Service.Record.LatLong"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="2">
+                        Elevation (m)
+                    </UILabelColumn>
+
+                    <UIColumn Columns="4">
+                        <FormControlPlainText Value="@this.Service.Record.Elevation.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                </UIRow>
+
+            </UIContainer>
+
+        </UIErrorHandler>
+
+        <UIContainer>
+
+            <UIRow>
+                <UIColumn Columns="6">
+
+                </UIColumn>
+
+                <UIButtonColumn Columns="6">
+
+                    <UIButton Show="true" ColourCode="Bootstrap.ColourCode.nav" ClickEvent="(e => this.Exit())">
+                        Exit
+                    </UIButton>
+
+                </UIButtonColumn>
+
+            </UIRow>
+
+        </UIContainer>
+
+    </Body>
+
+</UICard>

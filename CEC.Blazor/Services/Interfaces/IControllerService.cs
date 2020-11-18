@@ -137,12 +137,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Method to set the state to clean
         /// </summary>
-        public void SetClean(bool isClean = true);
-
-        /// <summary>
-        /// Method to set the state to clean
-        /// </summary>
-        public void SetDirty();
+        public void SetDirtyState(bool isdirty);
 
         /// <summary>
         /// Method to Update or Add the Database Record
@@ -206,7 +201,7 @@ namespace CEC.Blazor.Services
         /// <summary>
         /// Method to load up the Paged Data to display
         /// </summary>
-        public Task LoadPagingAsync(bool withDelegate = true);
+        public Task LoadPagingAsync();
 
         /// <summary>
         /// Method to get a page of data from the database - used during paging operations
