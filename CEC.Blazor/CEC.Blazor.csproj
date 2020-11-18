@@ -3,6 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <Version>0.0.1</Version>
+    <Authors>Shaun Curtis</Authors>
+    <Company>Cold Elm</Company>
+    <Description>Library of Components and Services for developing Blazor Database Application</Description>
+    <Copyright>Shaun Curtis</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ShaunCurtis/CEC.Blazor</RepositoryUrl>
+    <PackageIcon>ColdElm.png</PackageIcon>
+    <PackageReleaseNotes>Pre Released Version for personal use.  It will change!</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ColdElm.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="compilerconfig.json" />
   </ItemGroup>
 
@@ -20,6 +35,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">
