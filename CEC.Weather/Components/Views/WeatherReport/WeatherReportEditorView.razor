@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Rendering;
+@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.Weather.Components
+@using CEC.Blazor.Components.Base
+
+@inherits Component
+@implements IView
+
+@namespace CEC.Weather.Components.Views
+
+<WeatherReportEditorForm ID="this.ID"></WeatherReportEditorForm>
+
+
+@code {
+
+    [CascadingParameter] public ViewManager ViewManager { get; set; }
+
+    [Parameter] public int ID { get; set; } = 0;
+
+}
+

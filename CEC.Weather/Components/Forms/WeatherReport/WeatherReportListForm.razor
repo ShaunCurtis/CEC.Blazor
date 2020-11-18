@@ -1,0 +1,67 @@
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Blazor.Extensions
+@using CEC.Weather.Data
+
+@namespace CEC.Weather.Components
+
+@inherits ListFormBase<DbWeatherReport, WeatherForecastDbContext>
+
+<UIWrapper UIOptions="@this.UIOptions" RecordConfiguration="@this.Service.RecordConfiguration" OnView="@OnView" OnEdit="@OnEdit">
+
+    <UICardGrid TRecord="DbWeatherReport" IsCollapsible="true" Paging="this.Paging" IsLoading="this.Loading">
+
+        <Title>
+            @this.ListTitle
+        </Title>
+
+        <TableHeader>
+
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="1" FieldName="ID">ID</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="2" FieldName="Date">Month-Year</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="3" FieldName="WeatherStationName">Station</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="4" FieldName="Month">Month</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="5" FieldName="Year">Year</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="6" FieldName="TempMax">Max Temp</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="7" FieldName="TempMin">Min Temp</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="8" FieldName="FrostDays">Frost</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="9" FieldName="Rainfall">Rain</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="10" FieldName="SunHours">Sun</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherReport" Column="11"></UIGridTableHeaderColumn>
+
+        </TableHeader>
+
+        <RowTemplate>
+
+            <CascadingValue Name="RecordID" Value="@context.ID">
+
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="1">@context.ID</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="2">@context.Date.AsMonthYear()</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="3">@context.WeatherStationName</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="4">@context.Month</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="5">@context.Year</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="6">@context.TempMax.DecimalPlaces(1)</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="7">@context.TempMin.DecimalPlaces(1)</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="8">@context.FrostDays</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="9">@context.Rainfall.DecimalPlaces(2)</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherReport" Column="10">@context.SunHours.DecimalPlaces(1)</UIGridTableColumn>
+                <UIGridTableEditColumn TRecord="DbWeatherReport"></UIGridTableEditColumn>
+
+            </CascadingValue>
+
+        </RowTemplate>
+
+        <Navigation>
+
+            <UIListButtonRow>
+                <Paging>
+                    <PagingControl TRecord="DbWeatherReport" Paging="this.Paging"></PagingControl>
+                </Paging>
+            </UIListButtonRow>
+
+        </Navigation>
+
+    </UICardGrid>
+
+</UIWrapper>

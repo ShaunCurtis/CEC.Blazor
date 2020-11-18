@@ -2,17 +2,18 @@
 using CEC.Blazor.Components.BaseForms;
 using CEC.Weather.Data;
 using CEC.Weather.Services;
-using System.Threading.Tasks;
 using CEC.Weather.Components.Views;
+using System.Threading.Tasks;
 
 namespace CEC.Weather.Components
 {
-    public partial class WeatherForecastListForm : ListFormBase<DbWeatherForecast, WeatherForecastDbContext>
+    public partial class WeatherStationListForm : ListFormBase<DbWeatherStation, WeatherForecastDbContext>
     {
         /// <summary>
         /// The Injected Controller service for this record
         /// </summary>
-        [Inject] protected WeatherForecastControllerService ControllerService { get; set; }
+        [Inject]
+        protected WeatherStationControllerService ControllerService { get; set; }
 
         protected override Task OnRenderAsync(bool firstRender)
         {
@@ -21,7 +22,7 @@ namespace CEC.Weather.Components
                 // Sets the specific service
                 this.Service = this.ControllerService;
                 // Sets the max column
-                this.UIOptions.MaxColumn = 3;
+                this.UIOptions.MaxColumn = 2;
             }
             return base.OnRenderAsync(firstRender);
         }
@@ -32,8 +33,8 @@ namespace CEC.Weather.Components
         /// <param name="id"></param>
         protected void OnView(int id)
         {
-            if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherForecastViewerForm>(id);
-            else this.OnViewAsync<WeatherForecastViewerView>(id);
+            if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherStationViewerForm>(id);
+            else this.OnViewAsync<WeatherStationViewerView>(id);
         }
 
         /// <summary>
@@ -42,8 +43,9 @@ namespace CEC.Weather.Components
         /// <param name="id"></param>
         protected void OnEdit(int id)
         {
-            if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherForecastEditorForm>(id);
-            else this.OnViewAsync<WeatherForecastEditorView>(id);
+            if (this.UIOptions.UseModalViewer && this.ViewManager.ModalDialog != null) this.OnModalAsync<WeatherStationEditorForm>(id);
+            else this.OnViewAsync<WeatherStationEditorView>(id);
         }
+
     }
 }

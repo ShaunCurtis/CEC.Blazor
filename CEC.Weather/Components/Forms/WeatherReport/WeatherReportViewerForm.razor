@@ -1,0 +1,123 @@
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.FormControls.Components.FormControls
+
+@namespace CEC.Weather.Components
+@inherits RecordFormBase<DbWeatherReport, WeatherForecastDbContext>
+
+<UICard>
+
+    <Header>
+        @this.PageTitle
+    </Header>
+
+    <Body>
+
+        <UIErrorHandler IsError="this.IsError" IsLoading="this.Loading" ErrorMessage="@this.RecordErrorMessage">
+
+            <UIContainer>
+
+                <UIRow>
+
+                    <UILabelColumn Columns="2">
+                        Month/Year
+                    </UILabelColumn>
+
+                    <UIColumn Columns="2">
+                        <FormControlPlainText Value="@this.Service.Record.MonthYearName"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="2">
+                        Station
+                    </UILabelColumn>
+
+                    <UIColumn Columns="4">
+                        <FormControlPlainText Value="@this.Service.Record.WeatherStationName"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="1">
+                        ID
+                    </UILabelColumn>
+
+                    <UIColumn Columns="1">
+                        <FormControlPlainText Value="@this.Service.Record.ID.ToString()"></FormControlPlainText>
+                    </UIColumn>
+                </UIRow>
+
+                <UIRow>
+
+                    <UILabelColumn Columns="2">
+                        Max Temperature &deg; C:
+                    </UILabelColumn>
+
+                    <UIColumn Columns="4">
+                        <FormControlPlainText Value="@this.Service.Record.TempMax.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="2">
+                        Min Temperature &deg; C:
+                    </UILabelColumn>
+
+                    <UIColumn Columns="4">
+                        <FormControlPlainText Value="@this.Service.Record.TempMin.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                </UIRow>
+
+                <UIRow>
+
+                    <UILabelColumn Columns="2">
+                        Frost Days
+                    </UILabelColumn>
+
+                    <UIColumn Columns="2">
+                        <FormControlPlainText Value="@this.Service.Record.FrostDays.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="2">
+                        Rainfall (mm)
+                    </UILabelColumn>
+
+                    <UIColumn Columns="2">
+                        <FormControlPlainText Value="@this.Service.Record.Rainfall.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                    <UILabelColumn Columns="2">
+                        Sunshine (hrs)
+                    </UILabelColumn>
+
+                    <UIColumn Columns="2">
+                        <FormControlPlainText Value="@this.Service.Record.SunHours.ToString()"></FormControlPlainText>
+                    </UIColumn>
+
+                </UIRow>
+
+            </UIContainer>
+
+        </UIErrorHandler>
+
+        <UIContainer>
+
+            <UIRow>
+                <UIColumn Columns="6">
+
+                </UIColumn>
+
+                <UIButtonColumn Columns="6">
+
+                    <UIButton Show="true" ColourCode="Bootstrap.ColourCode.nav" ClickEvent="(e => this.Exit())">
+                        Exit
+                    </UIButton>
+
+                </UIButtonColumn>
+
+            </UIRow>
+
+
+        </UIContainer>
+
+    </Body>
+
+</UICard>

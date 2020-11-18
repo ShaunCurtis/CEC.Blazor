@@ -13,6 +13,8 @@ namespace CEC.Blazor.WASM.Server.Extensions
         {
             // services.AddSingleton<IWeatherForecastDataService, WeatherForecastServerDataService>();
             services.AddSingleton<IWeatherForecastDataService, WeatherForecastDummyDataService>();
+            services.AddSingleton<IWeatherStationDataService, WeatherStationDummyDataService>();
+            services.AddSingleton<IWeatherReportDataService, WeatherReportDummyDataService>();
             // Factory for building the DBContext 
             var dbContext = configuration.GetValue<string>("Configuration:DBContext");
             services.AddDbContextFactory<WeatherForecastDbContext>(options => options.UseSqlServer(dbContext), ServiceLifetime.Singleton);

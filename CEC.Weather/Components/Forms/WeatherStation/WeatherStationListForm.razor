@@ -1,0 +1,58 @@
+﻿@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Weather.Data
+@using CEC.Weather.Extensions
+@using CEC.Blazor.Extensions
+
+@namespace CEC.Weather.Components
+
+@inherits ListFormBase<DbWeatherStation, WeatherForecastDbContext>
+
+<UIWrapper UIOptions="@this.UIOptions" RecordConfiguration="@this.Service.RecordConfiguration" OnView="@OnView" OnEdit="@OnEdit">
+
+    <UICardGrid TRecord="DbWeatherStation" IsCollapsible="true" Paging="this.Paging" IsLoading="this.Loading">
+
+        <Title>
+            @this.ListTitle
+        </Title>
+
+        <TableHeader>
+
+            <UIGridTableHeaderColumn TRecord="DbWeatherStation" Column="1" FieldName="ID">ID</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherStation" Column="2" FieldName="Name">Name</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherStation" Column="3" FieldName="Latitude">Latitiude</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherStation" Column="4" FieldName="Longitude">Longitude</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherStation" Column="5" FieldName="Elevation">Elevation</UIGridTableHeaderColumn>
+            <UIGridTableHeaderColumn TRecord="DbWeatherStation" Column="6"></UIGridTableHeaderColumn>
+
+        </TableHeader>
+
+        <RowTemplate>
+
+            <CascadingValue Name="RecordID" Value="@context.ID">
+
+                <UIGridTableColumn TRecord="DbWeatherStation" Column="1">@context.ID</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherStation" Column="2">@context.Name</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherStation" Column="3">@context.Latitude.AsLatitude()</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherStation" Column="4">@context.Longitude.AsLongitude()</UIGridTableColumn>
+                <UIGridTableColumn TRecord="DbWeatherStation" Column="5">@context.Elevation.DecimalPlaces(1)</UIGridTableColumn>
+                <UIGridTableEditColumn TRecord="DbWeatherStation"></UIGridTableEditColumn>
+
+            </CascadingValue>
+
+        </RowTemplate>
+
+        <Navigation>
+
+            <UIListButtonRow>
+                <Paging>
+                    <PagingControl TRecord="DbWeatherStation" Paging="this.Paging"></PagingControl>
+                </Paging>
+            </UIListButtonRow>
+
+        </Navigation>
+
+    </UICardGrid>
+
+</UIWrapper>

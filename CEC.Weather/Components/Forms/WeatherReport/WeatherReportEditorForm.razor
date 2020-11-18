@@ -1,0 +1,181 @@
+﻿@namespace CEC.Weather.Components
+
+@using CEC.Blazor.Components
+@using CEC.Blazor.Components.BaseForms
+@using CEC.Blazor.Components.UIControls
+@using CEC.Blazor.Components.FormControls
+@using CEC.Weather.Data
+@using CEC.FormControls.Components.FormControls
+@using Microsoft.AspNetCore.Components.Forms
+@using Blazored.FluentValidation
+
+
+@inherits EditRecordFormBase<DbWeatherReport, WeatherForecastDbContext>
+
+<UICard IsCollapsible="false">
+    <Header>
+        @this.PageTitle
+    </Header>
+
+    <Body>
+        <CascadingValue Value="@this.RecordFieldChanged" Name="OnRecordChange" TValue="Action<bool>">
+
+            <UIErrorHandler IsError="@this.IsError" IsLoading="this.Loading" ErrorMessage="@this.RecordErrorMessage">
+
+                <UIContainer>
+
+                    <EditForm EditContext="this.EditContext">
+
+                        <FluentValidationValidator DisableAssemblyScanning="@true" />
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Record ID:
+                            </UILabelColumn>
+
+                            <UIColumn Columns="4">
+                                <FormControlPlainText Value="@this.Service.Record.ID.ToString()"></FormControlPlainText>
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Station:
+                            </UILabelColumn>
+
+                            <UIColumn Columns="4">
+                                <InputControlSelect OptionList="this.StationLookupList" @bind-Value="this.Service.Record.WeatherStationID" RecordValue="@this.Service.ShadowRecord.WeatherStationID"></InputControlSelect>
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Record Date:
+                            </UILabelColumn>
+
+                            <UIColumn Columns="4">
+                                <FormControlDate class="form-control" @bind-Value="this.Service.Record.Date" RecordValue="this.Service.ShadowRecord.Date"></FormControlDate>
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Max Temperature &deg; C:
+                            </UILabelColumn>
+
+                            <UIColumn Columns="2">
+                                <FormControlNumber class="form-control" @bind-Value="this.Service.Record.TempMax" RecordValue="this.Service.ShadowRecord.TempMax"></FormControlNumber>
+                            </UIColumn>
+
+                            <UIColumn Columns="6">
+                                <ValidationMessage For=@(() => this.Service.Record.TempMax) />
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Min Temperature &deg; C:
+                            </UILabelColumn>
+
+                            <UIColumn Columns="2">
+                                <FormControlNumber class="form-control" @bind-Value="this.Service.Record.TempMin" RecordValue="this.Service.ShadowRecord.TempMin"></FormControlNumber>
+                            </UIColumn>
+
+                            <UIColumn Columns="6">
+                                <ValidationMessage For=@(() => this.Service.Record.TempMin) />
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Frost Days
+                            </UILabelColumn>
+
+                            <UIColumn Columns="2">
+                                <FormControlNumber class="form-control" @bind-Value="this.Service.Record.FrostDays" RecordValue="this.Service.ShadowRecord.FrostDays"></FormControlNumber>
+                            </UIColumn>
+
+                            <UIColumn Columns="6">
+                                <ValidationMessage For=@(() => this.Service.Record.FrostDays) />
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Rainfall (mm)
+                            </UILabelColumn>
+
+                            <UIColumn Columns="2">
+                                <FormControlNumber class="form-control" @bind-Value="this.Service.Record.Rainfall" RecordValue="this.Service.ShadowRecord.Rainfall"></FormControlNumber>
+                            </UIColumn>
+
+                            <UIColumn Columns="6">
+                                <ValidationMessage For=@(() => this.Service.Record.Rainfall) />
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                        <UIFormRow>
+
+                            <UILabelColumn Columns="4">
+                                Sunshine (Hours)
+                            </UILabelColumn>
+
+                            <UIColumn Columns="2">
+                                <FormControlNumber class="form-control" @bind-Value="this.Service.Record.SunHours" RecordValue="this.Service.ShadowRecord.SunHours"></FormControlNumber>
+                            </UIColumn>
+
+                            <UIColumn Columns="6">
+                                <ValidationMessage For=@(() => this.Service.Record.SunHours) />
+                            </UIColumn>
+
+                        </UIFormRow>
+
+                    </EditForm>
+
+                </UIContainer>
+
+            </UIErrorHandler>
+
+            <UIContainer>
+                <UIRow>
+
+                    <UIColumn Columns="7">
+                        <UIAlert Alert="this.AlertMessage" SizeCode="Bootstrap.SizeCode.sm"></UIAlert>
+                    </UIColumn>
+                    <UIButtonColumn Columns="5">
+
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.SaveAndExit" ColourCode="Bootstrap.ColourCode.save">Save &amp; Exit</UIButton>
+
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.Save" ColourCode="Bootstrap.ColourCode.save">Save</UIButton>
+
+                        <UIButton Show="(!this.IsClean) && this.IsLoaded" ClickEvent="this.ConfirmExit" ColourCode="Bootstrap.ColourCode.danger_exit">Exit Without Saving</UIButton>
+
+                        <UIButton Show="this.IsClean" ClickEvent="this.TryExit" ColourCode="Bootstrap.ColourCode.nav">Exit</UIButton>
+
+                    </UIButtonColumn>
+
+                </UIRow>
+
+            </UIContainer>
+
+        </CascadingValue>
+
+    </Body>
+
+</UICard>
+
+
