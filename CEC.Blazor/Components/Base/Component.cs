@@ -74,6 +74,13 @@ namespace CEC.Blazor.Components.Base
         }
 
         /// <summary>
+        /// Method Called on a Component when it is attached to the RenderTree
+        /// Only called once
+        /// </summary>
+        /// <returns></returns>
+        protected Task OnAttachAsync() => Task.CompletedTask;
+
+        /// <summary>
         /// Runs Render on the UI Thread
         /// </summary>
         /// <returns></returns>
@@ -113,7 +120,7 @@ namespace CEC.Blazor.Components.Base
         /// IComponent Attach implementation
         /// </summary>
         /// <param name="renderHandle"></param>
-        void IComponent.Attach(RenderHandle renderHandle)
+        async void IComponent.Attach(RenderHandle renderHandle)
         {
             if (_renderHandle.IsInitialized)
             {
@@ -121,7 +128,9 @@ namespace CEC.Blazor.Components.Base
             }
             _firstRender = true;
             _renderHandle = renderHandle;
+            await OnAttachAsync();
         }
+        
 
         /// <summary>
         /// Implementation of the IComponent SetParametersAsync

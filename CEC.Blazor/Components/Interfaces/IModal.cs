@@ -9,7 +9,7 @@ namespace CEC.Blazor.Components.UIControls
     {
         ModalOptions Options { get; set; }
 
-        Task<ModalResult> Show<TModal>(ModalOptions options) where TModal : IComponent;
+        Task<ModalResult> ShowAsync<TModal>(ModalOptions options) where TModal : IComponent;
 
         void Update(ModalOptions options = null);
 

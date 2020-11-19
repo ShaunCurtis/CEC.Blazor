@@ -61,7 +61,7 @@ namespace CEC.Weather.Services
         /// Inherited IDataService Method
         /// </summary>
         /// <returns></returns>
-        public async Task<List<DbWeatherStation>> GetRecordListAsync()
+        public override async Task<List<DbWeatherStation>> GetRecordListAsync()
         {
             // Delay to demonstrate Async Programming
             await Task.Delay(200);
