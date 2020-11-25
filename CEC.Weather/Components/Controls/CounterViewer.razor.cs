@@ -1,5 +1,4 @@
 ﻿using CEC.Blazor.Components;
-using CEC.Blazor.Components.Base;
 using CEC.Weather.Components.Views;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;

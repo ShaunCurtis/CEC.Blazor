@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components.BaseForms;
+﻿using CEC.Blazor.Components.Forms;
 using CEC.Blazor.Extensions;
 using CEC.Weather.Data;
 using CEC.Weather.Services;

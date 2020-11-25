@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CEC.Blazor.Components.Modal
+namespace CEC.Blazor.Components
 {
     public enum ModalResultType
     {

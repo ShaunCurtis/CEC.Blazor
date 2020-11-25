@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor", "CEC.Blazor\CEC.Blazor.csproj", "{5A7D4B61-AA1A-4CD7-9EA1-CA435F9AF817}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.Components", "CEC.Blazor.Components\CEC.Blazor.Components.csproj", "{5A7D4B61-AA1A-4CD7-9EA1-CA435F9AF817}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEC.Blazor.Server", "CEC.Blazor.Server\CEC.Blazor.Server.csproj", "{4BCFDC54-5E15-4D51-8E0F-1A837001263C}"
 EndProject
@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEC.Blazor", "CEC.Blazor\CEC.Blazor.csproj", "{7260A854-745B-4815-B459-76711EAA6352}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC095B81-B4AF-46C6-A3F3-902D02AF07FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7260A854-745B-4815-B459-76711EAA6352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7260A854-745B-4815-B459-76711EAA6352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7260A854-745B-4815-B459-76711EAA6352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7260A854-745B-4815-B459-76711EAA6352}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
