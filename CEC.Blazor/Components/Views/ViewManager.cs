@@ -9,7 +9,7 @@ using System.Linq;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Core
 {
     /// <summary>
     /// Displays the specified view component, rendering it inside its layout

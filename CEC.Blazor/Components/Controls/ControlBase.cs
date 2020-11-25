@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using System;
-using System.Threading.Tasks;
+﻿using CEC.Blazor.Core;
 
 namespace CEC.Blazor.Components
 {

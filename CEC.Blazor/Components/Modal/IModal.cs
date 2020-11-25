@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Core
 {
     public interface IModal
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CEC.Blazor.Data;
 using CEC.Blazor.Services;
-using CEC.Blazor.Components;
+using CEC.Blazor.Core;
 
 namespace CEC.Blazor.Components
 {

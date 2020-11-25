@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Core
 {
     public interface IForm
     {

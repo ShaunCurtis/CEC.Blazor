@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CEC.Blazor.Core;
 
 namespace CEC.Weather.Components.Views
 {

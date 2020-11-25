@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Core
 {
     /// <summary>
     /// Abstract Base Class implementing basic IComponent functions

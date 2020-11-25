@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using CEC.Blazor.Core;
 
 namespace CEC.Blazor.Components.Forms
 {

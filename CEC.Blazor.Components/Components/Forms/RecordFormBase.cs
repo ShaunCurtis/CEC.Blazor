@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using CEC.Blazor.Core;
+
 namespace CEC.Blazor.Components.Forms
 {
     public class RecordFormBase<TRecord, TContext> :

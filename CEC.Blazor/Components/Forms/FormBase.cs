@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Core
 {
     public abstract class FormBase : Component, IForm, IDisposable
     {

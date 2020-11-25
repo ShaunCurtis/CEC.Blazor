@@ -5,6 +5,7 @@ using CEC.Blazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
+using CEC.Blazor.Core;
 
 namespace CEC.Blazor.Components.UIControls
 {

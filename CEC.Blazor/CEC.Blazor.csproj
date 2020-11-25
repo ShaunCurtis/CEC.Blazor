@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
+    <Title>CEC Blazor Core Framework Components</Title>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
     <Version>0.0.1</Version>
@@ -8,12 +9,12 @@
     <Company>Cold Elm</Company>
     <Description>Library of Components and Services for developing Blazor Database Application</Description>
     <Copyright>Shaun Curtis</Copyright>
-    <PackageProjectUrl></PackageProjectUrl>
-    <RepositoryUrl>https://github.com/ShaunCurtis/CEC.Blazor.Components</RepositoryUrl>
-    <PackageIcon></PackageIcon>
+    <RepositoryUrl>https://github.com/ShaunCurtis/CEC.Blazor</RepositoryUrl>
+    <PackageIcon>ColdElm.png</PackageIcon>
     <PackageReleaseNotes>Pre Released Version for personal use.  It will change!</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>This packages contains the base components for the CEC Blazor Framework.  Currently under development so NOT FOR PRODUCTION</Description>
   </PropertyGroup>
 
 
@@ -29,6 +30,14 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="ColdElm.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

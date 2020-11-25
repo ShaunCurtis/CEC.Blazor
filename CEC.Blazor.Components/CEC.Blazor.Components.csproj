@@ -9,7 +9,7 @@
     <Description>Library of Components and Services for developing Blazor Database Application</Description>
     <Copyright>Shaun Curtis</Copyright>
     <PackageProjectUrl></PackageProjectUrl>
-    <RepositoryUrl>https://github.com/ShaunCurtis/CEC.Blazor.Components</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ShaunCurtis/CEC.Blazor</RepositoryUrl>
     <PackageIcon>ColdElm.png</PackageIcon>
     <PackageReleaseNotes>Pre Released Version for personal use.  It will change!</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <PackageReference Include="CEC.FormControls" Version="1.0.1" />
-    <PackageReference Include="CEC.Routing" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />

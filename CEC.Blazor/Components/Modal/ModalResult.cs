@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.Core
 {
     public class ModalResult
     {

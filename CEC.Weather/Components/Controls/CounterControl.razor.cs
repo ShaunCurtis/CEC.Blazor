@@ -1,9 +1,9 @@
 ﻿using CEC.Blazor.Components;
-using CEC.Blazor.Components;
 using CEC.Weather.Components.Views;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CEC.Blazor.Core;
 
 namespace CEC.Weather.Components
 {

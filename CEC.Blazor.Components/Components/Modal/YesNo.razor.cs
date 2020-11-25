@@ -1,5 +1,6 @@
 ﻿using CEC.Blazor.Components;
 using Microsoft.AspNetCore.Components;
+using CEC.Blazor.Core;
 
 namespace CEC.Blazor.Components.UIControls
 {
