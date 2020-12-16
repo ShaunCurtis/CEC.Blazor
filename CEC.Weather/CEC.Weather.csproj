@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CEC.Blazor.Components\CEC.Blazor.Components.csproj" />
-    <ProjectReference Include="..\CEC.Blazor\CEC.Blazor.csproj" />
+    <ProjectReference Include="..\CEC.Blazor.Core\CEC.Blazor.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
