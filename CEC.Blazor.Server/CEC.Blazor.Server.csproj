@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.FluentValidation" Version="1.3.1" />
+    <PackageReference Include="CEC.Blazor.Core" Version="0.0.4" />
     <PackageReference Include="CEC.FormControls" Version="1.0.1" />
     <PackageReference Include="CEC.Routing" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
@@ -24,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CEC.Blazor.Components\CEC.Blazor.Components.csproj" />
-    <ProjectReference Include="..\CEC.Blazor.Core\CEC.Blazor.Core.csproj" />
     <ProjectReference Include="..\CEC.Weather\CEC.Weather.csproj" />
   </ItemGroup>
 
