@@ -15,7 +15,7 @@ namespace CEC.Blazor.WASM.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<CEC.Weather.Components.App>("app");
+            builder.RootComponents.Add<CEC.Weather.Components.App>("#app");
 
             // Added here as we don't have access to builder in AddApplicationServices
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

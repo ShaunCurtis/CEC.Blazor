@@ -16,7 +16,7 @@ namespace CEC.Blazor.Services
     public abstract class BaseServerDataService<TRecord, TContext> : 
         BaseDataService<TRecord, TContext>, 
         IDataService<TRecord, TContext>
-        where TRecord : class, IDbRecord<TRecord>, new()
+        where TRecord : class, new()
         where TContext : DbContext
     {
 

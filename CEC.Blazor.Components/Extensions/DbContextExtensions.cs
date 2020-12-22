@@ -53,7 +53,7 @@ namespace CEC.Blazor.Extensions
         /// <param name="context"></param>
         /// <param name="dbSetName"></param>
         /// <returns></returns>
-        public async static Task<List<TRecord>> GetRecordListAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        public async static Task<List<TRecord>> GetRecordListAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class
         {
             var dbset = GetDbSet<TRecord>(context, dbSetName);
             return await dbset.ToListAsync();
@@ -67,7 +67,7 @@ namespace CEC.Blazor.Extensions
         /// <param name="filterList"></param>
         /// <param name="dbSetName"></param>
         /// <returns></returns>
-        public async static Task<List<TRecord>> GetRecordFilteredListAsync<TRecord>(this DbContext context, IFilterList filterList, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        public async static Task<List<TRecord>> GetRecordFilteredListAsync<TRecord>(this DbContext context, IFilterList filterList, string dbSetName = null) where TRecord : class
         {
             var firstrun = true;
             // Get the PropertInfo object for the record DbSet
@@ -133,7 +133,7 @@ namespace CEC.Blazor.Extensions
         /// <param name="context"></param>
         /// <param name="dbSetName"></param>
         /// <returns></returns>
-        public async static Task<int> GetRecordListCountAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        public async static Task<int> GetRecordListCountAsync<TRecord>(this DbContext context, string dbSetName = null) where TRecord : class
         {
             var dbset = GetDbSet<TRecord>(context, dbSetName);
             return await dbset.CountAsync();
@@ -147,7 +147,7 @@ namespace CEC.Blazor.Extensions
         /// <param name="id"></param>
         /// <param name="dbSetName"></param>
         /// <returns></returns>
-        public async static Task<TRecord> GetRecordAsync<TRecord>(this DbContext context, int id, string dbSetName = null) where TRecord : class, IDbRecord<TRecord>
+        public async static Task<TRecord> GetRecordAsync<TRecord>(this DbContext context, int id, string dbSetName = null) where TRecord : class
         {
             var dbset = GetDbSet<TRecord>(context, dbSetName);
             return await dbset.FirstOrDefaultAsync(item => ((IDbRecord<TRecord>)item).ID == id);

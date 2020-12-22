@@ -2,9 +2,7 @@ using CEC.Blazor.Data;
 using CEC.Weather.Data;
 using CEC.Blazor.Services;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CEC.Blazor.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace CEC.Weather.Services
 {
