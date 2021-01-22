@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CEC.Blazor.Components\CEC.Blazor.Components.csproj" />
+    <ProjectReference Include="..\CEC.Blazor.SPA\CEC.Blazor.SPA.csproj" />
     <ProjectReference Include="..\CEC.Weather\CEC.Weather.csproj" />
   </ItemGroup>
 

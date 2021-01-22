@@ -19,10 +19,12 @@ namespace CEC.Blazor.Server.Extensions
             //services.AddSingleton<IWeatherForecastDataService, WeatherForecastDummyDataService>();
             services.AddSingleton<IWeatherStationDataService, WeatherStationDummyDataService>();
             services.AddSingleton<IWeatherReportDataService, WeatherReportDummyDataService>();
+            services.AddSingleton<SalaryDataService, SalaryDataService>();
             // Scoped service for the WeatherForecast Controller Service
             services.AddScoped<WeatherForecastControllerService>();
             services.AddScoped<WeatherStationControllerService>();
             services.AddScoped<WeatherReportControllerService>();
+            services.AddScoped<SalaryControllerService>();
             // Transient service for the Fluent Validator for the WeatherForecast record
             services.AddTransient<IValidator<DbWeatherForecast>, WeatherForecastValidator>();
             services.AddTransient<IValidator<DbWeatherStation>, WeatherStationValidator>();

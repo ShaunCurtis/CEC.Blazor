@@ -1,7 +1,7 @@
 ﻿using CEC.Blazor.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CEC.Blazor
+namespace CEC.Blazor.SPA
 {
     public static class ServiceCollectionExtensions
     {

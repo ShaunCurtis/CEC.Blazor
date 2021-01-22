@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>0.0.2</Version>
+    <Version>0.0.3</Version>
     <Authors>Shaun Curtis</Authors>
     <Company>Cold Elm</Company>
-    <Description>Library of Components and Services for developing Blazor Database Application</Description>
+    <Description>Library of Components and Services for developing Blazor SPA Database Applications</Description>
     <Copyright>Shaun Curtis</Copyright>
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShaunCurtis/CEC.Blazor</RepositoryUrl>
