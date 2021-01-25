@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     /// <summary>
     /// UI Rendering Wrapper to build a Grid Column

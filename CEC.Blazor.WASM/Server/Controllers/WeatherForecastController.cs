@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using CEC.Weather.Services;
 using CEC.Weather.Data;
 using CEC.Blazor.Data;
-using CEC.Blazor.Components;
+using CEC.Blazor.SPA.Components;
 
 namespace CEC.Blazor.WASM.Server.Controllers
 {

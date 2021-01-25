@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CEC.Blazor.Server.Extensions;
+using CEC.Blazor.SPA;
 
 namespace CEC.Blazor.Server
 {
@@ -23,7 +24,7 @@ namespace CEC.Blazor.Server
             services.AddRazorPages();
             services.AddServerSideBlazor();
             // the Services for the CEC.Blazor Library
-            services.AddCECBlazor();
+            services.AddCECBlazorSPA();
             // the local application Services defined in ServiceCollectionExtensions.cs
             services.AddApplicationServices(Configuration);
         }

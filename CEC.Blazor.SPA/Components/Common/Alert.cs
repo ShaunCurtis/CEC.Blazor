@@ -1,7 +1,7 @@
-﻿using CEC.Blazor.Components.UIControls;
+﻿using CEC.Blazor.SPA.Components.UIControls;
 using CEC.Blazor.Data;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.SPA.Components
 {
     public class Alert
     {

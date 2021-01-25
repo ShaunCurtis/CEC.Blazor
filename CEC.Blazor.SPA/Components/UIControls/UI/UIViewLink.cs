@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using CEC.Blazor.Components;
+using CEC.Blazor.SPA.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     /// <summary>
     /// Builds a Bootstrap View Link

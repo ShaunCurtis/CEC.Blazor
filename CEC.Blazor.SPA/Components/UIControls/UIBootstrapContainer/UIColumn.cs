@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     /// <summary>
     /// UI Rendering Wrapper to build a Bootstrap Column

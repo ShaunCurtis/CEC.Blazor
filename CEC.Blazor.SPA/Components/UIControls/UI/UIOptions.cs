@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     public class UIOptions
     {

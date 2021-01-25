@@ -2,7 +2,7 @@
 using CEC.Blazor.Data;
 using System;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     public class UICardListBase : UIComponent
     {

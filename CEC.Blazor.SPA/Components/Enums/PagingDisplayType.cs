@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.SPA.Components
 {
     public enum PagingDisplayType
     {

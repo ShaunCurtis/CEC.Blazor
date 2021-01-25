@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components.FormControls
+namespace CEC.Blazor.SPA.Components.FormControls
 {
     /// <summary>
     /// Form Control to display an Enum field as a button Group

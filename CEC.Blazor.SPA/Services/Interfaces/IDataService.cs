@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components;
+﻿using CEC.Blazor.SPA.Components;
 using CEC.Blazor.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

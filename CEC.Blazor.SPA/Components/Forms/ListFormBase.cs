@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components.UIControls;
+﻿using CEC.Blazor.SPA.Components.UIControls;
 using CEC.Blazor.Data;
 using CEC.Blazor.Services;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.Forms
+namespace CEC.Blazor.SPA.Components.Forms
 {
     public class ListFormBase<TRecord, TContext> :
         ControllerServiceFormBase<TRecord, TContext>

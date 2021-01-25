@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.Forms
+namespace CEC.Blazor.SPA.Components.Forms
 {
     public class RecordFormBase<TRecord, TContext> :
         ControllerServiceFormBase<TRecord, TContext>

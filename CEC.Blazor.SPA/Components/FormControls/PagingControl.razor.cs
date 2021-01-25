@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using CEC.Blazor.Data;
 using CEC.Blazor.Services;
 using CEC.Blazor.Core;
+using CEC.Blazor.Components;
 
-namespace CEC.Blazor.Components
+namespace CEC.Blazor.SPA.Components
 {
     public partial class PagingControl<TRecord> : ControlBase where TRecord : IDbRecord<TRecord>, new()
     {

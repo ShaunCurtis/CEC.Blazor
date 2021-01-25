@@ -5,7 +5,7 @@ namespace CEC.Blazor.SPA
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCECBlazor(this IServiceCollection services)
+        public static IServiceCollection AddCECBlazorSPA(this IServiceCollection services)
         {
             services.AddScoped<BrowserService>();
             return services;

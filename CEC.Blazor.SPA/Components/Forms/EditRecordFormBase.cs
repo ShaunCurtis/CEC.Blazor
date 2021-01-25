@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components.UIControls;
+﻿using CEC.Blazor.SPA.Components.UIControls;
 using CEC.Blazor.Data;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.Forms
+namespace CEC.Blazor.SPA.Components.Forms
 {
     public class EditRecordFormBase<TRecord, TContext> :
         RecordFormBase<TRecord, TContext>

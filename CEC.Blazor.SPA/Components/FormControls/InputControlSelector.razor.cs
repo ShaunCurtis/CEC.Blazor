@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using CEC.FormControls.Components.FormControls;
 
-namespace CEC.Blazor.Components.FormControls
+namespace CEC.Blazor.SPA.Components.FormControls
 {
     public partial class InputControlSelector<T> : FormRecordControlBase<T>
     {

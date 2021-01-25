@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     /// <summary>
     /// A UI component that only displays the Child Content when contwent loading is complete and there are no errors

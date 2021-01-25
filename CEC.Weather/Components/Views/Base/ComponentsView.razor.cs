@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components;
+﻿using CEC.Blazor.SPA.Components;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Components;
 using CEC.Blazor.Services;
 using CEC.Blazor.Data;
-using CEC.Blazor.Components.UIControls;
+using CEC.Blazor.SPA.Components.UIControls;
 using Microsoft.EntityFrameworkCore;
-using CEC.Blazor.Components;
+using CEC.Blazor.SPA.Components;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.Forms
+namespace CEC.Blazor.SPA.Components.Forms
 {
     public class ControllerServiceFormBase<TRecord, TContext> : 
         FormBase 

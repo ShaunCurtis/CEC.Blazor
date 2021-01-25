@@ -1,8 +1,8 @@
-﻿using CEC.Blazor.Components;
+﻿using CEC.Blazor.SPA.Components;
 using Microsoft.AspNetCore.Components;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     public partial class YesNo : ComponentBase
     {

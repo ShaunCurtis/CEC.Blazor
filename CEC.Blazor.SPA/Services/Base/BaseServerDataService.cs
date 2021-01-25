@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using CEC.Blazor.Extensions;
-using CEC.Blazor.Components;
+using CEC.Blazor.SPA.Components;
 using Microsoft.Extensions.Configuration;
 
 namespace CEC.Blazor.Services

@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components;
+﻿using CEC.Blazor.SPA.Components;
 using CEC.Weather.Data;
 using CEC.Blazor.Services;
 using CEC.Blazor.Utilities;

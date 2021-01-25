@@ -7,6 +7,7 @@ using CEC.Blazor.WASM.Client.Extensions;
 using CEC.Weather.Components;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Storage;
+using CEC.Blazor.SPA;
 
 namespace CEC.Blazor.WASM.Client
 {
@@ -20,7 +21,7 @@ namespace CEC.Blazor.WASM.Client
             // Added here as we don't have access to builder in AddApplicationServices
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // the Services for the CEC.Blazor Library
-            builder.Services.AddCECBlazor();
+            builder.Services.AddCECBlazorSPA();
             // the local application Services defined in ServiceCollectionExtensions.cs
             builder.Services.AddApplicationServices();
 

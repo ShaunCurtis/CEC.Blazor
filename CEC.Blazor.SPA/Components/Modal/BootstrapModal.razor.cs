@@ -1,9 +1,9 @@
-﻿using CEC.Blazor.Components;
+﻿using CEC.Blazor.SPA.Components;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 using CEC.Blazor.Core;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     /// <summary>
     /// A container that shows Forms in a "pseudo" modal Dialog box format.

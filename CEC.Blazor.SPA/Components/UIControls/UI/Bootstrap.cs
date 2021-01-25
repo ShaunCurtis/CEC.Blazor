@@ -1,5 +1,5 @@
 ﻿
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     public static class Bootstrap
     {

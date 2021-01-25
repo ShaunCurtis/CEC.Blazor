@@ -1,10 +1,11 @@
 ﻿using CEC.Blazor.Components;
+using CEC.Blazor.SPA.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CEC.Blazor.Components.UIControls
+namespace CEC.Blazor.SPA.Components.UIControls
 {
     /// <summary>
     /// Base UI Rendering Wrapper to build a Css Framework Html Component

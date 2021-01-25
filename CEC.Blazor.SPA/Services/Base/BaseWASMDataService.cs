@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
-using CEC.Blazor.Components;
+using CEC.Blazor.SPA.Components;
 
 namespace CEC.Blazor.Services
 {

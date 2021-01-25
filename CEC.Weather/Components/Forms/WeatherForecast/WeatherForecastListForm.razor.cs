@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using CEC.Blazor.Components.Forms;
+using CEC.Blazor.SPA.Components.Forms;
 using CEC.Weather.Data;
 using CEC.Weather.Services;
 using System.Threading.Tasks;

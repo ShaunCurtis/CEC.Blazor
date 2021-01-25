@@ -1,4 +1,4 @@
-﻿using CEC.Blazor.Components;
+﻿using CEC.Blazor.SPA.Components;
 using CEC.Blazor.Data;
 using CEC.Weather.Data;
 using CEC.Weather.Services;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using CEC.Blazor.Components;
 
 namespace CEC.Weather.Components
 {
